@@ -3,16 +3,41 @@ import dotenv from "dotenv";
 import createError from "http-errors";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
+import "reflect-metadata";
+import { DataSource } from "typeorm";
+import Region from "./models/region.model";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT;
 
+export const AppDataSource = new DataSource({
+  type: "postgres",
+  host: process.env.PG_HOST,
+  port: Number(process.env.PG_PORT),
+  username: process.env.PG_USERNAME,
+  password: process.env.PG_PASSWORD,
+  database: process.env.PG_DATABASE_NAME,
+  // logging: true,
+  entities: [__dirname + "/models/*.model.js"],
+  subscribers: [],
+  migrations: [],
+});
+
+AppDataSource.initialize().catch((error) => console.log(error));
+
+const testRepo = AppDataSource.getRepository(Region);
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger("dev"));
+
+app.get("/", async function (req: Request, res: Response) {
+  const data = await testRepo.find();
+  res.send(data);
+});
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
