@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import Region from "./models/region.model";
+import regionRouter from "./routes/region";
 
 dotenv.config();
 
@@ -27,17 +27,12 @@ export const AppDataSource = new DataSource({
 
 AppDataSource.initialize().catch((error) => console.log(error));
 
-const testRepo = AppDataSource.getRepository(Region);
-
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger("dev"));
 
-app.get("/", async function (req: Request, res: Response) {
-  const data = await testRepo.find();
-  res.send(data);
-});
+app.use("/api/region", regionRouter);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
