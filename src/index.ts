@@ -10,6 +10,7 @@ import localSpecialtyRouter from "./routes/localSpecialty";
 import weaponRouter from "./routes/weapon";
 import foodRouter from "./routes/food";
 import characterRouter from "./routes/character";
+import talentRouter from "./routes/talent";
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ app.use("/api/local_specialty", localSpecialtyRouter);
 app.use("/api/weapon", weaponRouter);
 app.use("/api/food", foodRouter);
 app.use("/api/character", characterRouter);
+app.use("/api/talent", talentRouter);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
