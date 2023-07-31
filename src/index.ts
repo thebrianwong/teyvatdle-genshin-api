@@ -6,6 +6,7 @@ import logger from "morgan";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import regionRouter from "./routes/region";
+import localSpecialtyRouter from "./routes/localSpecialty";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ export const AppDataSource = new DataSource({
   entities: [__dirname + "/models/*.model.js"],
   subscribers: [],
   migrations: [],
+  entityPrefix: "genshin.",
 });
 
 AppDataSource.initialize().catch((error) => console.log(error));
@@ -33,6 +35,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(logger("dev"));
 
 app.use("/api/region", regionRouter);
+app.use("/api/local_specialty", localSpecialtyRouter);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));

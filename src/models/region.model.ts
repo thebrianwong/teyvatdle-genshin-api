@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ schema: "genshin" })
+@Entity()
 export default class Region {
   @PrimaryGeneratedColumn()
   id!: number;
