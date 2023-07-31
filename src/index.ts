@@ -7,6 +7,7 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import regionRouter from "./routes/region";
 import localSpecialtyRouter from "./routes/localSpecialty";
+import weaponRouter from "./routes/weapon";
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use(logger("dev"));
 
 app.use("/api/region", regionRouter);
 app.use("/api/local_specialty", localSpecialtyRouter);
+app.use("/api/weapon", weaponRouter);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
