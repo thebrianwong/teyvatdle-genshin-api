@@ -17,10 +17,13 @@ const getWeapons: RequestHandler = async (req, res, next) => {
       "weapon_type.name AS weapon_type",
       "stat.name AS sub_stat",
       "weapon_domain_material.name AS weapon_domain_material",
+      "weapon_domain_material.imageUrl AS weapon_domain_material_image_url",
       "elite_enemy_drop.name AS elite_enemy_material",
+      "elite_enemy_drop.imageUrl AS elite_enemy_material_image_url",
       "common_enemy_drop.name AS common_enemy_material",
+      "common_enemy_drop.imageUrl AS common_enemy_material_image_url",
       "weapon.gacha AS gacha",
-      "weapon.imageUrl AS image_url",
+      "weapon.imageUrl AS weapon_image_url",
     ])
     .getRawMany();
   res.send(weapons);

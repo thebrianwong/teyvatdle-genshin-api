@@ -10,9 +10,10 @@ const getTalents: RequestHandler = async (req, res, next) => {
     .innerJoin("talent.typeId", "talent_type")
     .select([
       "talent.name AS talent_name",
-      "character.name AS character",
       "talent_type.name AS talent_type",
-      "talent.imageUrl AS image_url",
+      "talent.imageUrl AS talent_image_url",
+      "character.name AS character",
+      "character.imageUrl AS character_image_url",
     ])
     .getRawMany();
   res.send(talents);

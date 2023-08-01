@@ -9,9 +9,10 @@ const getConstellations: RequestHandler = async (req, res, next) => {
     .innerJoin("constellation.characterId", "character")
     .select([
       "constellation.name AS constellation_name",
-      "character.name AS character",
       "constellation.level AS constellation_level",
-      "constellation.imageUrl AS image_url",
+      "constellation.imageUrl AS constellation_image_url",
+      "character.name AS character",
+      "character.imageUrl AS character_image_url",
     ])
     .getRawMany();
   res.send(constellations);

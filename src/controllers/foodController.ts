@@ -15,7 +15,7 @@ const getFoods: RequestHandler = async (req, res, next) => {
       "food.purchasable AS purchasable",
       "food.recipe AS recipe",
       "food.event AS event",
-      "food.imageUrl AS image_url",
+      "food.imageUrl AS food_image_url",
     ])
     .getRawMany();
   res.send(foods);
