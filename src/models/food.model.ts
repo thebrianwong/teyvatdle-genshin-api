@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import FoodType from "./foodType.model";
+import FoodType from "./lookups/foodType.model";
 
 @Entity()
 export default class Food {

@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
-import Region from "../models/region.model";
+import Region from "../models/lookups/region.model";
 
 const getRegions: RequestHandler = async (req, res, next) => {
   const regionRepo = AppDataSource.getRepository(Region);

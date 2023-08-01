@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import Character from "./character.model";
-import TalentType from "./talentType.model";
+import TalentType from "./lookups/talentType.model";
 
 @Entity()
 export default class Talent {

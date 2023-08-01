@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import Region from "./region.model";
+import Region from "./lookups/region.model";
 
 @Entity({ name: "local_specialty" })
 export default class LocalSpecialty {

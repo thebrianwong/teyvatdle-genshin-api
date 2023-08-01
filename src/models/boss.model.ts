@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import Region from "./region.model";
+import Region from "./lookups/region.model";
 
 @Entity()
 export default class Boss {

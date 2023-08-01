@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import Region from "./region.model";
+import Region from "./lookups/region.model";
 
 @Entity({ name: "weapon_domain_material" })
 export default class WeaponDomainMaterial {

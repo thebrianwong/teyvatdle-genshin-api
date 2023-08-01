@@ -5,8 +5,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import WeaponType from "./weaponType.model";
-import Stat from "./stat.model";
+import WeaponType from "./lookups/weaponType.model";
+import Stat from "./lookups/stat.model";
 import WeaponDomainMaterial from "./weaponDomainMaterial.model";
 import EnemyDrop from "./enemyDrop.model";
 

@@ -5,11 +5,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import WeaponType from "./weaponType.model";
-import Stat from "./stat.model";
+import WeaponType from "./lookups/weaponType.model";
+import Stat from "./lookups/stat.model";
 import EnemyDrop from "./enemyDrop.model";
-import Region from "./region.model";
-import Element from "./element.model";
+import Region from "./lookups/region.model";
+import Element from "./lookups/element.model";
 import LocalSpecialty from "./localSpecialty.model";
 import BossDrop from "./bossDrop.model";
 import Food from "./food.model";

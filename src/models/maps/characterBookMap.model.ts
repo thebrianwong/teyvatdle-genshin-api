@@ -1,6 +1,6 @@
 import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import Character from "./character.model";
-import TalentBook from "./talentBook.model";
+import Character from "../character.model";
+import TalentBook from "../talentBook.model";
 
 @Entity({ name: "character_book_map" })
 export default class CharacterBookMap {
