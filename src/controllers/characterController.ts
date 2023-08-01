@@ -28,10 +28,10 @@ const getCharacters: RequestHandler = async (req, res, next) => {
       "enemy_drop.name AS enhancement_material",
       "normal_boss_drop.name AS ascension_boss_material",
       "weekly_boss_drop.name AS talent_boss_material",
-      "food.name AS special_dish",
+      // "food.name AS special_dish",
       "character.birthday AS birthday",
-      "character.releaseDate AS release_date",
-      "character.releaseVersion AS release_version",
+      // "character.releaseDate AS release_date",
+      // "character.releaseVersion AS release_version",
       "character.imageUrl AS image_url",
     ])
     .getRawMany();
