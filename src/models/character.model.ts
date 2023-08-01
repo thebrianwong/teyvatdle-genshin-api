@@ -77,10 +77,10 @@ export default class Character {
   specialDishId!: number;
 
   @Column({ type: "timestamp without time zone" })
-  birthday!: string;
+  birthday!: Date;
 
   @Column({ type: "timestamp without time zone", name: "release_date" })
-  releaseDate!: string;
+  releaseDate!: Date;
 
   @Column({ type: "numeric", name: "release_version" })
   releaseVersion!: number;
