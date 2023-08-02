@@ -16,6 +16,7 @@ const getCharacters: RequestHandler = async (req, res, next) => {
     .innerJoin("character.weeklyBossMaterialId", "weekly_boss_drop")
     .leftJoin("character.specialDishId", "food")
     .select([
+      "character.id AS character_id",
       "character.name AS character_name",
       "character.gender AS gender",
       "character.height AS height",
@@ -38,6 +39,7 @@ const getCharacters: RequestHandler = async (req, res, next) => {
       // "character.releaseDate AS release_date",
       // "character.releaseVersion AS release_version",
     ])
+    .orderBy({ character_id: "ASC" })
     .getRawMany();
   res.send(characters);
 };

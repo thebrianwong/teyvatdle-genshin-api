@@ -8,6 +8,7 @@ const getFoods: RequestHandler = async (req, res, next) => {
     .createQueryBuilder("food")
     .innerJoin("food.typeId", "food_type")
     .select([
+      "food.id AS food_id",
       "food.name AS food_name",
       "food.rarity AS rarity",
       "food_type.name AS food_type",
@@ -17,6 +18,7 @@ const getFoods: RequestHandler = async (req, res, next) => {
       "food.event AS event",
       "food.imageUrl AS food_image_url",
     ])
+    .orderBy({ food_id: "ASC" })
     .getRawMany();
   res.send(foods);
 };

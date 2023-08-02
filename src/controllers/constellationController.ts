@@ -8,12 +8,14 @@ const getConstellations: RequestHandler = async (req, res, next) => {
     .createQueryBuilder("constellation")
     .innerJoin("constellation.characterId", "character")
     .select([
+      "constellation.id AS constellation_id",
       "constellation.name AS constellation_name",
       "constellation.level AS constellation_level",
       "constellation.imageUrl AS constellation_image_url",
       "character.name AS character",
       "character.imageUrl AS character_image_url",
     ])
+    .orderBy({ constellation_id: "ASC" })
     .getRawMany();
   res.send(constellations);
 };

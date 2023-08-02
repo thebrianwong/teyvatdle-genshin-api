@@ -9,12 +9,14 @@ const getTalents: RequestHandler = async (req, res, next) => {
     .innerJoin("talent.characterId", "character")
     .innerJoin("talent.typeId", "talent_type")
     .select([
+      "talent.id AS talent_id",
       "talent.name AS talent_name",
       "talent_type.name AS talent_type",
       "talent.imageUrl AS talent_image_url",
       "character.name AS character",
       "character.imageUrl AS character_image_url",
     ])
+    .orderBy({ talent_id: "ASC" })
     .getRawMany();
   res.send(talents);
 };
