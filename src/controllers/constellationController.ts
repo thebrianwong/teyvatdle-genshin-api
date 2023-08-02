@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Constellation from "../models/constellation.model";
 
-const getConstellations: RequestHandler = async (req, res, next) => {
+const retrieveConstellationData = async () => {
   const constellationRepo = AppDataSource.getRepository(Constellation);
   const constellations = await constellationRepo
     .createQueryBuilder("constellation")
@@ -17,7 +17,12 @@ const getConstellations: RequestHandler = async (req, res, next) => {
     ])
     .orderBy({ constellation_id: "ASC" })
     .getRawMany();
-  res.send(constellations);
+  return constellations;
 };
 
-export { getConstellations };
+const getConstellations: RequestHandler = async (req, res, next) => {
+  const constellationData = await retrieveConstellationData();
+  res.send(constellationData);
+};
+
+export { getConstellations, retrieveConstellationData };

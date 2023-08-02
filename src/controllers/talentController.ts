@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Talent from "../models/talent.model";
 
-const getTalents: RequestHandler = async (req, res, next) => {
+const retrieveTalentData = async () => {
   const talentRepo = AppDataSource.getRepository(Talent);
   const talents = await talentRepo
     .createQueryBuilder("talent")
@@ -18,7 +18,12 @@ const getTalents: RequestHandler = async (req, res, next) => {
     ])
     .orderBy({ talent_id: "ASC" })
     .getRawMany();
-  res.send(talents);
+  return talents;
 };
 
-export { getTalents };
+const getTalents: RequestHandler = async (req, res, next) => {
+  const talentData = await retrieveTalentData();
+  res.send(talentData);
+};
+
+export { getTalents, retrieveTalentData };

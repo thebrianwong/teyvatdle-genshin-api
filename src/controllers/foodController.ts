@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Food from "../models/food.model";
 
-const getFoods: RequestHandler = async (req, res, next) => {
+const retrieveFoodData = async () => {
   const foodRepo = AppDataSource.getRepository(Food);
   const foods = await foodRepo
     .createQueryBuilder("food")
@@ -20,7 +20,12 @@ const getFoods: RequestHandler = async (req, res, next) => {
     ])
     .orderBy({ food_id: "ASC" })
     .getRawMany();
-  res.send(foods);
+  return foods;
 };
 
-export { getFoods };
+const getFoods: RequestHandler = async (req, res, next) => {
+  const foodData = await retrieveFoodData();
+  res.send(foodData);
+};
+
+export { getFoods, retrieveFoodData };

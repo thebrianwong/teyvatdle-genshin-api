@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Character from "../models/character.model";
 
-const getCharacters: RequestHandler = async (req, res, next) => {
+const retrieveCharacterData = async () => {
   const characterRepo = AppDataSource.getRepository(Character);
   const characters = await characterRepo
     .createQueryBuilder("character")
@@ -41,7 +41,12 @@ const getCharacters: RequestHandler = async (req, res, next) => {
     ])
     .orderBy({ character_id: "ASC" })
     .getRawMany();
-  res.send(characters);
+  return characters;
 };
 
-export { getCharacters };
+const getCharacters: RequestHandler = async (req, res, next) => {
+  const characterData = await retrieveCharacterData();
+  res.send(characterData);
+};
+
+export { getCharacters, retrieveCharacterData };

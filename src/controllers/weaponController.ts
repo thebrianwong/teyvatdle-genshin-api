@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Weapon from "../models/weapon.model";
 
-const getWeapons: RequestHandler = async (req, res, next) => {
+const retrieveWeaponData = async () => {
   const weaponRepo = AppDataSource.getRepository(Weapon);
   const weapons = await weaponRepo
     .createQueryBuilder("weapon")
@@ -28,7 +28,12 @@ const getWeapons: RequestHandler = async (req, res, next) => {
     ])
     .orderBy({ weapon_id: "ASC" })
     .getRawMany();
-  res.send(weapons);
+  return weapons;
 };
 
-export { getWeapons };
+const getWeapons: RequestHandler = async (req, res, next) => {
+  const weaponData = await retrieveWeaponData();
+  res.send(weaponData);
+};
+
+export { getWeapons, retrieveWeaponData };
