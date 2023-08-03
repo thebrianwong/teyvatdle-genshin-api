@@ -16,7 +16,7 @@ export default class DailyRecord {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ name: "character_id" })
   @ManyToOne(() => Character, (character) => character.id)
   @JoinColumn({ name: "character_id" })
   characterId!: number;
@@ -24,7 +24,7 @@ export default class DailyRecord {
   @Column({ name: "character_solved" })
   characterSolved!: number;
 
-  @Column()
+  @Column({ name: "talent_id" })
   @ManyToOne(() => Talent, (talent) => talent.id)
   @JoinColumn({ name: "talent_id" })
   talentId!: number;
@@ -32,7 +32,7 @@ export default class DailyRecord {
   @Column({ name: "talent_solved" })
   talentSolved!: number;
 
-  @Column()
+  @Column({ name: "constellation_id" })
   @ManyToOne(() => Constellation, (constellation) => constellation.id)
   @JoinColumn({ name: "constellation_id" })
   constellationId!: number;
@@ -40,7 +40,7 @@ export default class DailyRecord {
   @Column({ name: "constellation_solved" })
   constellationSolved!: number;
 
-  @Column()
+  @Column({ name: "food_id" })
   @ManyToOne(() => Food, (food) => food.id)
   @JoinColumn({ name: "food_id" })
   foodId!: number;
@@ -48,7 +48,7 @@ export default class DailyRecord {
   @Column({ name: "food_solved" })
   foodSolved!: number;
 
-  @Column()
+  @Column({ name: "weapon_id" })
   @ManyToOne(() => Weapon, (weapon) => weapon.id)
   @JoinColumn({ name: "weapon_id" })
   weaponId!: number;
