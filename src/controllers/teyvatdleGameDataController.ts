@@ -32,9 +32,7 @@ const getGameData: RequestHandler = async (req, res, next) => {
   res.send(gameData);
 };
 
-const chooseTheDaily = async (type: string) => {
-  const minNumOfDaysWithoutRepeats = 10;
-  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+const getIds = async (type: string) => {
   let dataRepo:
     | Repository<Character>
     | Repository<Weapon>
@@ -60,8 +58,19 @@ const chooseTheDaily = async (type: string) => {
     default:
       break;
   }
-  const rowCount = await dataRepo!.count();
-  const recentDailyIds = await dailyRecordRepo
+  const ids: { id: number }[] = await dataRepo!
+    .createQueryBuilder(type)
+    .select([`${type}.id AS id`])
+    .getRawMany();
+  return ids;
+};
+
+const chooseTheDaily = async (type: string) => {
+  const minNumOfDaysWithoutRepeats = 10;
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  const idList = await getIds(type);
+  const rowCount = idList.length;
+  const recentDailyIds: { id: number }[] = await dailyRecordRepo
     .createQueryBuilder("daily_record")
     .select([`daily_record.${type}_id AS id`])
     // .orderBy({ [`${type}.id`]: "ASC" })
@@ -73,12 +82,7 @@ const chooseTheDaily = async (type: string) => {
   let chosenDailyId: number;
   while (!validDaily) {
     const randomNumber = Math.floor(Math.random() * rowCount);
-    const randomRow = await dataRepo!
-      .createQueryBuilder(type)
-      .select([`${type}.id AS id`])
-      .offset(randomNumber)
-      .limit(1)
-      .getRawOne();
+    const randomRow = idList[randomNumber];
     if (!recentDailyIdsArray.includes(randomRow.id)) {
       chosenDailyId = randomRow.id;
       validDaily = true;
