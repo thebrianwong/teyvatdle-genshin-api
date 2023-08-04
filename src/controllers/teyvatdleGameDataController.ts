@@ -70,20 +70,19 @@ const chooseTheDaily = async (type: string) => {
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   const idList = await getIds(type);
   const rowCount = idList.length;
-  const recentDailyIds: { id: number }[] = await dailyRecordRepo
+  const rawRecentDailyIds: { id: number }[] = await dailyRecordRepo
     .createQueryBuilder("daily_record")
     .select([`daily_record.${type}_id AS id`])
-    // .orderBy({ [`${type}.id`]: "ASC" })
     .orderBy({ date: "DESC" })
     .limit(minNumOfDaysWithoutRepeats)
     .getRawMany();
-  const recentDailyIdsArray = recentDailyIds.map((row) => Number(row.id));
+  const recentDailyIds = rawRecentDailyIds.map((row) => Number(row.id));
   let validDaily = false;
   let chosenDailyId: number;
   while (!validDaily) {
     const randomNumber = Math.floor(Math.random() * rowCount);
     const randomRow = idList[randomNumber];
-    if (!recentDailyIdsArray.includes(randomRow.id)) {
+    if (!recentDailyIds.includes(randomRow.id)) {
       chosenDailyId = randomRow.id;
       validDaily = true;
     }
@@ -106,30 +105,12 @@ const createDailyRecord: RequestHandler = async (req, res, next) => {
     chooseTheDaily("constellation"),
     chooseTheDaily("food"),
   ]);
-  // await dailyRecordRepo.createQueryBuilder("daily_record")
-  //   .insert()
-  //   .
-  // const dailyRecord = new DailyRecord();
-  // dailyRecord.character_id = dailyCharacterId;
-  // console.log(dailyRecord);
-
   const newDailyRecordId = await dailyRecordRepo
     .createQueryBuilder("daily_record")
     .insert()
     .into(DailyRecord)
     .values([
       {
-        // character_id: dailyCharacterId,
-        // characterSolved: 0,
-        // weapon_id: dailyWeaponId,
-        // weaponSolved: 0,
-        // talent_id: dailyTalentId,
-        // talentSolved: 0,
-        // constellation_id: dailyConstellationId,
-        // constellationSolved: 0,
-        // food_id: dailyFoodId,
-        // foodSolved: 0,
-        // date: new Date(),
         characterId: dailyCharacterId,
         characterSolved: 0,
         weaponId: dailyWeaponId,
@@ -145,48 +126,6 @@ const createDailyRecord: RequestHandler = async (req, res, next) => {
     ])
     .returning("id")
     .execute();
-
-  // const newDailyRecord = dailyRecordRepo.create({
-  //   character_id: dailyCharacterId,
-  //   characterSolved: 0,
-  //   weapon_id: dailyWeaponId,
-  //   weaponSolved: 0,
-  //   talent_id: dailyTalentId,
-  //   talentSolved: 0,
-  //   constellation_id: dailyConstellationId,
-  //   constellationSolved: 0,
-  //   food_id: dailyFoodId,
-  //   foodSolved: 0,
-  //   date: new Date(),
-  // });
-  // const newDailyRecord = {
-  //   characterId: dailyCharacterId,
-  //   characterSolved: 0,
-  //   weaponId: dailyWeaponId,
-  //   weaponSolved: 0,
-  //   talentId: dailyTalentId,
-  //   talentSolved: 0,
-  //   constellationId: dailyConstellationId,
-  //   constellationSolved: 0,
-  //   foodId: dailyFoodId,
-  //   foodSolved: 0,
-  //   date: new Date(),
-  // }
-  // const test = new DailyRecord();
-  // test.characterId = dailyCharacterId;
-  // test.characterSolved = 0;
-  // test.weaponId = dailyWeaponId;
-  // test.weaponSolved = 0;
-  // test.talentId = dailyTalentId;
-  // test.talentSolved = 0;
-  // test.constellationId = dailyConstellationId;
-  // test.constellationSolved = 0;
-  // test.foodId = dailyFoodId;
-  // test.foodSolved = 0;
-  // test.date = new Date();
-  // await dailyRecordRepo.save(test);
-  // const testId = dailyRecordRepo.getId(test);
-  // console.log(testId);
   res.send(newDailyRecordId.identifiers);
 };
 
