@@ -121,7 +121,11 @@ const createDailyRecord: RequestHandler = async (req, res, next) => {
         constellationSolved: 0,
         foodId: dailyFoodId,
         foodSolved: 0,
-        date: new Date(),
+        date: new Date(
+          new Date().toLocaleString("en-US", {
+            timeZone: "America/Los_Angeles",
+          })
+        ),
       },
     ])
     .returning("id")
