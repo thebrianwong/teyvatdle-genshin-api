@@ -12,6 +12,11 @@ import Constellation from "../models/constellation.model";
 import Food from "../models/food.model";
 import { Repository } from "typeorm";
 import DailyRecord from "../models/dailyRecord.model";
+import {
+  normalizeDay,
+  normalizeMonth,
+  normalizeYear,
+} from "../utils/normalizeDates";
 
 const getGameData: RequestHandler = async (req, res, next) => {
   const [characterData, weaponData, talentData, constellationData, foodData] =
@@ -133,4 +138,26 @@ const createDailyRecord: RequestHandler = async (req, res, next) => {
   res.send(newDailyRecordId.identifiers);
 };
 
-export { getGameData, createDailyRecord };
+const getDailyRecord: RequestHandler = async (req, res, next) => {
+  const currentYear = normalizeYear();
+  const currentMonth = normalizeMonth();
+  const currentDay = normalizeDay();
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  const dailyRecord = await dailyRecordRepo
+    .createQueryBuilder("daily_record")
+    .select([
+      "daily_record.id AS daily_record_id",
+      "daily_record.character_id AS character_id ",
+      "daily_record.weapon_id AS weapon_id ",
+      "daily_record.talent_id AS talent_id",
+      "daily_record.constellation_id AS constellation_id",
+      "daily_record.food_id AS food_id",
+    ])
+    .where("CAST(date AS DATE) = CAST(:date AS DATE)", {
+      date: `${currentYear}-${currentMonth}-${currentDay}`,
+    })
+    .getRawOne();
+  res.send(dailyRecord);
+};
+
+export { getGameData, createDailyRecord, getDailyRecord };
