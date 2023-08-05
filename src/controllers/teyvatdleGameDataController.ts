@@ -37,7 +37,9 @@ const getGameData: RequestHandler = async (req, res, next) => {
   res.send(gameData);
 };
 
-const getIds = async (type: string) => {
+const getIds: (type: string) => Promise<{ id: number }[]> = async (
+  type: string
+) => {
   let dataRepo:
     | Repository<Character>
     | Repository<Weapon>
@@ -70,7 +72,9 @@ const getIds = async (type: string) => {
   return ids;
 };
 
-const chooseTheDaily = async (type: string) => {
+const chooseTheDaily: (type: string) => Promise<number> = async (
+  type: string
+) => {
   const minNumOfDaysWithoutRepeats = 10;
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   const idList = await getIds(type);
@@ -143,7 +147,16 @@ const getDailyRecord: RequestHandler = async (req, res, next) => {
   const currentMonth = normalizeMonth();
   const currentDay = normalizeDay();
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
-  const dailyRecord = await dailyRecordRepo
+  const dailyRecord:
+    | {
+        daily_record_id: number;
+        character_id: number;
+        weapon_id: number;
+        talent_id: number;
+        constellation_id: number;
+        food_id: number;
+      }
+    | undefined = await dailyRecordRepo
     .createQueryBuilder("daily_record")
     .select([
       "daily_record.id AS daily_record_id",

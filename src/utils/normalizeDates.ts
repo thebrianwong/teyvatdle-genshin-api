@@ -1,4 +1,4 @@
-const normalizeYear = () => {
+const normalizeYear: () => string = () => {
   const year = new Date(
     new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
   )
@@ -7,7 +7,7 @@ const normalizeYear = () => {
   return year;
 };
 
-const normalizeMonth = () => {
+const normalizeMonth: () => string = () => {
   const rawMonth =
     new Date(
       new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
@@ -20,7 +20,7 @@ const normalizeMonth = () => {
   }
 };
 
-const normalizeDay = () => {
+const normalizeDay: () => string = () => {
   const rawDay = new Date(
     new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
   ).getDate();
