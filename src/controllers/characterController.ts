@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Character from "../models/character.model";
+import CharacterBookMap from "../models/maps/characterBookMap.model";
 
 const retrieveCharacterData = async () => {
   const characterRepo = AppDataSource.getRepository(Character);
@@ -15,6 +16,13 @@ const retrieveCharacterData = async () => {
     .leftJoin("character.normalBossMaterialId", "normal_boss_drop")
     .innerJoin("character.weeklyBossMaterialId", "weekly_boss_drop")
     .leftJoin("character.specialDishId", "food")
+    .innerJoinAndMapMany(
+      "character.test",
+      CharacterBookMap,
+      "map",
+      "character.id = map.characterId"
+    )
+    .innerJoin("map.talentBookId", "talent_book")
     .select([
       "character.id AS character_id",
       "character.name AS character_name",
@@ -35,10 +43,28 @@ const retrieveCharacterData = async () => {
       "normal_boss_drop.imageUrl AS ascension_boss_material_image_url",
       "weekly_boss_drop.name AS talent_boss_material",
       "weekly_boss_drop.imageUrl AS talent_boss_material_image_url",
-      // "food.name AS special_dish",
-      // "character.releaseDate AS release_date",
-      // "character.releaseVersion AS release_version",
+      "ARRAY_AGG(talent_book.name) AS talent_book",
+      "ARRAY_AGG(talent_book.image_url) AS talent_book_image_url",
     ])
+    .groupBy("character.id")
+    .addGroupBy("character_name")
+    .addGroupBy("gender")
+    .addGroupBy("height")
+    .addGroupBy("character.rarity")
+    .addGroupBy("region")
+    .addGroupBy("element")
+    .addGroupBy("weapon_type")
+    .addGroupBy("ascension_stat")
+    .addGroupBy("birthday")
+    .addGroupBy("character_image_url")
+    .addGroupBy("local_specialty")
+    .addGroupBy("local_specialty_image_url")
+    .addGroupBy("enhancement_material")
+    .addGroupBy("enhancement_material_image_url")
+    .addGroupBy("ascension_boss_material")
+    .addGroupBy("ascension_boss_material_image_url")
+    .addGroupBy("talent_boss_material")
+    .addGroupBy("talent_boss_material_image_url")
     .orderBy({ character_id: "ASC" })
     .getRawMany();
   return characters;
