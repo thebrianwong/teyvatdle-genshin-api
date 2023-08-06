@@ -37,9 +37,7 @@ const getGameData: RequestHandler = async (req, res, next) => {
   res.send(gameData);
 };
 
-const getIds: (type: string) => Promise<{ id: number }[]> = async (
-  type: string
-) => {
+const getCorrespondingRepo = (type: string) => {
   let dataRepo:
     | Repository<Character>
     | Repository<Weapon>
@@ -65,6 +63,13 @@ const getIds: (type: string) => Promise<{ id: number }[]> = async (
     default:
       break;
   }
+  return dataRepo!;
+};
+
+const getIds: (type: string) => Promise<{ id: number }[]> = async (
+  type: string
+) => {
+  const dataRepo = getCorrespondingRepo(type);
   const ids: { id: number }[] = await dataRepo!
     .createQueryBuilder(type)
     .select([`${type}.id AS id`])
