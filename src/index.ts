@@ -12,6 +12,7 @@ import foodRouter from "./routes/food";
 import characterRouter from "./routes/character";
 import talentRouter from "./routes/talent";
 import constellationRouter from "./routes/constellation";
+import teyvatdleGameDataRouter from "./routes/teyvatdleGameData";
 
 dotenv.config();
 
@@ -46,6 +47,7 @@ app.use("/api/food", foodRouter);
 app.use("/api/character", characterRouter);
 app.use("/api/talent", talentRouter);
 app.use("/api/constellation", constellationRouter);
+app.use("/api/teyvatdle", teyvatdleGameDataRouter);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
