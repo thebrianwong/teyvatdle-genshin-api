@@ -56,6 +56,6 @@ export default class DailyRecord {
   @Column({ name: "weapon_solved" })
   weaponSolved!: number;
 
-  @Column({ type: "timestamp without time zone" })
+  @Column({ type: "timestamp with time zone" })
   date!: Date;
 }
