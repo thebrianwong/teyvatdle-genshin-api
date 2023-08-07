@@ -178,4 +178,67 @@ const getDailyRecord: RequestHandler = async (req, res, next) => {
   res.send(dailyRecord);
 };
 
-export { getGameData, createDailyRecord, getDailyRecord };
+const updateDailyRecord: RequestHandler = async (req, res, next) => {
+  const { id, type } = req.params;
+  const validResources = [
+    "character",
+    "weapon",
+    "talent",
+    "constellation",
+    "food",
+  ];
+  if (!validResources.includes(type)) {
+    return res
+      .status(400)
+      .send({ message: "That is not a valid resource.", success: false });
+  }
+  // If the id param is not even a number, this skips having to query the database
+  if (isNaN(Number(id))) {
+    return res
+      .status(404)
+      .send({ message: "That daily record does not exist.", success: false });
+  }
+  const currentYear = normalizeYear();
+  const currentMonth = normalizeMonth();
+  const currentDay = normalizeDay();
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  const targetDailyRecord: { date: Date } | undefined = await dailyRecordRepo
+    .createQueryBuilder("daily_record")
+    .select(["daily_record.date AS date", "daily_record.id AS id"])
+    .where("id = :id", { id })
+    .getRawOne();
+  if (targetDailyRecord === undefined) {
+    return res
+      .status(404)
+      .send({ message: "That daily record does not exist.", success: false });
+  } else {
+    const dailyRecordDate = targetDailyRecord.date;
+    console.log(dailyRecordDate.getDate());
+    if (
+      dailyRecordDate.getFullYear() === Number(currentYear) &&
+      dailyRecordDate.getMonth() + 1 === Number(currentMonth) &&
+      dailyRecordDate.getDate() === Number(currentDay)
+    ) {
+      const newSolvedValue = await dailyRecordRepo
+        .createQueryBuilder()
+        .update()
+        .set({
+          [`${type}Solved`]: () => `${type}Solved + 1`,
+        })
+        .where("id = :id", { id })
+        .returning(`${type}Solved`)
+        .execute();
+      // emit an event that will update client values via websocket
+      return res
+        .status(200)
+        .send({ message: "Daily record updated.", success: true });
+    } else {
+      return res.status(500).send({
+        message: "Unable to update past daily record.",
+        success: false,
+      });
+    }
+  }
+};
+
+export { getGameData, createDailyRecord, getDailyRecord, updateDailyRecord };
