@@ -4,7 +4,7 @@ import { retrieveConstellationData } from "./constellationController";
 import { retrieveFoodData } from "./foodController";
 import { retrieveTalentData } from "./talentController";
 import { retrieveWeaponData } from "./weaponController";
-import { AppDataSource } from "..";
+import { AppDataSource, webSocketServer } from "..";
 import Character from "../models/character.model";
 import Weapon from "../models/weapon.model";
 import Talent from "../models/talent.model";
@@ -240,7 +240,7 @@ const updateDailyRecord: RequestHandler = async (req, res, next) => {
         dailyRecordDate.getDate() === Number(currentDay)
       ) {
         try {
-          const newSolvedValue = await dailyRecordRepo
+          const returnedUpdateResult = await dailyRecordRepo
             .createQueryBuilder()
             .update()
             .set({
@@ -249,7 +249,10 @@ const updateDailyRecord: RequestHandler = async (req, res, next) => {
             .where("id = :id", { id })
             .returning(`${type}Solved`)
             .execute();
-          // emit an event that will update client values via websocket
+          const newSolvedValue = returnedUpdateResult.raw[0][`${type}_solved`];
+          webSocketServer.emit(`updateSolvedValue`, type, {
+            [`${type}_solved`]: newSolvedValue,
+          });
           return res
             .status(200)
             .send({ message: "Daily record updated.", success: true });

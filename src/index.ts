@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import createError from "http-errors";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
+import http from "http";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import regionRouter from "./routes/region";
@@ -13,6 +14,7 @@ import characterRouter from "./routes/character";
 import talentRouter from "./routes/talent";
 import constellationRouter from "./routes/constellation";
 import teyvatdleGameDataRouter from "./routes/teyvatdleGameData";
+import createWebSocketServer from "./websockets/teyvatdleGameDataWebSocket";
 
 dotenv.config();
 
@@ -26,7 +28,7 @@ export const AppDataSource = new DataSource({
   username: process.env.PG_USERNAME,
   password: process.env.PG_PASSWORD,
   database: process.env.PG_DATABASE_NAME,
-  // logging: true,
+  logging: true,
   entities: [__dirname + "/models/**/*.model.js"],
   subscribers: [],
   migrations: [],
@@ -68,6 +70,10 @@ app.use(
   }
 );
 
-app.listen(port, () => {
+const server = http.createServer(app);
+
+export const webSocketServer = createWebSocketServer(server);
+
+server.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
