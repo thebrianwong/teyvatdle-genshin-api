@@ -19,22 +19,26 @@ import {
 } from "../utils/normalizeDates";
 
 const getGameData: RequestHandler = async (req, res, next) => {
-  const [characterData, weaponData, talentData, constellationData, foodData] =
-    await Promise.all([
-      retrieveCharacterData(),
-      retrieveWeaponData(),
-      retrieveTalentData(),
-      retrieveConstellationData(),
-      retrieveFoodData(),
-    ]);
-  const gameData = {
-    characterData,
-    weaponData,
-    talentData,
-    constellationData,
-    foodData,
-  };
-  res.send(gameData);
+  try {
+    const [characterData, weaponData, talentData, constellationData, foodData] =
+      await Promise.all([
+        retrieveCharacterData(),
+        retrieveWeaponData(),
+        retrieveTalentData(),
+        retrieveConstellationData(),
+        retrieveFoodData(),
+      ]);
+    const gameData = {
+      characterData,
+      weaponData,
+      talentData,
+      constellationData,
+      foodData,
+    };
+    res.send(gameData);
+  } catch (err) {
+    throw new Error("There was an error querying game data.");
+  }
 };
 
 const getCorrespondingRepo = (type: string) => {
@@ -70,11 +74,15 @@ const getIds: (type: string) => Promise<{ id: number }[]> = async (
   type: string
 ) => {
   const dataRepo = getCorrespondingRepo(type);
-  const ids: { id: number }[] = await dataRepo!
-    .createQueryBuilder(type)
-    .select([`${type}.id AS id`])
-    .getRawMany();
-  return ids;
+  try {
+    const ids: { id: number }[] = await dataRepo!
+      .createQueryBuilder(type)
+      .select([`${type}.id AS id`])
+      .getRawMany();
+    return ids;
+  } catch (err) {
+    throw new Error(`There was an error querying ${type} IDs.`);
+  }
 };
 
 const chooseTheDaily: (type: string) => Promise<number> = async (
@@ -84,67 +92,75 @@ const chooseTheDaily: (type: string) => Promise<number> = async (
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   const idList = await getIds(type);
   const rowCount = idList.length;
-  const rawRecentDailyIds: { id: number }[] = await dailyRecordRepo
-    .createQueryBuilder("daily_record")
-    .select([`daily_record.${type}_id AS id`])
-    .orderBy({ date: "DESC" })
-    .limit(minNumOfDaysWithoutRepeats)
-    .getRawMany();
-  const recentDailyIds = rawRecentDailyIds.map((row) => Number(row.id));
-  let validDaily = false;
-  let chosenDailyId: number;
-  while (!validDaily) {
-    const randomNumber = Math.floor(Math.random() * rowCount);
-    const randomRow = idList[randomNumber];
-    if (!recentDailyIds.includes(randomRow.id)) {
-      chosenDailyId = randomRow.id;
-      validDaily = true;
+  try {
+    const rawRecentDailyIds: { id: number }[] = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select([`daily_record.${type}_id AS id`])
+      .orderBy({ date: "DESC" })
+      .limit(minNumOfDaysWithoutRepeats)
+      .getRawMany();
+    const recentDailyIds = rawRecentDailyIds.map((row) => Number(row.id));
+    let validDaily = false;
+    let chosenDailyId: number;
+    while (!validDaily) {
+      const randomNumber = Math.floor(Math.random() * rowCount);
+      const randomRow = idList[randomNumber];
+      if (!recentDailyIds.includes(randomRow.id)) {
+        chosenDailyId = randomRow.id;
+        validDaily = true;
+      }
     }
+    return chosenDailyId!;
+  } catch (err) {
+    throw new Error("There was an error querying recent daily record IDs.");
   }
-  return chosenDailyId!;
 };
 
 const createDailyRecord: RequestHandler = async (req, res, next) => {
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
-  const [
-    dailyCharacterId,
-    dailyWeaponId,
-    dailyTalentId,
-    dailyConstellationId,
-    dailyFoodId,
-  ] = await Promise.all([
-    chooseTheDaily("character"),
-    chooseTheDaily("weapon"),
-    chooseTheDaily("talent"),
-    chooseTheDaily("constellation"),
-    chooseTheDaily("food"),
-  ]);
-  const newDailyRecordId = await dailyRecordRepo
-    .createQueryBuilder("daily_record")
-    .insert()
-    .into(DailyRecord)
-    .values([
-      {
-        characterId: dailyCharacterId,
-        characterSolved: 0,
-        weaponId: dailyWeaponId,
-        weaponSolved: 0,
-        talentId: dailyTalentId,
-        talentSolved: 0,
-        constellationId: dailyConstellationId,
-        constellationSolved: 0,
-        foodId: dailyFoodId,
-        foodSolved: 0,
-        date: new Date(
-          new Date().toLocaleString("en-US", {
-            timeZone: "America/Los_Angeles",
-          })
-        ),
-      },
-    ])
-    .returning("id")
-    .execute();
-  res.send(newDailyRecordId.identifiers);
+  try {
+    const [
+      dailyCharacterId,
+      dailyWeaponId,
+      dailyTalentId,
+      dailyConstellationId,
+      dailyFoodId,
+    ] = await Promise.all([
+      chooseTheDaily("character"),
+      chooseTheDaily("weapon"),
+      chooseTheDaily("talent"),
+      chooseTheDaily("constellation"),
+      chooseTheDaily("food"),
+    ]);
+    const newDailyRecordId = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .insert()
+      .into(DailyRecord)
+      .values([
+        {
+          characterId: dailyCharacterId,
+          characterSolved: 0,
+          weaponId: dailyWeaponId,
+          weaponSolved: 0,
+          talentId: dailyTalentId,
+          talentSolved: 0,
+          constellationId: dailyConstellationId,
+          constellationSolved: 0,
+          foodId: dailyFoodId,
+          foodSolved: 0,
+          date: new Date(
+            new Date().toLocaleString("en-US", {
+              timeZone: "America/Los_Angeles",
+            })
+          ),
+        },
+      ])
+      .returning("id")
+      .execute();
+    res.send(newDailyRecordId.identifiers);
+  } catch (err) {
+    throw new Error("There was an error creating a new daily record.");
+  }
 };
 
 const getDailyRecord: RequestHandler = async (req, res, next) => {
@@ -152,30 +168,34 @@ const getDailyRecord: RequestHandler = async (req, res, next) => {
   const currentMonth = normalizeMonth();
   const currentDay = normalizeDay();
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
-  const dailyRecord:
-    | {
-        daily_record_id: number;
-        character_id: number;
-        weapon_id: number;
-        talent_id: number;
-        constellation_id: number;
-        food_id: number;
-      }
-    | undefined = await dailyRecordRepo
-    .createQueryBuilder("daily_record")
-    .select([
-      "daily_record.id AS daily_record_id",
-      "daily_record.character_id AS character_id ",
-      "daily_record.weapon_id AS weapon_id ",
-      "daily_record.talent_id AS talent_id",
-      "daily_record.constellation_id AS constellation_id",
-      "daily_record.food_id AS food_id",
-    ])
-    .where("CAST(date AS DATE) = CAST(:date AS DATE)", {
-      date: `${currentYear}-${currentMonth}-${currentDay}`,
-    })
-    .getRawOne();
-  res.send(dailyRecord);
+  try {
+    const dailyRecord:
+      | {
+          daily_record_id: number;
+          character_id: number;
+          weapon_id: number;
+          talent_id: number;
+          constellation_id: number;
+          food_id: number;
+        }
+      | undefined = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select([
+        "daily_record.id AS daily_record_id",
+        "daily_record.character_id AS character_id ",
+        "daily_record.weapon_id AS weapon_id ",
+        "daily_record.talent_id AS talent_id",
+        "daily_record.constellation_id AS constellation_id",
+        "daily_record.food_id AS food_id",
+      ])
+      .where("CAST(date AS DATE) = CAST(:date AS DATE)", {
+        date: `${currentYear}-${currentMonth}-${currentDay}`,
+      })
+      .getRawOne();
+    res.send(dailyRecord);
+  } catch (err) {
+    throw new Error("There was an error querying today's daily record.");
+  }
 };
 
 const updateDailyRecord: RequestHandler = async (req, res, next) => {
@@ -202,42 +222,49 @@ const updateDailyRecord: RequestHandler = async (req, res, next) => {
   const currentMonth = normalizeMonth();
   const currentDay = normalizeDay();
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
-  const targetDailyRecord: { date: Date } | undefined = await dailyRecordRepo
-    .createQueryBuilder("daily_record")
-    .select(["daily_record.date AS date", "daily_record.id AS id"])
-    .where("id = :id", { id })
-    .getRawOne();
-  if (targetDailyRecord === undefined) {
-    return res
-      .status(404)
-      .send({ message: "That daily record does not exist.", success: false });
-  } else {
-    const dailyRecordDate = targetDailyRecord.date;
-    console.log(dailyRecordDate.getDate());
-    if (
-      dailyRecordDate.getFullYear() === Number(currentYear) &&
-      dailyRecordDate.getMonth() + 1 === Number(currentMonth) &&
-      dailyRecordDate.getDate() === Number(currentDay)
-    ) {
-      const newSolvedValue = await dailyRecordRepo
-        .createQueryBuilder()
-        .update()
-        .set({
-          [`${type}Solved`]: () => `${type}Solved + 1`,
-        })
-        .where("id = :id", { id })
-        .returning(`${type}Solved`)
-        .execute();
-      // emit an event that will update client values via websocket
+  try {
+    const targetDailyRecord: { date: Date } | undefined = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select(["daily_record.date AS date", "daily_record.id AS id"])
+      .where("id = :id", { id })
+      .getRawOne();
+    if (targetDailyRecord === undefined) {
       return res
-        .status(200)
-        .send({ message: "Daily record updated.", success: true });
+        .status(404)
+        .send({ message: "That daily record does not exist.", success: false });
     } else {
-      return res.status(500).send({
-        message: "Unable to update past daily record.",
-        success: false,
-      });
+      const dailyRecordDate = targetDailyRecord.date;
+      if (
+        dailyRecordDate.getFullYear() === Number(currentYear) &&
+        dailyRecordDate.getMonth() + 1 === Number(currentMonth) &&
+        dailyRecordDate.getDate() === Number(currentDay)
+      ) {
+        try {
+          const newSolvedValue = await dailyRecordRepo
+            .createQueryBuilder()
+            .update()
+            .set({
+              [`${type}Solved`]: () => `${type}Solved + 1`,
+            })
+            .where("id = :id", { id })
+            .returning(`${type}Solved`)
+            .execute();
+          // emit an event that will update client values via websocket
+          return res
+            .status(200)
+            .send({ message: "Daily record updated.", success: true });
+        } catch (err) {
+          throw new Error(`There was an error updating daily record ${id}.`);
+        }
+      } else {
+        return res.status(500).send({
+          message: "Unable to update past daily record.",
+          success: false,
+        });
+      }
     }
+  } catch (err) {
+    throw new Error(`There was an error querying daily record ${id}.`);
   }
 };
 

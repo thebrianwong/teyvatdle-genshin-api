@@ -4,8 +4,12 @@ import Region from "../models/lookups/region.model";
 
 const getRegions: RequestHandler = async (req, res, next) => {
   const regionRepo = AppDataSource.getRepository(Region);
-  const regions = await regionRepo.find();
-  res.send(regions);
+  try {
+    const regions = await regionRepo.find();
+    res.send(regions);
+  } catch (err) {
+    throw new Error("There was an error querying regions.");
+  }
 };
 
 export { getRegions };
