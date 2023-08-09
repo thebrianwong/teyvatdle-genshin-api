@@ -1,11 +1,12 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Talent from "../models/talent.model";
+import TalentData from "../types/talentData.type";
 
-const retrieveTalentData = async () => {
+const retrieveTalentData: () => Promise<TalentData[]> = async () => {
   const talentRepo = AppDataSource.getRepository(Talent);
   try {
-    const talents = await talentRepo
+    const talents: TalentData[] = await talentRepo
       .createQueryBuilder("talent")
       .innerJoin("talent.characterId", "character")
       .innerJoin("talent.typeId", "talent_type")

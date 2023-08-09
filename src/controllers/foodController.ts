@@ -1,11 +1,12 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Food from "../models/food.model";
+import FoodData from "../types/foodData.type";
 
-const retrieveFoodData = async () => {
+const retrieveFoodData: () => Promise<FoodData[]> = async () => {
   const foodRepo = AppDataSource.getRepository(Food);
   try {
-    const foods = await foodRepo
+    const foods: FoodData[] = await foodRepo
       .createQueryBuilder("food")
       .innerJoin("food.typeId", "food_type")
       .select([

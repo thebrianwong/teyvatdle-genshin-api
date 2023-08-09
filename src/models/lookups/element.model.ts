@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import Region from "./region.model";
+import GenshinElement from "../../types/element.type";
 
 @Entity()
 export default class Element {
@@ -13,7 +14,7 @@ export default class Element {
   id!: number;
 
   @Column()
-  name!: string;
+  name!: GenshinElement;
 
   @Column()
   @OneToOne(() => Region, (region) => region.id)

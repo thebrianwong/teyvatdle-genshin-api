@@ -1,11 +1,14 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Constellation from "../models/constellation.model";
+import ConstellationData from "../types/constellationData.type";
 
-const retrieveConstellationData = async () => {
+const retrieveConstellationData: () => Promise<
+  ConstellationData[]
+> = async () => {
   const constellationRepo = AppDataSource.getRepository(Constellation);
   try {
-    const constellations = await constellationRepo
+    const constellations: ConstellationData[] = await constellationRepo
       .createQueryBuilder("constellation")
       .innerJoin("constellation.characterId", "character")
       .select([

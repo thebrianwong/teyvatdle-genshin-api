@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Region as RegionString } from "../../types/region.type";
 
 @Entity()
 export default class Region {
@@ -6,5 +7,5 @@ export default class Region {
   id!: number;
 
   @Column()
-  name!: string;
+  name!: RegionString;
 }

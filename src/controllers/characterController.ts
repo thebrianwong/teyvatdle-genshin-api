@@ -2,11 +2,12 @@ import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Character from "../models/character.model";
 import CharacterBookMap from "../models/maps/characterBookMap.model";
+import CharacterData from "../types/characterData.type";
 
-const retrieveCharacterData = async () => {
+const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
   const characterRepo = AppDataSource.getRepository(Character);
   try {
-    const characters = await characterRepo
+    const characters: CharacterData[] = await characterRepo
       .createQueryBuilder("character")
       .leftJoin("character.regionId", "region")
       .innerJoin("character.elementId", "element")

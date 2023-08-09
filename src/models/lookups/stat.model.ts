@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Stat as StatString } from "../../types/stat.type";
 
 @Entity()
 export default class Stat {
@@ -6,5 +7,5 @@ export default class Stat {
   id!: number;
 
   @Column()
-  name!: string;
+  name!: StatString;
 }

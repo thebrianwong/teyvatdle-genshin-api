@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { TalentType as TalentTypeString } from "../../types/talentType.type";
 
 @Entity({ name: "talent_type" })
 export default class TalentType {
@@ -6,5 +7,5 @@ export default class TalentType {
   id!: number;
 
   @Column()
-  name!: string;
+  name!: TalentTypeString;
 }

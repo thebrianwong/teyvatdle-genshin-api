@@ -1,11 +1,12 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Weapon from "../models/weapon.model";
+import WeaponData from "../types/weaponData.type";
 
-const retrieveWeaponData = async () => {
+const retrieveWeaponData: () => Promise<WeaponData[]> = async () => {
   const weaponRepo = AppDataSource.getRepository(Weapon);
   try {
-    const weapons = await weaponRepo
+    const weapons: WeaponData[] = await weaponRepo
       .createQueryBuilder("weapon")
       .innerJoin("weapon.typeId", "weapon_type")
       .leftJoin("weapon.subStatId", "stat")
