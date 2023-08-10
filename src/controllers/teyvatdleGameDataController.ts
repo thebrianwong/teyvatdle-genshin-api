@@ -17,6 +17,9 @@ import {
   normalizeMonth,
   normalizeYear,
 } from "../utils/normalizeDates";
+import GameData from "../types/gameData.type";
+import TeyvatdleEntityRepo from "../types/teyvatdleEntityRepo.type";
+import DailyRecordData from "../types/dailyRecordData.type";
 
 const getGameData: RequestHandler = async (req, res, next) => {
   try {
@@ -28,7 +31,7 @@ const getGameData: RequestHandler = async (req, res, next) => {
         retrieveConstellationData(),
         retrieveFoodData(),
       ]);
-    const gameData = {
+    const gameData: GameData = {
       characterData,
       weaponData,
       talentData,
@@ -41,13 +44,10 @@ const getGameData: RequestHandler = async (req, res, next) => {
   }
 };
 
-const getCorrespondingRepo = (type: string) => {
-  let dataRepo:
-    | Repository<Character>
-    | Repository<Weapon>
-    | Repository<Talent>
-    | Repository<Constellation>
-    | Repository<Food>;
+const getCorrespondingRepo: (type: string) => TeyvatdleEntityRepo = (
+  type: string
+) => {
+  let dataRepo: TeyvatdleEntityRepo;
   switch (type) {
     case "character":
       dataRepo = AppDataSource.getRepository(Character);
@@ -169,16 +169,7 @@ const getDailyRecord: RequestHandler = async (req, res, next) => {
   const currentDay = normalizeDay();
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   try {
-    const dailyRecord:
-      | {
-          daily_record_id: number;
-          character_id: number;
-          weapon_id: number;
-          talent_id: number;
-          constellation_id: number;
-          food_id: number;
-        }
-      | undefined = await dailyRecordRepo
+    const dailyRecord: DailyRecordData | undefined = await dailyRecordRepo
       .createQueryBuilder("daily_record")
       .select([
         "daily_record.id AS daily_record_id",
