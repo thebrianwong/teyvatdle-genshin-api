@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Talent from "../models/talent.model";
-import TalentData from "../types/talentData.type";
+import TalentData from "../types/data/talentData.type";
 
 const retrieveTalentData: () => Promise<TalentData[]> = async () => {
   const talentRepo = AppDataSource.getRepository(Talent);

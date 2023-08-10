@@ -1,4 +1,4 @@
-import { TalentType } from "./talentType.type";
+import { TalentType } from "../talentType.type";
 
 type TalentData = {
   talent_id: number;

@@ -1,4 +1,4 @@
-import { Region } from "./region.type";
+import { Region } from "../region.type";
 
 type LocalSpecialtyData = {
   local_specialty: string;

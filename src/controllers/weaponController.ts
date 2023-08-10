@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Weapon from "../models/weapon.model";
-import WeaponData from "../types/weaponData.type";
+import WeaponData from "../types//data/weaponData.type";
 
 const retrieveWeaponData: () => Promise<WeaponData[]> = async () => {
   const weaponRepo = AppDataSource.getRepository(Weapon);

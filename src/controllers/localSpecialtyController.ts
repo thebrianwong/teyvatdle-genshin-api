@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import LocalSpecialty from "../models/localSpecialty.model";
-import LocalSpecialtyData from "../types/localSpecialtyData.type";
+import LocalSpecialtyData from "../types/data/localSpecialtyData.type";
 
 const getLocalSpecialties: RequestHandler = async (req, res, next) => {
   const localSpecialtyRepo = AppDataSource.getRepository(LocalSpecialty);

@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Food from "../models/food.model";
-import FoodData from "../types/foodData.type";
+import FoodData from "../types/data/foodData.type";
 
 const retrieveFoodData: () => Promise<FoodData[]> = async () => {
   const foodRepo = AppDataSource.getRepository(Food);

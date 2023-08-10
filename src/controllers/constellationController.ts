@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Constellation from "../models/constellation.model";
-import ConstellationData from "../types/constellationData.type";
+import ConstellationData from "../types/data/constellationData.type";
 
 const retrieveConstellationData: () => Promise<
   ConstellationData[]

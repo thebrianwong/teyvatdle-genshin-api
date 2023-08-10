@@ -1,5 +1,5 @@
-import { Stat } from "./stat.type";
-import { WeaponType } from "./weaponType.type";
+import { Stat } from "../stat.type";
+import { WeaponType } from "../weaponType.type";
 
 type WeaponData = {
   weapon_id: number;

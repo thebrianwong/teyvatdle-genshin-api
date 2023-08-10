@@ -1,7 +1,7 @@
-import GenshinElement from "./element.type";
-import { Region } from "./region.type";
-import { Stat } from "./stat.type";
-import { WeaponType } from "./weaponType.type";
+import GenshinElement from "../element.type";
+import { Region } from "../region.type";
+import { Stat } from "../stat.type";
+import { WeaponType } from "../weaponType.type";
 
 type CharacterData = {
   character_id: number;

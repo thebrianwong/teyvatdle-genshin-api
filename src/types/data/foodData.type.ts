@@ -1,4 +1,4 @@
-import { FoodType } from "./foodType.type";
+import { FoodType } from "../foodType.type";
 
 type FoodData = {
   food_id: number;

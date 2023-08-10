@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Character from "../models/character.model";
 import CharacterBookMap from "../models/maps/characterBookMap.model";
-import CharacterData from "../types/characterData.type";
+import CharacterData from "../types/data/characterData.type";
 
 const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
   const characterRepo = AppDataSource.getRepository(Character);

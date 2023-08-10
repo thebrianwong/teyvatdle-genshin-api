@@ -17,9 +17,9 @@ import {
   normalizeMonth,
   normalizeYear,
 } from "../utils/normalizeDates";
-import GameData from "../types/gameData.type";
+import GameData from "../types/data/gameData.type";
 import TeyvatdleEntityRepo from "../types/teyvatdleEntityRepo.type";
-import DailyRecordData from "../types/dailyRecordData.type";
+import DailyRecordData from "../types/data/dailyRecordData.type";
 
 const getGameData: RequestHandler = async (req, res, next) => {
   try {
