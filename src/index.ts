@@ -15,25 +15,39 @@ import talentRouter from "./routes/talent";
 import constellationRouter from "./routes/constellation";
 import teyvatdleGameDataRouter from "./routes/teyvatdleGameData";
 import createWebSocketServer from "./websockets/teyvatdleGameDataWebSocket";
+import realDataSource from "./postgres/postgresConfig";
+import testDataSource from "./postgres/postgresTestConfig";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT;
 
-export const AppDataSource = new DataSource({
-  type: "postgres",
-  host: process.env.PG_HOST,
-  port: Number(process.env.PG_PORT),
-  username: process.env.PG_USERNAME,
-  password: process.env.PG_PASSWORD,
-  database: process.env.PG_DATABASE_NAME,
-  logging: true,
-  entities: [__dirname + "/models/**/*.model.js"],
-  subscribers: [],
-  migrations: [],
-  entityPrefix: "genshin.",
-});
+// export const AppDataSource = new DataSource({
+//   type: "postgres",
+//   host: process.env.PG_HOST,
+//   port: Number(process.env.PG_PORT),
+//   username: process.env.PG_USERNAME,
+//   password: process.env.PG_PASSWORD,
+//   database: process.env.PG_DATABASE_NAME,
+//   logging: true,
+//   entities: [__dirname + "/models/**/*.model.js"],
+//   subscribers: [],
+//   migrations: [],
+//   entityPrefix: "genshin.",
+// });
+
+let dataSourceConfig: DataSource;
+
+if (process.env.TEST) {
+  console.log("Connected to the test DB.");
+  dataSourceConfig = testDataSource;
+} else {
+  console.log("Connected to real DB.");
+  dataSourceConfig = realDataSource;
+}
+
+export const AppDataSource = dataSourceConfig!;
 
 AppDataSource.initialize().catch((error) => console.log(error));
 
