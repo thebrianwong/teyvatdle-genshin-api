@@ -11,7 +11,7 @@ const testDataSource = new DataSource({
   password: process.env.TEST_PG_PASSWORD,
   database: process.env.TEST_PG_DATABASE_NAME,
   logging: true,
-  entities: [__dirname + "/../models/**/*.model.js"],
+  entities: [__dirname + "/../models/**/*.model.ts"],
   subscribers: [],
   migrations: [],
   entityPrefix: "genshin.",
