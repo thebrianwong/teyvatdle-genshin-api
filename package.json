@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon ./dist",
     "start": "node ./dist",
-    "test": "TEST='true' jest --watchAll --detectOpenHandles"
+    "test": "TEST='true' jest --watchAll --detectOpenHandles",
+    "coverage": "TEST='true' jest --detectOpenHandles --coverage"
   },
   "keywords": [],
   "author": "",
