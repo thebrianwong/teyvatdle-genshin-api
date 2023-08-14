@@ -19,7 +19,7 @@ test("return Local Specialties as JSON", (done) => {
     .end(done);
 });
 
-test("expect none of the keys/columns are null", (done) => {
+test("expect none of the Local Specialty keys/columns are null", (done) => {
   request(app)
     .get("/api/local_specialty")
     .expect("Content-Type", /json/)
@@ -39,7 +39,7 @@ test("expect none of the keys/columns are null", (done) => {
     .end(done);
 });
 
-test("returned data have the correct types for values", (done) => {
+test("returned Local Specialty data has the correct types for values", (done) => {
   request(app)
     .get("/api/local_specialty")
     .expect("Content-Type", /json/)
