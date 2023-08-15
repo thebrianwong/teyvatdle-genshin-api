@@ -4,11 +4,11 @@ import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import FoodData from "../types/data/foodData.type";
 
 beforeAll(async () => {
-  await configSetup("Local Specialty");
+  await configSetup("Food");
 });
 
 afterAll(async () => {
-  await configTeardown("Local Specialty");
+  await configTeardown("Food");
 });
 
 test("return Foods as JSON", (done) => {

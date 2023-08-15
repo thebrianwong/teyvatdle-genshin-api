@@ -4,11 +4,11 @@ import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import TalentData from "../types/data/talentData.type";
 
 beforeAll(async () => {
-  await configSetup("Local Specialty");
+  await configSetup("Talent");
 });
 
 afterAll(async () => {
-  await configTeardown("Local Specialty");
+  await configTeardown("Talent");
 });
 
 test("return Talents as JSON", (done) => {
