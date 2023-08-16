@@ -14,7 +14,6 @@ type Stat =
   | "HP"
   | "Hydro DMG Bonus"
   | "Physical DMG Bonus"
-  | "Pyro DMG Bonus"
-  | null;
+  | "Pyro DMG Bonus";
 
 export { Stat };

@@ -6,7 +6,7 @@ type WeaponData = {
   weapon_name: string;
   rarity: number;
   weapon_type: WeaponType;
-  sub_stat: Stat;
+  sub_stat: Stat | null;
   weapon_image_url: string;
   weapon_domain_material: string;
   weapon_domain_material_image_url: string;
