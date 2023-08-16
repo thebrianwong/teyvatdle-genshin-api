@@ -1,3 +1,3 @@
-type WeaponType = "Sword" | "Claymore" | "Polearm" | "Catalyst" | "Bows";
+type WeaponType = "Sword" | "Claymore" | "Polearm" | "Catalyst" | "Bow";
 
 export { WeaponType };
