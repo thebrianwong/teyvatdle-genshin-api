@@ -26,13 +26,17 @@ test("expect none of the Weapon keys/columns (except Sub Stat) are null", (done)
     .expect(200)
     .expect((res) => {
       const arrayOfDataObjects: WeaponData[] = res.body;
-      expect(arrayOfDataObjects).toEqual(
+      const oneAndTwoStarWeapons = arrayOfDataObjects.filter(
+        (weapon) => weapon.rarity !== 1 && weapon.rarity !== 2
+      );
+      expect(oneAndTwoStarWeapons).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             weapon_id: expect.anything(),
             weapon_name: expect.anything(),
             rarity: expect.anything(),
             weapon_type: expect.anything(),
+            sub_stat: expect.anything(),
             weapon_image_url: expect.anything(),
             weapon_domain_material: expect.anything(),
             weapon_domain_material_image_url: expect.anything(),
@@ -41,6 +45,27 @@ test("expect none of the Weapon keys/columns (except Sub Stat) are null", (done)
             common_enemy_material: expect.anything(),
             common_enemy_material_image_url: expect.anything(),
             gacha: expect.anything(),
+          }),
+        ])
+      );
+    })
+    .end(done);
+});
+
+test("expect 1 and 2 star weapons have null Sub Stats", (done) => {
+  request(app)
+    .get("/api/weapon")
+    .expect("Content-Type", /json/)
+    .expect(200)
+    .expect((res) => {
+      const arrayOfDataObjects: WeaponData[] = res.body;
+      const oneAndTwoStarWeapons = arrayOfDataObjects.filter(
+        (weapon) => weapon.rarity === 1 || weapon.rarity === 2
+      );
+      expect(oneAndTwoStarWeapons).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            sub_stat: null,
           }),
         ])
       );
