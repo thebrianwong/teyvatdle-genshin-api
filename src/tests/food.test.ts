@@ -108,89 +108,100 @@ test("return the correct number of Foods", (done) => {
     .expect((res) => {
       const arrayOfDataObjects: FoodData[] = res.body;
 
-      const oneStarFoods = [...arrayOfDataObjects].filter(
-        (data) => data.rarity === 1
-      );
-      const twoStarFoods = [...arrayOfDataObjects].filter(
-        (data) => data.rarity === 2
-      );
-      const threeStarFoods = [...arrayOfDataObjects].filter(
-        (data) => data.rarity === 3
-      );
-      const fourStarFoods = [...arrayOfDataObjects].filter(
-        (data) => data.rarity === 4
-      );
-      const fiveStarFoods = [...arrayOfDataObjects].filter(
-        (data) => data.rarity === 5
-      );
+      let oneStarFoods = 0;
+      let twoStarFoods = 0;
+      let threeStarFoods = 0;
+      let fourStarFoods = 0;
+      let fiveStarFoods = 0;
 
-      const adventureDishes = [...arrayOfDataObjects].filter(
-        (data) => data.food_type === "Adventurer's Dishes"
-      );
-      const attackDishes = [...arrayOfDataObjects].filter(
-        (data) => data.food_type === "ATK-Boosting Dishes"
-      );
-      const defenseDishes = [...arrayOfDataObjects].filter(
-        (data) => data.food_type === "DEF-Boosting Dishes"
-      );
-      const essentialOils = [...arrayOfDataObjects].filter(
-        (data) => data.food_type === "Essential Oils"
-      );
-      const potions = [...arrayOfDataObjects].filter(
-        (data) => data.food_type === "Potions"
-      );
-      const recoveryDishes = [...arrayOfDataObjects].filter(
-        (data) => data.food_type === "Recovery Dishes"
-      );
+      let adventureDishes = 0;
+      let attackDishes = 0;
+      let defenseDishes = 0;
+      let essentialOils = 0;
+      let potions = 0;
+      let recoveryDishes = 0;
 
-      const specialDishes = [...arrayOfDataObjects].filter(
-        (data) => data.special_dish === true
-      );
-      const nonSpecialDishes = [...arrayOfDataObjects].filter(
-        (data) => data.special_dish === false
-      );
-      const purchasableDishes = [...arrayOfDataObjects].filter(
-        (data) => data.purchasable === true
-      );
-      const nonPurchasableDishes = [...arrayOfDataObjects].filter(
-        (data) => data.purchasable === false
-      );
-      const recipeDishes = [...arrayOfDataObjects].filter(
-        (data) => data.recipe === true
-      );
-      const nonRecipeDishes = [...arrayOfDataObjects].filter(
-        (data) => data.recipe === false
-      );
-      const eventDishes = [...arrayOfDataObjects].filter(
-        (data) => data.event === true
-      );
-      const nonEventDishes = [...arrayOfDataObjects].filter(
-        (data) => data.event === false
-      );
+      let specialDishes = 0;
+      let nonSpecialDishes = 0;
+      let purchasableDishes = 0;
+      let nonPurchasableDishes = 0;
+      let recipeDishes = 0;
+      let nonRecipeDishes = 0;
+      let eventDishes = 0;
+      let nonEventDishes = 0;
+
+      arrayOfDataObjects.forEach((food) => {
+        if (food.rarity === 1) {
+          oneStarFoods += 1;
+        } else if (food.rarity === 2) {
+          twoStarFoods += 1;
+        } else if (food.rarity === 3) {
+          threeStarFoods += 1;
+        } else if (food.rarity === 4) {
+          fourStarFoods += 1;
+        } else if (food.rarity === 5) {
+          fiveStarFoods += 1;
+        }
+
+        if (food.food_type === "Adventurer's Dishes") {
+          adventureDishes += 1;
+        } else if (food.food_type === "ATK-Boosting Dishes") {
+          attackDishes += 1;
+        } else if (food.food_type === "DEF-Boosting Dishes") {
+          defenseDishes += 1;
+        } else if (food.food_type === "Essential Oils") {
+          essentialOils += 1;
+        } else if (food.food_type === "Potions") {
+          potions += 1;
+        } else if (food.food_type === "Recovery Dishes") {
+          recoveryDishes += 1;
+        }
+
+        if (food.special_dish) {
+          specialDishes += 1;
+        } else {
+          nonSpecialDishes += 1;
+        }
+        if (food.purchasable) {
+          purchasableDishes += 1;
+        } else {
+          nonPurchasableDishes += 1;
+        }
+        if (food.recipe) {
+          recipeDishes += 1;
+        } else {
+          nonRecipeDishes += 1;
+        }
+        if (food.event) {
+          eventDishes += 1;
+        } else {
+          nonEventDishes += 1;
+        }
+      });
 
       expect(arrayOfDataObjects).toHaveLength(numOfFoods);
 
-      expect(oneStarFoods).toHaveLength(numOfOneStarFoods);
-      expect(twoStarFoods).toHaveLength(numOfTwoStarFoods);
-      expect(threeStarFoods).toHaveLength(numOfThreeStarFoods);
-      expect(fourStarFoods).toHaveLength(numOfFourStarFoods);
-      expect(fiveStarFoods).toHaveLength(numOfFiveStarFoods);
+      expect(oneStarFoods).toBe(numOfOneStarFoods);
+      expect(twoStarFoods).toBe(numOfTwoStarFoods);
+      expect(threeStarFoods).toBe(numOfThreeStarFoods);
+      expect(fourStarFoods).toBe(numOfFourStarFoods);
+      expect(fiveStarFoods).toBe(numOfFiveStarFoods);
 
-      expect(adventureDishes).toHaveLength(numOfAdventuresDishes);
-      expect(attackDishes).toHaveLength(numOfAttackDishes);
-      expect(defenseDishes).toHaveLength(numOfDefenseDishes);
-      expect(essentialOils).toHaveLength(numOfEssentialOils);
-      expect(potions).toHaveLength(numOfPotions);
-      expect(recoveryDishes).toHaveLength(numOfRecoveryDishes);
+      expect(adventureDishes).toBe(numOfAdventuresDishes);
+      expect(attackDishes).toBe(numOfAttackDishes);
+      expect(defenseDishes).toBe(numOfDefenseDishes);
+      expect(essentialOils).toBe(numOfEssentialOils);
+      expect(potions).toBe(numOfPotions);
+      expect(recoveryDishes).toBe(numOfRecoveryDishes);
 
-      expect(specialDishes).toHaveLength(numOfSpecialDishes);
-      expect(nonSpecialDishes).toHaveLength(numOfNonSpecialDishes);
-      expect(purchasableDishes).toHaveLength(numOfPurchasableDishes);
-      expect(nonPurchasableDishes).toHaveLength(numOfNonPurchasableDishes);
-      expect(recipeDishes).toHaveLength(numOfRecipeDishes);
-      expect(nonRecipeDishes).toHaveLength(numOfNonRecipeDishes);
-      expect(eventDishes).toHaveLength(numOfEventDishes);
-      expect(nonEventDishes).toHaveLength(numOfNonEventDishes);
+      expect(specialDishes).toBe(numOfSpecialDishes);
+      expect(nonSpecialDishes).toBe(numOfNonSpecialDishes);
+      expect(purchasableDishes).toBe(numOfPurchasableDishes);
+      expect(nonPurchasableDishes).toBe(numOfNonPurchasableDishes);
+      expect(recipeDishes).toBe(numOfRecipeDishes);
+      expect(nonRecipeDishes).toBe(numOfNonRecipeDishes);
+      expect(eventDishes).toBe(numOfEventDishes);
+      expect(nonEventDishes).toBe(numOfNonEventDishes);
     })
     .end(done);
 });

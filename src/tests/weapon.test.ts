@@ -122,31 +122,6 @@ test("returned Weapon data has the correct types for values", (done) => {
 test("return the correct number of Weapons", (done) => {
   const numOfWeapons = 155;
 
-  // rarity
-  const numOfOneStarWeapons = 5;
-  const numOfTwoStarWeapons = 5;
-  const numOfThreeStarWeapons = 24;
-  const numOfFourStarWeapons = 84;
-  const numOfFiveStarWeapons = 37;
-
-  // weapon type
-  const numOfSwords = 35;
-  const numOfClaymores = 30;
-  const numOfPolearms = 26;
-  const numOfCatalysts = 31;
-  const numOfBows = 33;
-
-  // sub stats
-  const numOfATKWeapons = 41;
-  const numOfCritDMGWeapons = 17;
-  const numOfCritRateWeapons = 17;
-  const numOfDEFWeapons = 4;
-  const numOfElementalMasteryWeapons = 22;
-  const numOfEnergyRechargeWeapons = 26;
-  const numOfHPWeapons = 9;
-  const numOfPhysicalDMGWeapons = 9;
-  const numOfNoSubStatWeapons = 10;
-
   // weapon domain
   const numOfAerosideriteWeapons = 15;
   const numOfTeethWeapons = 24;
@@ -201,66 +176,6 @@ test("return the correct number of Weapons", (done) => {
     .expect(200)
     .expect((res) => {
       const arrayOfDataObjects: WeaponData[] = res.body;
-
-      const oneStarWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.rarity === 1
-      );
-      const twoStarWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.rarity === 2
-      );
-      const threeStarWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.rarity === 3
-      );
-      const fourStarWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.rarity === 4
-      );
-      const fiveStarWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.rarity === 5
-      );
-
-      const swords = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_type === "Sword"
-      );
-      const claymores = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_type === "Claymore"
-      );
-      const polearms = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_type === "Polearm"
-      );
-      const catalysts = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_type === "Catalyst"
-      );
-      const bows = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_type === "Bow"
-      );
-
-      const atkWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.sub_stat === "ATK"
-      );
-      const critDMGWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.sub_stat === "CRIT DMG"
-      );
-      const critRateWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.sub_stat === "CRIT Rate"
-      );
-      const defWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.sub_stat === "DEF"
-      );
-      const elementalMasteryWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.sub_stat === "Elemental Mastery"
-      );
-      const energyRechargeWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.sub_stat === "Energy Recharge"
-      );
-      const hpWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.sub_stat === "HP"
-      );
-      const physicalDMGWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.sub_stat === "Physical DMG Bonus"
-      );
-      const noSubStatWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.sub_stat === null
-      );
 
       const aerosideriteWeapons = [...arrayOfDataObjects].filter(
         (data) => data.weapon_domain_material === "Aerosiderite"
@@ -389,30 +304,6 @@ test("return the correct number of Weapons", (done) => {
 
       expect(arrayOfDataObjects).toHaveLength(numOfWeapons);
 
-      expect(oneStarWeapons).toHaveLength(numOfOneStarWeapons);
-      expect(twoStarWeapons).toHaveLength(numOfTwoStarWeapons);
-      expect(threeStarWeapons).toHaveLength(numOfThreeStarWeapons);
-      expect(fourStarWeapons).toHaveLength(numOfFourStarWeapons);
-      expect(fiveStarWeapons).toHaveLength(numOfFiveStarWeapons);
-
-      expect(swords).toHaveLength(numOfSwords);
-      expect(claymores).toHaveLength(numOfClaymores);
-      expect(polearms).toHaveLength(numOfPolearms);
-      expect(catalysts).toHaveLength(numOfCatalysts);
-      expect(bows).toHaveLength(numOfBows);
-
-      expect(atkWeapons).toHaveLength(numOfATKWeapons);
-      expect(critDMGWeapons).toHaveLength(numOfCritDMGWeapons);
-      expect(critRateWeapons).toHaveLength(numOfCritRateWeapons);
-      expect(defWeapons).toHaveLength(numOfDEFWeapons);
-      expect(elementalMasteryWeapons).toHaveLength(
-        numOfElementalMasteryWeapons
-      );
-      expect(energyRechargeWeapons).toHaveLength(numOfEnergyRechargeWeapons);
-      expect(hpWeapons).toHaveLength(numOfHPWeapons);
-      expect(physicalDMGWeapons).toHaveLength(numOfPhysicalDMGWeapons);
-      expect(noSubStatWeapons).toHaveLength(numOfNoSubStatWeapons);
-
       expect(aerosideriteWeapons).toHaveLength(numOfAerosideriteWeapons);
       expect(teethWeapons).toHaveLength(numOfTeethWeapons);
       expect(branchesWeapons).toHaveLength(numOfBranchesWeapons);
@@ -456,6 +347,152 @@ test("return the correct number of Weapons", (done) => {
 
       expect(gachaWeapons).toHaveLength(numOfGachaWeapons);
       expect(nonGachaWeapons).toHaveLength(numOfNonGachaWeapons);
+    })
+    .end(done);
+});
+
+test("return the correct number of Weapons based on rarity", (done) => {
+  const numOfOneStarWeapons = 5;
+  const numOfTwoStarWeapons = 5;
+  const numOfThreeStarWeapons = 24;
+  const numOfFourStarWeapons = 84;
+  const numOfFiveStarWeapons = 37;
+
+  request(app)
+    .get("/api/weapon")
+    .expect("Content-Type", /json/)
+    .expect(200)
+    .expect((res) => {
+      const arrayOfDataObjects: WeaponData[] = res.body;
+      let oneStarWeapons = 0;
+      let twoStarWeapons = 0;
+      let threeStarWeapons = 0;
+      let fourStarWeapons = 0;
+      let fiveStarWeapons = 0;
+
+      arrayOfDataObjects.forEach((weapon) => {
+        if (weapon.rarity === 1) {
+          oneStarWeapons += 1;
+        } else if (weapon.rarity === 2) {
+          twoStarWeapons += 1;
+        } else if (weapon.rarity === 3) {
+          threeStarWeapons += 1;
+        } else if (weapon.rarity === 4) {
+          fourStarWeapons += 1;
+        } else if (weapon.rarity === 5) {
+          fiveStarWeapons += 1;
+        }
+      });
+
+      expect(oneStarWeapons).toBe(numOfOneStarWeapons);
+      expect(twoStarWeapons).toBe(numOfTwoStarWeapons);
+      expect(threeStarWeapons).toBe(numOfThreeStarWeapons);
+      expect(fourStarWeapons).toBe(numOfFourStarWeapons);
+      expect(fiveStarWeapons).toBe(numOfFiveStarWeapons);
+    })
+    .end(done);
+});
+
+test("return the correct number of Weapons based on weapon type", (done) => {
+  const numOfSwords = 35;
+  const numOfClaymores = 30;
+  const numOfPolearms = 26;
+  const numOfCatalysts = 31;
+  const numOfBows = 33;
+
+  request(app)
+    .get("/api/weapon")
+    .expect("Content-Type", /json/)
+    .expect(200)
+    .expect((res) => {
+      const arrayOfDataObjects: WeaponData[] = res.body;
+      let swords = 0;
+      let claymores = 0;
+      let polearms = 0;
+      let catalysts = 0;
+      let bows = 0;
+
+      arrayOfDataObjects.forEach((weapon) => {
+        if (weapon.weapon_type === "Sword") {
+          swords += 1;
+        } else if (weapon.weapon_type === "Claymore") {
+          claymores += 1;
+        } else if (weapon.weapon_type === "Polearm") {
+          polearms += 1;
+        } else if (weapon.weapon_type === "Catalyst") {
+          catalysts += 1;
+        } else if (weapon.weapon_type === "Bow") {
+          bows += 1;
+        }
+      });
+
+      expect(swords).toBe(numOfSwords);
+      expect(claymores).toBe(numOfClaymores);
+      expect(polearms).toBe(numOfPolearms);
+      expect(catalysts).toBe(numOfCatalysts);
+      expect(bows).toBe(numOfBows);
+    })
+    .end(done);
+});
+
+test("return the correct number of Weapons based on sub stat", (done) => {
+  const numOfATKWeapons = 41;
+  const numOfCritDMGWeapons = 17;
+  const numOfCritRateWeapons = 17;
+  const numOfDEFWeapons = 4;
+  const numOfElementalMasteryWeapons = 22;
+  const numOfEnergyRechargeWeapons = 26;
+  const numOfHPWeapons = 9;
+  const numOfPhysicalDMGWeapons = 9;
+  const numOfNoSubStatWeapons = 10;
+
+  request(app)
+    .get("/api/weapon")
+    .expect("Content-Type", /json/)
+    .expect(200)
+    .expect((res) => {
+      const arrayOfDataObjects: WeaponData[] = res.body;
+      let atkWeapons = 0;
+      let critDMGWeapons = 0;
+      let critRateWeapons = 0;
+      let defWeapons = 0;
+      let elementalMasteryWeapons = 0;
+      let energyRechargeWeapons = 0;
+      let hpWeapons = 0;
+      let physicalDMGWeapons = 0;
+      let noSubStatWeapons = 0;
+
+      arrayOfDataObjects.forEach((weapon) => {
+        if (weapon.sub_stat === "ATK") {
+          atkWeapons += 1;
+        } else if (weapon.sub_stat === "CRIT DMG") {
+          critDMGWeapons += 1;
+        } else if (weapon.sub_stat === "CRIT Rate") {
+          critRateWeapons += 1;
+        } else if (weapon.sub_stat === "DEF") {
+          defWeapons += 1;
+        } else if (weapon.sub_stat === "Elemental Mastery") {
+          elementalMasteryWeapons += 1;
+        } else if (weapon.sub_stat === "Energy Recharge") {
+          energyRechargeWeapons += 1;
+        } else if (weapon.sub_stat === "HP") {
+          hpWeapons += 1;
+        } else if (weapon.sub_stat === "Physical DMG Bonus") {
+          physicalDMGWeapons += 1;
+        } else if (weapon.sub_stat === null) {
+          noSubStatWeapons += 1;
+        }
+      });
+
+      expect(atkWeapons).toBe(numOfATKWeapons);
+      expect(critDMGWeapons).toBe(numOfCritDMGWeapons);
+      expect(critRateWeapons).toBe(numOfCritRateWeapons);
+      expect(defWeapons).toBe(numOfDEFWeapons);
+      expect(elementalMasteryWeapons).toBe(numOfElementalMasteryWeapons);
+      expect(energyRechargeWeapons).toBe(numOfEnergyRechargeWeapons);
+      expect(hpWeapons).toBe(numOfHPWeapons);
+      expect(physicalDMGWeapons).toBe(numOfPhysicalDMGWeapons);
+      expect(noSubStatWeapons).toBe(numOfNoSubStatWeapons);
     })
     .end(done);
 });

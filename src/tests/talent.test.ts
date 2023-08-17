@@ -88,24 +88,29 @@ test("return the correct number of Talents", (done) => {
     .expect(200)
     .expect((res) => {
       const arrayOfDataObjects: TalentData[] = res.body;
-      const nonTravelerTalents = [...arrayOfDataObjects].filter(
-        (data) => !travelerNames.includes(data.character)
-      );
-      const travelerTalents = [...arrayOfDataObjects].filter((data) =>
-        travelerNames.includes(data.character)
-      );
-      const altSprintTalents = [...arrayOfDataObjects].filter(
-        (data) => data.talent_type === "Alternate Sprint"
-      );
-      const kokomiPassiveTalents = [...arrayOfDataObjects].filter(
-        (data) => data.talent_type === "Passive"
-      );
+      let nonTravelerTalents = 0;
+      let travelerTalents = 0;
+      let altSprintTalents = 0;
+      let kokomiPassiveTalents = 0;
+
+      arrayOfDataObjects.forEach((talent) => {
+        if (!travelerNames.includes(talent.character)) {
+          nonTravelerTalents += 1;
+        } else {
+          travelerTalents += 1;
+        }
+        if (talent.talent_type === "Alternate Sprint") {
+          altSprintTalents += 1;
+        } else if (talent.talent_type === "Passive") {
+          kokomiPassiveTalents += 1;
+        }
+      });
 
       expect(arrayOfDataObjects).toHaveLength(numOfTalents);
-      expect(nonTravelerTalents).toHaveLength(numOfNonTravelerTalents);
-      expect(travelerTalents).toHaveLength(numOfTravelerTalents);
-      expect(altSprintTalents).toHaveLength(numOfAltSprintTalents);
-      expect(kokomiPassiveTalents).toHaveLength(numOfKokomiPassiveTalents);
+      expect(nonTravelerTalents).toBe(numOfNonTravelerTalents);
+      expect(travelerTalents).toBe(numOfTravelerTalents);
+      expect(altSprintTalents).toBe(numOfAltSprintTalents);
+      expect(kokomiPassiveTalents).toBe(numOfKokomiPassiveTalents);
     })
     .end(done);
 });

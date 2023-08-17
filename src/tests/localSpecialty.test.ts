@@ -69,24 +69,28 @@ test("return the correct number of Local Specialties from each region", (done) =
     .expect(200)
     .expect((res) => {
       const arrayOfDataObjects: LocalSpecialtyData[] = res.body;
-      const mondstadtSpecialties = [...arrayOfDataObjects].filter(
-        (data) => data.region === "Mondstadt"
-      );
-      const liyueSpecialties = [...arrayOfDataObjects].filter(
-        (data) => data.region === "Liyue"
-      );
-      const inazumaSpecialties = [...arrayOfDataObjects].filter(
-        (data) => data.region === "Inazuma"
-      );
-      const sumeruSpecialties = [...arrayOfDataObjects].filter(
-        (data) => data.region === "Sumeru"
-      );
+      let mondstadtSpecialties = 0;
+      let liyueSpecialties = 0;
+      let inazumaSpecialties = 0;
+      let sumeruSpecialties = 0;
+
+      arrayOfDataObjects.forEach((localSpecialty) => {
+        if (localSpecialty.region === "Mondstadt") {
+          mondstadtSpecialties += 1;
+        } else if (localSpecialty.region === "Liyue") {
+          liyueSpecialties += 1;
+        } else if (localSpecialty.region === "Inazuma") {
+          inazumaSpecialties += 1;
+        } else if (localSpecialty.region === "Sumeru") {
+          sumeruSpecialties += 1;
+        }
+      });
 
       expect(arrayOfDataObjects).toHaveLength(numOfLocalSpecialties);
-      expect(mondstadtSpecialties).toHaveLength(numOfMondstadtSpecialties);
-      expect(liyueSpecialties).toHaveLength(numOfLiyueSpecialties);
-      expect(inazumaSpecialties).toHaveLength(numOfInazumaSpecialties);
-      expect(sumeruSpecialties).toHaveLength(numOfSumeruSpecialties);
+      expect(mondstadtSpecialties).toBe(numOfMondstadtSpecialties);
+      expect(liyueSpecialties).toBe(numOfLiyueSpecialties);
+      expect(inazumaSpecialties).toBe(numOfInazumaSpecialties);
+      expect(sumeruSpecialties).toBe(numOfSumeruSpecialties);
     })
     .end(done);
 });
