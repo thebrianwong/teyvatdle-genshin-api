@@ -122,54 +122,6 @@ test("returned Weapon data has the correct types for values", (done) => {
 test("return the correct number of Weapons", (done) => {
   const numOfWeapons = 155;
 
-  // weapon domain
-  const numOfAerosideriteWeapons = 15;
-  const numOfTeethWeapons = 24;
-  const numOfBranchesWeapons = 6;
-  const numOfTilesWeapons = 21;
-  const numOfElixirsWeapons = 17;
-  const numOfShacklesWeapons = 23;
-  const numOfPillarsWeapons = 17;
-  const numOfMagatamasWeapons = 8;
-  const numOfGardensWeapons = 5;
-  const numOfOniWeapons = 7;
-  const numOfMightsWeapons = 6;
-  const numOfTalismansWeapons = 6;
-
-  // elite materials
-  const numOfAbyssMagesWeapons = 23;
-  const numOfConsBeastsWeapons = 3;
-  const numOfFatuiMagesWeapons = 18;
-  const numOfFatuiAgentsWeapons = 16;
-  const numOfHilichurlRoguesWeapons = 2;
-  const numOfRuinMachinesWeapons = 21;
-  const numOfMirrorMaidensWeapons = 6;
-  const numOfMitachurlsWeapons = 22;
-  const numOfPrimalConsWeapons = 4;
-  const numOfRiftwolfWeapons = 6;
-  const numOfRuinDrakesWeapons = 5;
-  const numOfRuinSentsWeapons = 6;
-  const numOfShiftedFungiWeapons = 5;
-  const numOfBlackSerpentsWeapons = 5;
-  const numOfVishapsWeapons = 13;
-
-  // common materials
-  const numOfFatuiSkirmsWeapons = 15;
-  const numOfFungiWeapons = 7;
-  const numOfHilichurlsWeapons = 16;
-  const numOfHiliShootersWeapons = 22;
-  const numOfNobushiWeapons = 9;
-  const numOfSamachurlsWeapons = 17;
-  const numOfSlimesWeapons = 21;
-  const numOfSpectersWeapons = 9;
-  const numOfEremitesWeapons = 8;
-  const numOfTreasHoardersWeapons = 19;
-  const numOfWhopperflowersWeapons = 12;
-
-  // gacha
-  const numOfGachaWeapons = 80;
-  const numOfNonGachaWeapons = 75;
-
   request(app)
     .get("/api/weapon")
     .expect("Content-Type", /json/)
@@ -177,176 +129,7 @@ test("return the correct number of Weapons", (done) => {
     .expect((res) => {
       const arrayOfDataObjects: WeaponData[] = res.body;
 
-      const aerosideriteWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_domain_material === "Aerosiderite"
-      );
-      const teethWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_domain_material === "Boreal Wolf Teeth"
-      );
-      const branchesWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_domain_material === "Branches of a Distant Sea"
-      );
-      const tilesWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_domain_material === "Decarabian Tiles"
-      );
-      const elixirsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_domain_material === "Elixirs"
-      );
-      const shacklesWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_domain_material === "Gladiator Shackles"
-      );
-      const pillarsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_domain_material === "Guyun Pillars"
-      );
-      const magatamasWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_domain_material === "Narukami's Magatamas"
-      );
-      const gardensWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_domain_material === "Oasis Gardens"
-      );
-      const oniWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_domain_material === "Oni Masks"
-      );
-      const mightsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_domain_material === "Scorching Mights"
-      );
-      const talismansWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.weapon_domain_material === "Talismans of the Forest Dew"
-      );
-
-      const abyssMagesWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "Abyss Mage Materials"
-      );
-      const consBeastsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "Consecrated Beast Materials"
-      );
-      const fatuiMagesWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "Fatui Cicin Mage Materials"
-      );
-      const fatuiAgentsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "Fatui Pyro Agent Materials"
-      );
-      const hilichurlRoguesWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "Hilichurl Rogue Materials"
-      );
-      const ruinMachinesWeapons = [...arrayOfDataObjects].filter(
-        (data) =>
-          data.elite_enemy_material === "Humanoid Ruin Machine Materials"
-      );
-      const mirrorMaidensWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "Mirror Maiden Materials"
-      );
-      const mitachurlsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "Mitachurl Materials"
-      );
-      const primalConsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "Primal Construct Materials"
-      );
-      const riftwolfWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "Riftwolf Materials"
-      );
-      const ruinDrakesWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "Ruin Drake Materials"
-      );
-      const ruinSentsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "Ruin Sentinel Materials"
-      );
-      const shiftedFungiWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "State-Shifted Fungus Materials"
-      );
-      const blackSerpentsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "The Black Serpents Materials"
-      );
-      const vishapsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.elite_enemy_material === "Vishap Materials"
-      );
-
-      const fatuiSkirmsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.common_enemy_material === "Fatui Skirmisher Materials"
-      );
-      const fungiWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.common_enemy_material === "Fungus Materials"
-      );
-      const hilichurlsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.common_enemy_material === "Hilichurl Materials"
-      );
-      const hiliShootersWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.common_enemy_material === "Hilichurl Shooter Materials"
-      );
-      const nobushiWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.common_enemy_material === "Nobushi Materials"
-      );
-      const samachurlsWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.common_enemy_material === "Samachurl Materials"
-      );
-      const slimesWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.common_enemy_material === "Slime Materials"
-      );
-      const spectersWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.common_enemy_material === "Specter Materials"
-      );
-      const eremitesWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.common_enemy_material === "The Eremites Materials"
-      );
-      const treasHoardersWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.common_enemy_material === "Treasure Hoarder Materials"
-      );
-      const whopperflowersWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.common_enemy_material === "Whopperflower Materials"
-      );
-
-      const gachaWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.gacha === true
-      );
-      const nonGachaWeapons = [...arrayOfDataObjects].filter(
-        (data) => data.gacha === false
-      );
-
       expect(arrayOfDataObjects).toHaveLength(numOfWeapons);
-
-      expect(aerosideriteWeapons).toHaveLength(numOfAerosideriteWeapons);
-      expect(teethWeapons).toHaveLength(numOfTeethWeapons);
-      expect(branchesWeapons).toHaveLength(numOfBranchesWeapons);
-      expect(tilesWeapons).toHaveLength(numOfTilesWeapons);
-      expect(elixirsWeapons).toHaveLength(numOfElixirsWeapons);
-      expect(shacklesWeapons).toHaveLength(numOfShacklesWeapons);
-      expect(pillarsWeapons).toHaveLength(numOfPillarsWeapons);
-      expect(magatamasWeapons).toHaveLength(numOfMagatamasWeapons);
-      expect(gardensWeapons).toHaveLength(numOfGardensWeapons);
-      expect(oniWeapons).toHaveLength(numOfOniWeapons);
-      expect(mightsWeapons).toHaveLength(numOfMightsWeapons);
-      expect(talismansWeapons).toHaveLength(numOfTalismansWeapons);
-
-      expect(abyssMagesWeapons).toHaveLength(numOfAbyssMagesWeapons);
-      expect(consBeastsWeapons).toHaveLength(numOfConsBeastsWeapons);
-      expect(fatuiMagesWeapons).toHaveLength(numOfFatuiMagesWeapons);
-      expect(fatuiAgentsWeapons).toHaveLength(numOfFatuiAgentsWeapons);
-      expect(hilichurlRoguesWeapons).toHaveLength(numOfHilichurlRoguesWeapons);
-      expect(ruinMachinesWeapons).toHaveLength(numOfRuinMachinesWeapons);
-      expect(mirrorMaidensWeapons).toHaveLength(numOfMirrorMaidensWeapons);
-      expect(mitachurlsWeapons).toHaveLength(numOfMitachurlsWeapons);
-      expect(primalConsWeapons).toHaveLength(numOfPrimalConsWeapons);
-      expect(riftwolfWeapons).toHaveLength(numOfRiftwolfWeapons);
-      expect(ruinDrakesWeapons).toHaveLength(numOfRuinDrakesWeapons);
-      expect(ruinSentsWeapons).toHaveLength(numOfRuinSentsWeapons);
-      expect(shiftedFungiWeapons).toHaveLength(numOfShiftedFungiWeapons);
-      expect(blackSerpentsWeapons).toHaveLength(numOfBlackSerpentsWeapons);
-      expect(vishapsWeapons).toHaveLength(numOfVishapsWeapons);
-
-      expect(fatuiSkirmsWeapons).toHaveLength(numOfFatuiSkirmsWeapons);
-      expect(fungiWeapons).toHaveLength(numOfFungiWeapons);
-      expect(hilichurlsWeapons).toHaveLength(numOfHilichurlsWeapons);
-      expect(hiliShootersWeapons).toHaveLength(numOfHiliShootersWeapons);
-      expect(nobushiWeapons).toHaveLength(numOfNobushiWeapons);
-      expect(samachurlsWeapons).toHaveLength(numOfSamachurlsWeapons);
-      expect(slimesWeapons).toHaveLength(numOfSlimesWeapons);
-      expect(spectersWeapons).toHaveLength(numOfSpectersWeapons);
-      expect(eremitesWeapons).toHaveLength(numOfEremitesWeapons);
-      expect(treasHoardersWeapons).toHaveLength(numOfTreasHoardersWeapons);
-      expect(whopperflowersWeapons).toHaveLength(numOfWhopperflowersWeapons);
-
-      expect(gachaWeapons).toHaveLength(numOfGachaWeapons);
-      expect(nonGachaWeapons).toHaveLength(numOfNonGachaWeapons);
     })
     .end(done);
 });
@@ -493,6 +276,298 @@ test("return the correct number of Weapons based on sub stat", (done) => {
       expect(hpWeapons).toBe(numOfHPWeapons);
       expect(physicalDMGWeapons).toBe(numOfPhysicalDMGWeapons);
       expect(noSubStatWeapons).toBe(numOfNoSubStatWeapons);
+    })
+    .end(done);
+});
+
+test("return the correct number of Weapons based on weapon domain material", (done) => {
+  const numOfAerosideriteWeapons = 15;
+  const numOfTeethWeapons = 24;
+  const numOfBranchesWeapons = 6;
+  const numOfTilesWeapons = 21;
+  const numOfElixirsWeapons = 17;
+  const numOfShacklesWeapons = 23;
+  const numOfPillarsWeapons = 17;
+  const numOfMagatamasWeapons = 8;
+  const numOfGardensWeapons = 5;
+  const numOfOniWeapons = 7;
+  const numOfMightsWeapons = 6;
+  const numOfTalismansWeapons = 6;
+
+  request(app)
+    .get("/api/weapon")
+    .expect("Content-Type", /json/)
+    .expect(200)
+    .expect((res) => {
+      const arrayOfDataObjects: WeaponData[] = res.body;
+      let aerosideriteWeapons = 0;
+      let teethWeapons = 0;
+      let branchesWeapons = 0;
+      let tilesWeapons = 0;
+      let elixirsWeapons = 0;
+      let shacklesWeapons = 0;
+      let pillarsWeapons = 0;
+      let magatamasWeapons = 0;
+      let gardensWeapons = 0;
+      let oniWeapons = 0;
+      let mightsWeapons = 0;
+      let talismansWeapons = 0;
+
+      arrayOfDataObjects.forEach((weapon) => {
+        if (weapon.weapon_domain_material === "Aerosiderite") {
+          aerosideriteWeapons += 1;
+        } else if (weapon.weapon_domain_material === "Boreal Wolf Teeth") {
+          teethWeapons += 1;
+        } else if (
+          weapon.weapon_domain_material === "Branches of a Distant Sea"
+        ) {
+          branchesWeapons += 1;
+        } else if (weapon.weapon_domain_material === "Decarabian Tiles") {
+          tilesWeapons += 1;
+        } else if (weapon.weapon_domain_material === "Elixirs") {
+          elixirsWeapons += 1;
+        } else if (weapon.weapon_domain_material === "Gladiator Shackles") {
+          shacklesWeapons += 1;
+        } else if (weapon.weapon_domain_material === "Guyun Pillars") {
+          pillarsWeapons += 1;
+        } else if (weapon.weapon_domain_material === "Narukami's Magatamas") {
+          magatamasWeapons += 1;
+        } else if (weapon.weapon_domain_material === "Oasis Gardens") {
+          gardensWeapons += 1;
+        } else if (weapon.weapon_domain_material === "Oni Masks") {
+          oniWeapons += 1;
+        } else if (weapon.weapon_domain_material === "Scorching Mights") {
+          mightsWeapons += 1;
+        } else if (
+          weapon.weapon_domain_material === "Talismans of the Forest Dew"
+        ) {
+          talismansWeapons += 1;
+        }
+      });
+
+      expect(aerosideriteWeapons).toBe(numOfAerosideriteWeapons);
+      expect(teethWeapons).toBe(numOfTeethWeapons);
+      expect(branchesWeapons).toBe(numOfBranchesWeapons);
+      expect(tilesWeapons).toBe(numOfTilesWeapons);
+      expect(elixirsWeapons).toBe(numOfElixirsWeapons);
+      expect(shacklesWeapons).toBe(numOfShacklesWeapons);
+      expect(pillarsWeapons).toBe(numOfPillarsWeapons);
+      expect(magatamasWeapons).toBe(numOfMagatamasWeapons);
+      expect(gardensWeapons).toBe(numOfGardensWeapons);
+      expect(oniWeapons).toBe(numOfOniWeapons);
+      expect(mightsWeapons).toBe(numOfMightsWeapons);
+      expect(talismansWeapons).toBe(numOfTalismansWeapons);
+    })
+    .end(done);
+});
+
+test("return the correct number of Weapons based on elite enemy material", (done) => {
+  const numOfAbyssMagesWeapons = 23;
+  const numOfConsBeastsWeapons = 3;
+  const numOfFatuiMagesWeapons = 18;
+  const numOfFatuiAgentsWeapons = 16;
+  const numOfHilichurlRoguesWeapons = 2;
+  const numOfRuinMachinesWeapons = 21;
+  const numOfMirrorMaidensWeapons = 6;
+  const numOfMitachurlsWeapons = 22;
+  const numOfPrimalConsWeapons = 4;
+  const numOfRiftwolfWeapons = 6;
+  const numOfRuinDrakesWeapons = 5;
+  const numOfRuinSentsWeapons = 6;
+  const numOfShiftedFungiWeapons = 5;
+  const numOfBlackSerpentsWeapons = 5;
+  const numOfVishapsWeapons = 13;
+
+  request(app)
+    .get("/api/weapon")
+    .expect("Content-Type", /json/)
+    .expect(200)
+    .expect((res) => {
+      const arrayOfDataObjects: WeaponData[] = res.body;
+      let abyssMagesWeapons = 0;
+      let consBeastsWeapons = 0;
+      let fatuiMagesWeapons = 0;
+      let fatuiAgentsWeapons = 0;
+      let hilichurlRoguesWeapons = 0;
+      let ruinMachinesWeapons = 0;
+      let mirrorMaidensWeapons = 0;
+      let mitachurlsWeapons = 0;
+      let primalConsWeapons = 0;
+      let riftwolfWeapons = 0;
+      let ruinDrakesWeapons = 0;
+      let ruinSentsWeapons = 0;
+      let shiftedFungiWeapons = 0;
+      let blackSerpentsWeapons = 0;
+      let vishapsWeapons = 0;
+
+      arrayOfDataObjects.forEach((weapon) => {
+        if (weapon.elite_enemy_material === "Abyss Mage Materials") {
+          abyssMagesWeapons += 1;
+        } else if (
+          weapon.elite_enemy_material === "Consecrated Beast Materials"
+        ) {
+          consBeastsWeapons += 1;
+        } else if (
+          weapon.elite_enemy_material === "Fatui Cicin Mage Materials"
+        ) {
+          fatuiMagesWeapons += 1;
+        } else if (
+          weapon.elite_enemy_material === "Fatui Pyro Agent Materials"
+        ) {
+          fatuiAgentsWeapons += 1;
+        } else if (
+          weapon.elite_enemy_material === "Hilichurl Rogue Materials"
+        ) {
+          hilichurlRoguesWeapons += 1;
+        } else if (
+          weapon.elite_enemy_material === "Humanoid Ruin Machine Materials"
+        ) {
+          ruinMachinesWeapons += 1;
+        } else if (weapon.elite_enemy_material === "Mirror Maiden Materials") {
+          mirrorMaidensWeapons += 1;
+        } else if (weapon.elite_enemy_material === "Mitachurl Materials") {
+          mitachurlsWeapons += 1;
+        } else if (
+          weapon.elite_enemy_material === "Primal Construct Materials"
+        ) {
+          primalConsWeapons += 1;
+        } else if (weapon.elite_enemy_material === "Riftwolf Materials") {
+          riftwolfWeapons += 1;
+        } else if (weapon.elite_enemy_material === "Ruin Drake Materials") {
+          ruinDrakesWeapons += 1;
+        } else if (weapon.elite_enemy_material === "Ruin Sentinel Materials") {
+          ruinSentsWeapons += 1;
+        } else if (
+          weapon.elite_enemy_material === "State-Shifted Fungus Materials"
+        ) {
+          shiftedFungiWeapons += 1;
+        } else if (
+          weapon.elite_enemy_material === "The Black Serpents Materials"
+        ) {
+          blackSerpentsWeapons += 1;
+        } else if (weapon.elite_enemy_material === "Vishap Materials") {
+          vishapsWeapons += 1;
+        }
+      });
+
+      expect(abyssMagesWeapons).toBe(numOfAbyssMagesWeapons);
+      expect(consBeastsWeapons).toBe(numOfConsBeastsWeapons);
+      expect(fatuiMagesWeapons).toBe(numOfFatuiMagesWeapons);
+      expect(fatuiAgentsWeapons).toBe(numOfFatuiAgentsWeapons);
+      expect(hilichurlRoguesWeapons).toBe(numOfHilichurlRoguesWeapons);
+      expect(ruinMachinesWeapons).toBe(numOfRuinMachinesWeapons);
+      expect(mirrorMaidensWeapons).toBe(numOfMirrorMaidensWeapons);
+      expect(mitachurlsWeapons).toBe(numOfMitachurlsWeapons);
+      expect(primalConsWeapons).toBe(numOfPrimalConsWeapons);
+      expect(riftwolfWeapons).toBe(numOfRiftwolfWeapons);
+      expect(ruinDrakesWeapons).toBe(numOfRuinDrakesWeapons);
+      expect(ruinSentsWeapons).toBe(numOfRuinSentsWeapons);
+      expect(shiftedFungiWeapons).toBe(numOfShiftedFungiWeapons);
+      expect(blackSerpentsWeapons).toBe(numOfBlackSerpentsWeapons);
+      expect(vishapsWeapons).toBe(numOfVishapsWeapons);
+    })
+    .end(done);
+});
+
+test("return the correct number of Weapons based on common enemy material", (done) => {
+  const numOfFatuiSkirmsWeapons = 15;
+  const numOfFungiWeapons = 7;
+  const numOfHilichurlsWeapons = 16;
+  const numOfHiliShootersWeapons = 22;
+  const numOfNobushiWeapons = 9;
+  const numOfSamachurlsWeapons = 17;
+  const numOfSlimesWeapons = 21;
+  const numOfSpectersWeapons = 9;
+  const numOfEremitesWeapons = 8;
+  const numOfTreasHoardersWeapons = 19;
+  const numOfWhopperflowersWeapons = 12;
+
+  request(app)
+    .get("/api/weapon")
+    .expect("Content-Type", /json/)
+    .expect(200)
+    .expect((res) => {
+      const arrayOfDataObjects: WeaponData[] = res.body;
+      let fatuiSkirmsWeapons = 0;
+      let fungiWeapons = 0;
+      let hilichurlsWeapons = 0;
+      let hiliShootersWeapons = 0;
+      let nobushiWeapons = 0;
+      let samachurlsWeapons = 0;
+      let slimesWeapons = 0;
+      let spectersWeapons = 0;
+      let eremitesWeapons = 0;
+      let treasHoardersWeapons = 0;
+      let whopperflowersWeapons = 0;
+
+      arrayOfDataObjects.forEach((weapon) => {
+        if (weapon.common_enemy_material === "Fatui Skirmisher Materials") {
+          fatuiSkirmsWeapons += 1;
+        } else if (weapon.common_enemy_material === "Fungus Materials") {
+          fungiWeapons += 1;
+        } else if (weapon.common_enemy_material === "Hilichurl Materials") {
+          hilichurlsWeapons += 1;
+        } else if (
+          weapon.common_enemy_material === "Hilichurl Shooter Materials"
+        ) {
+          hiliShootersWeapons += 1;
+        } else if (weapon.common_enemy_material === "Nobushi Materials") {
+          nobushiWeapons += 1;
+        } else if (weapon.common_enemy_material === "Samachurl Materials") {
+          samachurlsWeapons += 1;
+        } else if (weapon.common_enemy_material === "Slime Materials") {
+          slimesWeapons += 1;
+        } else if (weapon.common_enemy_material === "Specter Materials") {
+          spectersWeapons += 1;
+        } else if (weapon.common_enemy_material === "The Eremites Materials") {
+          eremitesWeapons += 1;
+        } else if (
+          weapon.common_enemy_material === "Treasure Hoarder Materials"
+        ) {
+          treasHoardersWeapons += 1;
+        } else if (weapon.common_enemy_material === "Whopperflower Materials") {
+          whopperflowersWeapons += 1;
+        }
+      });
+
+      expect(fatuiSkirmsWeapons).toBe(numOfFatuiSkirmsWeapons);
+      expect(fungiWeapons).toBe(numOfFungiWeapons);
+      expect(hilichurlsWeapons).toBe(numOfHilichurlsWeapons);
+      expect(hiliShootersWeapons).toBe(numOfHiliShootersWeapons);
+      expect(nobushiWeapons).toBe(numOfNobushiWeapons);
+      expect(samachurlsWeapons).toBe(numOfSamachurlsWeapons);
+      expect(slimesWeapons).toBe(numOfSlimesWeapons);
+      expect(spectersWeapons).toBe(numOfSpectersWeapons);
+      expect(eremitesWeapons).toBe(numOfEremitesWeapons);
+      expect(treasHoardersWeapons).toBe(numOfTreasHoardersWeapons);
+      expect(whopperflowersWeapons).toBe(numOfWhopperflowersWeapons);
+    })
+    .end(done);
+});
+
+test("return the correct number of Weapons based on gacha or not", (done) => {
+  const numOfGachaWeapons = 80;
+  const numOfNonGachaWeapons = 75;
+
+  request(app)
+    .get("/api/weapon")
+    .expect("Content-Type", /json/)
+    .expect(200)
+    .expect((res) => {
+      const arrayOfDataObjects: WeaponData[] = res.body;
+      let gachaWeapons = 0;
+      let nonGachaWeapons = 0;
+
+      arrayOfDataObjects.forEach((weapon) => {
+        if (weapon.gacha) {
+          gachaWeapons += 1;
+        } else {
+          nonGachaWeapons += 1;
+        }
+      });
+
+      expect(gachaWeapons).toBe(numOfGachaWeapons);
+      expect(nonGachaWeapons).toBe(numOfNonGachaWeapons);
     })
     .end(done);
 });
