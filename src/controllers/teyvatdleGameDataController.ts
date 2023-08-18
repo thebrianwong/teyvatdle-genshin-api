@@ -174,10 +174,15 @@ const getDailyRecord: RequestHandler = async (req, res, next) => {
       .select([
         "daily_record.id AS daily_record_id",
         "daily_record.character_id AS character_id ",
+        "daily_record.character_solved AS character_solved ",
         "daily_record.weapon_id AS weapon_id ",
+        "daily_record.weapon_solved AS weapon_solved ",
         "daily_record.talent_id AS talent_id",
+        "daily_record.talent_solved AS talent_solved",
         "daily_record.constellation_id AS constellation_id",
+        "daily_record.constellation_solved AS constellation_solved",
         "daily_record.food_id AS food_id",
+        "daily_record.food_solved AS food_solved",
       ])
       .where("CAST(date AS DATE) = CAST(:date AS DATE)", {
         date: `${currentYear}-${currentMonth}-${currentDay}`,
