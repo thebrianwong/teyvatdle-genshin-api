@@ -256,7 +256,7 @@ const updateDailyRecord: RequestHandler = async (req, res, next) => {
           throw new Error(`There was an error updating daily record ${id}.`);
         }
       } else {
-        return res.status(500).send({
+        return res.status(400).send({
           message: "Unable to update past daily record.",
           success: false,
         });
