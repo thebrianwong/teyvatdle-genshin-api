@@ -116,7 +116,7 @@ const chooseTheDaily: (type: string) => Promise<number> = async (
   }
 };
 
-const createDailyRecord: RequestHandler = async (req, res, next) => {
+const createDailyRecord: () => Promise<void> = async () => {
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   try {
     const [
@@ -157,7 +157,8 @@ const createDailyRecord: RequestHandler = async (req, res, next) => {
       ])
       .returning("id")
       .execute();
-    res.send(newDailyRecordId.identifiers);
+    console.log("A new daily record has been created.");
+    console.log(`Daily Record ID ${newDailyRecordId.identifiers[0].id}.`);
   } catch (err) {
     throw new Error("There was an error creating a new daily record.");
   }
