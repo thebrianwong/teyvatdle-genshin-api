@@ -7,7 +7,7 @@ const createWebSocketServer = (server: Server) => {
   console.log("WebSocket server initialized.");
 
   wss.on("connection", () => {
-    console.log("WebSocket connection establish.");
+    console.log("WebSocket connection established.");
   });
 
   wss.on("updateSolvedValue", (type, data) => {
