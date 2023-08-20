@@ -3,6 +3,7 @@ import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import GameData from "../types/data/gameData.type";
 import DailyRecordData from "../types/data/dailyRecordData.type";
+import { RawData, WebSocket } from "ws";
 
 beforeAll(async () => {
   await configSetup("Teyvatdle Game Data");
@@ -299,4 +300,60 @@ test("attempting to patch a daily record from the past returns a 400 and corresp
       );
     })
     .end(done);
+});
+
+describe("WebSocket related tests", () => {
+  test("an updated daily record solved value is sent via WebSocket after patching the daily record", (done) => {
+    const wsConnection = new WebSocket("ws://localhost:3000");
+    let wsData: RawData;
+    wsConnection.on("message", (data) => {
+      wsData = data;
+    });
+
+    const validDailyRecordID = 38;
+
+    request(app)
+      .patch(`/api/teyvatdle/daily_record/${validDailyRecordID}/character`)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect(() => {
+        expect(wsData).toBeDefined();
+        wsConnection.terminate();
+      })
+      .end(done);
+  });
+
+  test("the updated value sent via WebSocket is greater than the value before the patch request by 1", (done) => {
+    const validDailyRecordID = 38;
+    let beforeCharacterSolved: number;
+
+    const wsConnection = new WebSocket("ws://localhost:3000");
+    let wsData: { character_solved: number };
+    wsConnection.on("message", async (data) => {
+      const parsedData: { character_solved: number } = await JSON.parse(
+        data.toString()
+      );
+      wsData = parsedData;
+    });
+
+    request(app)
+      .get("/api/teyvatdle/daily_record")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const beforeDailyRecord: DailyRecordData = res.body;
+        beforeCharacterSolved = beforeDailyRecord.character_solved;
+      })
+      .then(() => {
+        request(app)
+          .patch(`/api/teyvatdle/daily_record/${validDailyRecordID}/character`)
+          .expect("Content-Type", /json/)
+          .expect(200)
+          .expect(() => {
+            expect(wsData.character_solved).toBe(beforeCharacterSolved + 1);
+            wsConnection.terminate();
+          })
+          .end(done);
+      });
+  });
 });
