@@ -17,6 +17,7 @@ import teyvatdleGameDataRouter from "./routes/teyvatdleGameData";
 import createWebSocketServer from "./websockets/teyvatdleGameDataWebSocket";
 import realDataSource from "./postgres/postgresConfig";
 import testDataSource from "./postgres/postgresTestConfig";
+import { createDailyRecordJob } from "./cron/createDailyRecordCronJob";
 
 dotenv.config();
 
@@ -50,6 +51,12 @@ app.use("/api/character", characterRouter);
 app.use("/api/talent", talentRouter);
 app.use("/api/constellation", constellationRouter);
 app.use("/api/teyvatdle", teyvatdleGameDataRouter);
+
+createDailyRecordJob.start();
+
+console.log(
+  "Cron job is create a new daily record on a daily basis has been started."
+);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
