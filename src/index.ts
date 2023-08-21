@@ -18,6 +18,7 @@ import createWebSocketServer from "./websockets/teyvatdleGameDataWebSocket";
 import realDataSource from "./postgres/postgresConfig";
 import testDataSource from "./postgres/postgresTestConfig";
 import { createDailyRecordJob } from "./cron/createDailyRecordCronJob";
+import { preventServerSleepJob } from "./cron/preventServerSleepCronJob";
 
 dotenv.config();
 
@@ -55,8 +56,13 @@ app.use("/api/teyvatdle", teyvatdleGameDataRouter);
 createDailyRecordJob.start();
 
 console.log(
-  "Cron job is create a new daily record on a daily basis has been started."
+  "Cron job to create a new daily record on a daily basis has been started."
 );
+
+if (process.env.NODE_ENV === "PROD") {
+  preventServerSleepJob.start();
+  console.log("Cron job to prevent the server from sleeping has been started.");
+}
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
