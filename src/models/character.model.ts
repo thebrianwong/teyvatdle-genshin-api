@@ -87,4 +87,10 @@ export default class Character {
 
   @Column({ type: "text", name: "image_url" })
   imageUrl!: string;
+
+  @Column({ type: "text", name: "correct_image_url" })
+  correctImageUrl!: string;
+
+  @Column({ type: "text", name: "wrong_image_url" })
+  wrongImageUrl!: string;
 }

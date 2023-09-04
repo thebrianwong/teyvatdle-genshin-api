@@ -38,6 +38,8 @@ test("expect the non-null Character keys/columns are not null", (done) => {
             weapon_type: expect.anything(),
             ascension_stat: expect.anything(),
             character_image_url: expect.anything(),
+            character_correct_image_url: expect.anything(),
+            character_wrong_image_url: expect.anything(),
             local_specialty: expect.anything(),
             local_specialty_image_url: expect.anything(),
             enhancement_material: expect.anything(),
@@ -334,6 +336,8 @@ test("returned Character data has the correct types for values", (done) => {
           expect(data.birthday).toBeNull();
         }
         expect(typeof data.character_image_url).toBe("string");
+        expect(typeof data.character_correct_image_url).toBe("string");
+        expect(typeof data.character_wrong_image_url).toBe("string");
         expect(typeof data.local_specialty).toBe("string");
         expect(typeof data.local_specialty_image_url).toBe("string");
         expect(typeof data.enhancement_material).toBe("string");

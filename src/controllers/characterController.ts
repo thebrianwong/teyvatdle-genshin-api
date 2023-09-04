@@ -37,6 +37,8 @@ const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
         "stat.name AS ascension_stat",
         "character.birthday AS birthday",
         "character.imageUrl AS character_image_url",
+        "character.correctImageUrl AS character_correct_image_url",
+        "character.wrongImageUrl AS character_wrong_image_url",
         "local_specialty.name AS local_specialty",
         "local_specialty.imageUrl AS local_specialty_image_url",
         "enemy_drop.name AS enhancement_material",
@@ -59,6 +61,8 @@ const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
       .addGroupBy("ascension_stat")
       .addGroupBy("birthday")
       .addGroupBy("character_image_url")
+      .addGroupBy("character_correct_image_url")
+      .addGroupBy("character_wrong_image_url")
       .addGroupBy("local_specialty")
       .addGroupBy("local_specialty_image_url")
       .addGroupBy("enhancement_material")

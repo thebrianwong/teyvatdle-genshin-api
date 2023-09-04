@@ -15,6 +15,8 @@ type CharacterData = {
   ascension_stat: Stat;
   birthday: Date | null;
   character_image_url: string;
+  character_correct_image_url: string;
+  character_wrong_image_url: string;
   local_specialty: string;
   local_specialty_image_url: string;
   enhancement_material: string;
