@@ -5,7 +5,7 @@ type TalentData = {
   talent_name: string;
   talent_type: TalentType;
   talent_image_url: string;
-  character: string;
+  character_name: string;
   character_image_url: string;
 };
 

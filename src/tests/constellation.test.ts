@@ -32,7 +32,7 @@ test("expect none of the Constellation keys/columns are null", (done) => {
             constellation_name: expect.anything(),
             constellation_level: expect.anything(),
             constellation_image_url: expect.anything(),
-            character: expect.anything(),
+            character_name: expect.anything(),
             character_image_url: expect.anything(),
           }),
         ])
@@ -52,7 +52,7 @@ test("returned Constellation data has the correct types for values", (done) => {
         expect(typeof data.constellation_name).toBe("string");
         expect(typeof data.constellation_level).toBe("number");
         expect(typeof data.constellation_image_url).toBe("string");
-        expect(typeof data.character).toBe("string");
+        expect(typeof data.character_name).toBe("string");
         expect(typeof data.character_image_url).toBe("string");
       });
     })

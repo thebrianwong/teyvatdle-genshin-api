@@ -3,7 +3,7 @@ type ConstellationData = {
   constellation_name: string;
   constellation_level: number;
   constellation_image_url: string;
-  character: string;
+  character_name: string;
   character_image_url: string;
 };
 

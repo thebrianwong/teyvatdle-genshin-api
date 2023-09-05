@@ -16,7 +16,7 @@ const retrieveConstellationData: () => Promise<
         "constellation.name AS constellation_name",
         "constellation.level AS constellation_level",
         "constellation.imageUrl AS constellation_image_url",
-        "character.name AS character",
+        "character.name AS character_name",
         "character.imageUrl AS character_image_url",
       ])
       .orderBy({ constellation_id: "ASC" })

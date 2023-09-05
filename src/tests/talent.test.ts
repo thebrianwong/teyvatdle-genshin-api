@@ -33,7 +33,7 @@ test("expect none of the Talent keys/columns are null", (done) => {
             talent_name: expect.anything(),
             talent_type: expect.anything(),
             talent_image_url: expect.anything(),
-            character: expect.anything(),
+            character_name: expect.anything(),
             character_image_url: expect.anything(),
           }),
         ])
@@ -63,7 +63,7 @@ test("returned Talent data has the correct types for values", (done) => {
           "Passive",
         ]).toContain(data.talent_type);
         expect(typeof data.talent_image_url).toBe("string");
-        expect(typeof data.character).toBe("string");
+        expect(typeof data.character_name).toBe("string");
         expect(typeof data.character_image_url).toBe("string");
       });
     })
@@ -94,7 +94,7 @@ test("return the correct number of Talents", (done) => {
       let kokomiPassiveTalents = 0;
 
       arrayOfDataObjects.forEach((talent) => {
-        if (!travelerNames.includes(talent.character)) {
+        if (!travelerNames.includes(talent.character_name)) {
           nonTravelerTalents += 1;
         } else {
           travelerTalents += 1;

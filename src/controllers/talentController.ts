@@ -15,7 +15,7 @@ const retrieveTalentData: () => Promise<TalentData[]> = async () => {
         "talent.name AS talent_name",
         "talent_type.name AS talent_type",
         "talent.imageUrl AS talent_image_url",
-        "character.name AS character",
+        "character.name AS character_name",
         "character.imageUrl AS character_image_url",
       ])
       .orderBy({ talent_id: "ASC" })
