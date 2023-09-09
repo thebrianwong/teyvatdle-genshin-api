@@ -20,7 +20,7 @@ const retrieveFoodData: () => Promise<FoodData[]> = async () => {
         "food.event AS event",
         "food.imageUrl AS food_image_url",
       ])
-      .orderBy({ food_id: "ASC" })
+      .orderBy({ food_name: "ASC" })
       .getRawMany();
     return foods;
   } catch (err) {

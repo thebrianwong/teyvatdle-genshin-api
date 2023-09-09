@@ -71,7 +71,7 @@ const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
       .addGroupBy("ascension_boss_material_image_url")
       .addGroupBy("talent_boss_material")
       .addGroupBy("talent_boss_material_image_url")
-      .orderBy({ character_id: "ASC" })
+      .orderBy({ character_name: "ASC" })
       .getRawMany();
     return characters;
   } catch (err) {

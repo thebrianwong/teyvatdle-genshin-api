@@ -28,7 +28,7 @@ const retrieveWeaponData: () => Promise<WeaponData[]> = async () => {
         "common_enemy_drop.imageUrl AS common_enemy_material_image_url",
         "weapon.gacha AS gacha",
       ])
-      .orderBy({ weapon_id: "ASC" })
+      .orderBy({ weapon_name: "ASC" })
       .getRawMany();
     return weapons;
   } catch (err) {
