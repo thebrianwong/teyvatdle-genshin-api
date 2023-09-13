@@ -19,6 +19,7 @@ import realDataSource from "./postgres/postgresConfig";
 import testDataSource from "./postgres/postgresTestConfig";
 import { createDailyRecordJob } from "./cron/createDailyRecordCronJob";
 import { preventServerSleepJob } from "./cron/preventServerSleepCronJob";
+import cors from "cors";
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger("dev"));
+app.use(cors());
 
 app.use("/api/region", regionRouter);
 app.use("/api/local_specialty", localSpecialtyRouter);
