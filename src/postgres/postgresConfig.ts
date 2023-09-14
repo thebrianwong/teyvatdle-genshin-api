@@ -10,7 +10,7 @@ const realDataSource = new DataSource({
   username: process.env.PG_USERNAME,
   password: process.env.PG_PASSWORD,
   database: process.env.PG_DATABASE_NAME,
-  logging: true,
+  logging: false,
   entities: [__dirname + "/../models/**/*.model.js"],
   subscribers: [],
   migrations: [],
