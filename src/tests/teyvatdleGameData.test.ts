@@ -4,6 +4,7 @@ import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import GameData from "../types/data/gameData.type";
 import DailyRecordData from "../types/data/dailyRecordData.type";
 import { RawData, WebSocket } from "ws";
+import { WebSocketData } from "../types/data/webSocketData.type";
 
 beforeAll(async () => {
   await configSetup("Teyvatdle Game Data");
@@ -304,7 +305,7 @@ test("attempting to patch a daily record from the past returns a 400 and corresp
 
 describe("WebSocket related tests", () => {
   test("an updated daily record solved value is sent via WebSocket after patching the daily record", (done) => {
-    const wsConnection = new WebSocket("ws://localhost:3000");
+    const wsConnection = new WebSocket("ws://localhost:3001");
     let wsData: RawData;
     wsConnection.on("message", (data) => {
       wsData = data;
@@ -327,12 +328,10 @@ describe("WebSocket related tests", () => {
     const validDailyRecordID = 38;
     let beforeCharacterSolved: number;
 
-    const wsConnection = new WebSocket("ws://localhost:3000");
-    let wsData: { character_solved: number };
+    const wsConnection = new WebSocket("ws://localhost:3001");
+    let wsData: WebSocketData;
     wsConnection.on("message", async (data) => {
-      const parsedData: { character_solved: number } = await JSON.parse(
-        data.toString()
-      );
+      const parsedData: WebSocketData = await JSON.parse(data.toString());
       wsData = parsedData;
     });
 
@@ -350,7 +349,7 @@ describe("WebSocket related tests", () => {
           .expect("Content-Type", /json/)
           .expect(200)
           .expect(() => {
-            expect(wsData.character_solved).toBe(beforeCharacterSolved + 1);
+            expect(wsData.newSolvedValue).toBe(beforeCharacterSolved + 1);
             wsConnection.terminate();
           })
           .end(done);

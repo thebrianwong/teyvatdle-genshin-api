@@ -10,8 +10,8 @@ const createWebSocketServer = (server: Server) => {
     console.log("WebSocket connection established.");
   });
 
-  wss.on("updateSolvedValue", (type, data) => {
-    console.log(`Updated ${type}Solved to ${data[`${type}_solved`]}.`);
+  wss.on("updateSolvedValue", (data) => {
+    console.log(`Updated ${data.type}Solved to ${data.newSolvedValue}.`);
     wss.clients.forEach((client) => {
       client.send(JSON.stringify(data));
     });

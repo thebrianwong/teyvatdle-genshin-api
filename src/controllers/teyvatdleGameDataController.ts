@@ -20,6 +20,10 @@ import {
 import GameData from "../types/data/gameData.type";
 import TeyvatdleEntityRepo from "../types/teyvatdleEntityRepo.type";
 import DailyRecordData from "../types/data/dailyRecordData.type";
+import {
+  WebSocketData,
+  WebSocketDataKeys,
+} from "../types/data/webSocketData.type";
 
 const getGameData: RequestHandler = async (req, res, next) => {
   try {
@@ -196,7 +200,8 @@ const getDailyRecord: RequestHandler = async (req, res, next) => {
 };
 
 const updateDailyRecord: RequestHandler = async (req, res, next) => {
-  const { id, type } = req.params;
+  const { id } = req.params;
+  const type = req.params.type as WebSocketDataKeys;
   const validResources = [
     "character",
     "weapon",
@@ -247,9 +252,11 @@ const updateDailyRecord: RequestHandler = async (req, res, next) => {
             .returning(`${type}Solved`)
             .execute();
           const newSolvedValue = returnedUpdateResult.raw[0][`${type}_solved`];
-          webSocketServer.emit(`updateSolvedValue`, type, {
-            [`${type}_solved`]: newSolvedValue,
-          });
+          const dataObject: WebSocketData = {
+            type,
+            newSolvedValue,
+          };
+          webSocketServer.emit(`updateSolvedValue`, dataObject);
           return res
             .status(200)
             .send({ message: "Daily record updated.", success: true });
