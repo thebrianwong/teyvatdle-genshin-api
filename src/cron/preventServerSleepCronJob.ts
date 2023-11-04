@@ -7,7 +7,7 @@ dotenv.config();
 const serverDomain = process.env.DOMAIN;
 
 export const preventServerSleepJob = new CronJob(
-  "*/10 * * * * *",
+  "0 */10 * * * *",
   () => {
     https.get(`https://${serverDomain}/api/region`);
     console.log("Part of cron job to prevent server from sleeping.");
