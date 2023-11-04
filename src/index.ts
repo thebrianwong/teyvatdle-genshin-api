@@ -20,6 +20,8 @@ import testDataSource from "./postgres/postgresTestConfig";
 import { createDailyRecordJob } from "./cron/createDailyRecordCronJob";
 import { preventServerSleepJob } from "./cron/preventServerSleepCronJob";
 import cors from "cors";
+import compression from "compression";
+import helmet from "helmet";
 
 dotenv.config();
 
@@ -45,6 +47,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger("dev"));
 app.use(cors());
+app.use(compression());
+app.use(helmet());
 
 app.use("/api/region", regionRouter);
 app.use("/api/local_specialty", localSpecialtyRouter);
