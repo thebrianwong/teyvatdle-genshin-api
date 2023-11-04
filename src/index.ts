@@ -69,7 +69,7 @@ console.log(
   "Cron job to create a new daily record on a daily basis has been started."
 );
 
-if (process.env.NODE_ENV === "PROD") {
+if (process.env.NODE_ENV === "production") {
   preventServerSleepJob.start();
   console.log("Cron job to prevent the server from sleeping has been started.");
 }
