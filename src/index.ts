@@ -46,7 +46,11 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger("dev"));
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.TEYVATDLE_FRONTEND,
+  })
+);
 app.use(compression());
 app.use(helmet());
 
