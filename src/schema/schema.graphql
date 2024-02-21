@@ -63,6 +63,26 @@ enum Stat {
   PYRO_DMG_BONUS
 }
 
+enum FoodType {
+  ADVENTURERS_DISHES
+  RECOVERY_DISHES
+  DEF_BOOSTING_DISHES
+  ATK_BOOSTING_DISHES
+  POTIONS
+  ESSENTIAL_OILS
+}
+
+enum TalentType {
+  NORMAL_ATTACK
+  ELEMENTAL_SKILL
+  ALTERNATE_SPRINT
+  ELEMENTAL_BURST
+  FIRST_ASCENSION_PASSIVE
+  FOURTH_ASCENSION_PASSIVE
+  UTILITY_PASSIVE
+  PASSIVE
+}
+
 # types
 
 type CharacterData {
@@ -91,7 +111,89 @@ type CharacterData {
   talentBookImageUrl: [String!]!
 }
 
+type ConstellationData {
+  constellationId: ID!
+  constellationName: String!
+  constellationLevel: Int!
+  constellationImageUrl: String!
+  characterName: String!
+  characterImageUrl: String!
+}
+
+type DailyRecordData {
+  dailyRecordId: ID!
+  characterId: ID!
+  characterSolved: Int!
+  weaponId: ID!
+  weaponSolved: Int!
+  talentId: ID!
+  talentSolved: Int!
+  constellationId: ID!
+  constellationSolved: Int!
+  foodId: ID!
+  foodSolved: Int!
+}
+
+type FoodData {
+  foodId: ID!
+  foodName: String!
+  rarity: Int!
+  foodType: FoodType!
+  specialDish: Boolean!
+  purchasable: Boolean!
+  recipe: Boolean!
+  event: Boolean!
+  foodImageUrl: String!
+}
+
+type GameData {
+  characterData: [CharacterData!]!
+  weaponData: [WeaponData!]!
+  talentData: [TalentData!]!
+  constellationData: [ConstellationData!]!
+  foodData: [FoodData!]!
+}
+
+# not actually used but copying over for posterity
+type LocalSpecialtyData {
+  localSpecialty: String!
+  region: Region!
+  imageUrl: String!
+}
+
+# this isn't really used either but whatever
+type RegionData {
+  id: ID!
+  name: Region!
+}
+
+type TalentData {
+  talentId: ID!
+  talentName: String!
+  talentType: TalentType!
+  talentImageUrl: String!
+  characterName: String!
+  characterImageUrl: String!
+}
+
+type WeaponData {
+  weaponId: ID!
+  weaponName: String!
+  rarity: Int!
+  weaponType: WeaponType!
+  subStat: Stat
+  weaponImageURL: String!
+  weaponDomainMaterial: String!
+  weaponDomainMaterialImageUrl: String!
+  eliteEnemyMaterial: String!
+  eliteEnemyMaterialImageUrl: String!
+  commonEnemyMaterial: String!
+  commonEnemyMaterialImageUrl: String!
+  gacha: Boolean!
+}
+
 # query
 type Query {
-  characterData: CharacterData
+  gameData: GameData
+  dailyRecord: DailyRecordData
 }
