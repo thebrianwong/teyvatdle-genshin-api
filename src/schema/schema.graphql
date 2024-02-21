@@ -1,0 +1,97 @@
+# scalars
+
+scalar Date
+
+# enums
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum Height {
+  SHORT
+  MEDIUM
+  TALL
+}
+
+enum Region {
+  MONDSTADT
+  LIYUE
+  INAZUMA
+  SUMERU
+  FONTAINE
+  NATLAN
+  SNEZHNAYA
+}
+
+enum GenshinElement {
+  ANEMO
+  GEO
+  ELECTRO
+  DENDRO
+  HYDRO
+  PYRO
+  CRYO
+}
+
+enum WeaponType {
+  SWORD
+  CLAYMORE
+  POLEARM
+  CATALYST
+  BOW
+}
+
+enum Stat {
+  ANEMO_DMG_BONUS
+  ATK
+  CRIT_DMG
+  CRIT_RATE
+  CRYO_DMG_BONUS
+  DEF
+  DENDRO_DMG_BONUS
+  ELECTRO_DMG_BONUS
+  ELEMENTAL_MASTERY
+  ENERGY_RECHARGE
+  GEO_DMG_BONUS
+  HEALING_BONUS
+  HP
+  HYDRO_DMG_BONUS
+  PHYSICAL_DMG_BONUS
+  PYRO_DMG_BONUS
+}
+
+# types
+
+type CharacterData {
+  characterId: ID!
+  characterName: String!
+  gender: Gender!
+  height: Height!
+  rarity: Int!
+  region: Region
+  element: GenshinElement!
+  weaponType: WeaponType!
+  ascensionStat: Stat!
+  birthday: Date
+  characterImageUrl: String!
+  characterCorrectImageUrl: String!
+  characterWrongImageUrl: String!
+  localSpecialty: String!
+  localSpecialtyImageUrl: String!
+  enhancementMaterial: String!
+  enhancementMaterialImageUrl: String!
+  ascensionBossMaterial: String
+  ascensionBossMaterialImageUrl: String
+  talentBossMaterial: String!
+  talentBossMaterialImageUrl: String!
+  talentBook: [String!]!
+  talentBookImageUrl: [String!]!
+}
+
+# query
+type Query {
+  characterData: CharacterData
+}
