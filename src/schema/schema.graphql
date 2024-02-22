@@ -83,6 +83,15 @@ enum TalentType {
   PASSIVE
 }
 
+# not sure if will be needed
+enum WebSocketDataKeys {
+  CHARACTER
+  WEAPON
+  FOOD
+  TALENT
+  CONSTELLATION
+}
+
 # types
 
 type CharacterData {
@@ -190,6 +199,12 @@ type WeaponData {
   commonEnemyMaterial: String!
   commonEnemyMaterialImageUrl: String!
   gacha: Boolean!
+}
+
+# prob wont need
+type WebSocketData {
+  type: WebSocketDataKeys!
+  newSolvedValue: Int!
 }
 
 # query
