@@ -9,7 +9,7 @@
     "test": "TEST='true' jest --watchAll --detectOpenHandles",
     "coverage": "TEST='true' jest --detectOpenHandles --coverage",
     "build": "npm install && npm install --only=dev && tsc",
-    "codegen": "graphql-codegen --config codegen.ts"
+    "codegen": "graphql-codegen --config ./src/codegen.ts"
   },
   "keywords": [],
   "author": "",
@@ -34,6 +34,9 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/introspection": "4.0.3",
+    "@graphql-codegen/typescript": "4.0.6",
+    "@graphql-codegen/typescript-resolvers": "4.0.6",
     "@types/compression": "^1.7.4",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.14",
@@ -47,9 +50,6 @@
     "nodemon": "^3.0.1",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.1",
-    "typescript": "^5.3.3",
-    "@graphql-codegen/typescript": "4.0.5",
-    "@graphql-codegen/typescript-resolvers": "4.0.5",
-    "@graphql-codegen/introspection": "4.0.3"
+    "typescript": "^5.3.3"
   }
 }
