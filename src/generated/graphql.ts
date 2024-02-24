@@ -90,15 +90,6 @@ export enum FoodType {
   RecoveryDishes = 'RECOVERY_DISHES'
 }
 
-export type GameData = {
-  __typename?: 'GameData';
-  characterData: Array<CharacterData>;
-  constellationData: Array<ConstellationData>;
-  foodData: Array<FoodData>;
-  talentData: Array<TalentData>;
-  weaponData: Array<WeaponData>;
-};
-
 export enum Gender {
   Female = 'FEMALE',
   Male = 'MALE',
@@ -130,8 +121,14 @@ export type LocalSpecialtyData = {
 
 export type Query = {
   __typename?: 'Query';
-  dailyRecord?: Maybe<DailyRecordData>;
-  gameData?: Maybe<GameData>;
+  characterData: Array<CharacterData>;
+  constellationData: Array<ConstellationData>;
+  dailyRecord: DailyRecordData;
+  foodData: Array<FoodData>;
+  localSpecialtyData: Array<LocalSpecialtyData>;
+  regionData: Array<RegionData>;
+  talentData: Array<TalentData>;
+  weaponData: Array<WeaponData>;
 };
 
 export enum Region {
@@ -307,7 +304,6 @@ export type ResolversTypes = {
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   FoodData: ResolverTypeWrapper<FoodData>;
   FoodType: FoodType;
-  GameData: ResolverTypeWrapper<GameData>;
   Gender: Gender;
   GenshinElement: GenshinElement;
   Height: Height;
@@ -335,7 +331,6 @@ export type ResolversParentTypes = {
   DailyRecordData: DailyRecordData;
   Date: Scalars['Date']['output'];
   FoodData: FoodData;
-  GameData: GameData;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   LocalSpecialtyData: LocalSpecialtyData;
@@ -416,15 +411,6 @@ export type FoodDataResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type GameDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['GameData'] = ResolversParentTypes['GameData']> = {
-  characterData?: Resolver<Array<ResolversTypes['CharacterData']>, ParentType, ContextType>;
-  constellationData?: Resolver<Array<ResolversTypes['ConstellationData']>, ParentType, ContextType>;
-  foodData?: Resolver<Array<ResolversTypes['FoodData']>, ParentType, ContextType>;
-  talentData?: Resolver<Array<ResolversTypes['TalentData']>, ParentType, ContextType>;
-  weaponData?: Resolver<Array<ResolversTypes['WeaponData']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type LocalSpecialtyDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocalSpecialtyData'] = ResolversParentTypes['LocalSpecialtyData']> = {
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   localSpecialty?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -433,8 +419,14 @@ export type LocalSpecialtyDataResolvers<ContextType = any, ParentType extends Re
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  dailyRecord?: Resolver<Maybe<ResolversTypes['DailyRecordData']>, ParentType, ContextType>;
-  gameData?: Resolver<Maybe<ResolversTypes['GameData']>, ParentType, ContextType>;
+  characterData?: Resolver<Array<ResolversTypes['CharacterData']>, ParentType, ContextType>;
+  constellationData?: Resolver<Array<ResolversTypes['ConstellationData']>, ParentType, ContextType>;
+  dailyRecord?: Resolver<ResolversTypes['DailyRecordData'], ParentType, ContextType>;
+  foodData?: Resolver<Array<ResolversTypes['FoodData']>, ParentType, ContextType>;
+  localSpecialtyData?: Resolver<Array<ResolversTypes['LocalSpecialtyData']>, ParentType, ContextType>;
+  regionData?: Resolver<Array<ResolversTypes['RegionData']>, ParentType, ContextType>;
+  talentData?: Resolver<Array<ResolversTypes['TalentData']>, ParentType, ContextType>;
+  weaponData?: Resolver<Array<ResolversTypes['WeaponData']>, ParentType, ContextType>;
 };
 
 export type RegionDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['RegionData'] = ResolversParentTypes['RegionData']> = {
@@ -482,7 +474,6 @@ export type Resolvers<ContextType = any> = {
   DailyRecordData?: DailyRecordDataResolvers<ContextType>;
   Date?: GraphQLScalarType;
   FoodData?: FoodDataResolvers<ContextType>;
-  GameData?: GameDataResolvers<ContextType>;
   LocalSpecialtyData?: LocalSpecialtyDataResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RegionData?: RegionDataResolvers<ContextType>;

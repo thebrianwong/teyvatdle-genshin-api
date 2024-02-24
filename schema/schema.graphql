@@ -155,13 +155,13 @@ type FoodData {
   foodImageUrl: String!
 }
 
-type GameData {
-  characterData: [CharacterData!]!
-  weaponData: [WeaponData!]!
-  talentData: [TalentData!]!
-  constellationData: [ConstellationData!]!
-  foodData: [FoodData!]!
-}
+# type GameData {
+#   characterData: [CharacterData!]!
+#   weaponData: [WeaponData!]!
+#   talentData: [TalentData!]!
+#   constellationData: [ConstellationData!]!
+#   foodData: [FoodData!]!
+# }
 
 # not actually used but copying over for posterity
 type LocalSpecialtyData {
@@ -209,6 +209,13 @@ type WebSocketData {
 
 # query
 type Query {
-  gameData: GameData
-  dailyRecord: DailyRecordData
+  # gameData: GameData
+  characterData: [CharacterData!]!
+  constellationData: [ConstellationData!]!
+  dailyRecord: DailyRecordData!
+  foodData: [FoodData!]!
+  localSpecialtyData: [LocalSpecialtyData!]!
+  regionData: [RegionData!]!
+  talentData: [TalentData!]!
+  weaponData: [WeaponData!]!
 }
