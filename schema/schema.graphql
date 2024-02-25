@@ -5,91 +5,99 @@ scalar Date
 # enums
 
 enum Gender {
-  MALE
-  FEMALE
-  OTHER
+  Male
+  Female
+  Other
 }
 
 enum Height {
-  SHORT
-  MEDIUM
-  TALL
+  Tall
+  Medium
+  Short
 }
 
 enum Region {
-  MONDSTADT
-  LIYUE
-  INAZUMA
-  SUMERU
-  FONTAINE
-  NATLAN
-  SNEZHNAYA
+  # MONDSTADT
+  # LIYUE
+  # INAZUMA
+  # SUMERU
+  # FONTAINE
+  # NATLAN
+  # SNEZHNAYA
+  Mondstadt
+  Liyue
+  Inazuma
+  Sumeru
+  Fontaine
+  Natlan
+  Snezhnaya
 }
 
 enum GenshinElement {
-  ANEMO
-  GEO
-  ELECTRO
-  DENDRO
-  HYDRO
-  PYRO
-  CRYO
+  Anemo
+  Geo
+  Electro
+  Dendro
+  Hydro
+  Pyro
+  Cryo
 }
 
 enum WeaponType {
-  SWORD
-  CLAYMORE
-  POLEARM
-  CATALYST
-  BOW
+  Sword
+  Claymore
+  Polearm
+  Catalyst
+  Bow
 }
 
 enum Stat {
-  ANEMO_DMG_BONUS
+  Anemo_DMG_Bonus
   ATK
   CRIT_DMG
-  CRIT_RATE
-  CRYO_DMG_BONUS
+  CRIT_Rate
+  Cryo_DMG_Bonus
   DEF
-  DENDRO_DMG_BONUS
-  ELECTRO_DMG_BONUS
-  ELEMENTAL_MASTERY
-  ENERGY_RECHARGE
-  GEO_DMG_BONUS
-  HEALING_BONUS
+  Dendro_DMG_Bonus
+  Electro_DMG_Bonus
+  Elemental_Mastery
+  Energy_Recharge
+  Geo_DMG_Bonus
+  Healing_Bonus
   HP
-  HYDRO_DMG_BONUS
-  PHYSICAL_DMG_BONUS
-  PYRO_DMG_BONUS
+  Hydro_DMG_Bonus
+  Physical_DMG_Bonus
+  Pyro_DMG_Bonus
 }
 
 enum FoodType {
-  ADVENTURERS_DISHES
-  RECOVERY_DISHES
-  DEF_BOOSTING_DISHES
-  ATK_BOOSTING_DISHES
-  POTIONS
-  ESSENTIAL_OILS
+  Adventurers_Dishes
+  Recovery_Dishes
+  DEF_Boosting_dishes
+  ATK_Boosting_Dishes
+  Potions
+  Essential_Oils
 }
 
 enum TalentType {
-  NORMAL_ATTACK
-  ELEMENTAL_SKILL
-  ALTERNATE_SPRINT
-  ELEMENTAL_BURST
-  FIRST_ASCENSION_PASSIVE
-  FOURTH_ASCENSION_PASSIVE
-  UTILITY_PASSIVE
-  PASSIVE
+  Normal_Attack
+  Elemental_Skill
+  Alternate_Sprint
+  Elemental_Burst
+  # First_Ascension_Passive = "1st Ascension Passive"
+  First_Ascension_Passive
+  Fourth_Ascension_Passive
+  Utility_Passive
+  Passive
 }
 
 # not sure if will be needed
 enum WebSocketDataKeys {
-  CHARACTER
-  WEAPON
-  FOOD
-  TALENT
-  CONSTELLATION
+  Character
+  Weapon
+  Food
+  Talent
+  Constellation
 }
 
 # types

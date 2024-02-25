@@ -863,37 +863,37 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "ADVENTURERS_DISHES",
+            "name": "ATK_Boosting_Dishes",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "ATK_BOOSTING_DISHES",
+            "name": "Adventurers_Dishes",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "DEF_BOOSTING_DISHES",
+            "name": "DEF_Boosting_dishes",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "ESSENTIAL_OILS",
+            "name": "Essential_Oils",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "POTIONS",
+            "name": "Potions",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "RECOVERY_DISHES",
+            "name": "Recovery_Dishes",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -910,19 +910,19 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "FEMALE",
+            "name": "Female",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "MALE",
+            "name": "Male",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "OTHER",
+            "name": "Other",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -939,43 +939,43 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "ANEMO",
+            "name": "Anemo",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "CRYO",
+            "name": "Cryo",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "DENDRO",
+            "name": "Dendro",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "ELECTRO",
+            "name": "Electro",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "GEO",
+            "name": "Geo",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "HYDRO",
+            "name": "Hydro",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "PYRO",
+            "name": "Pyro",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -992,19 +992,19 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "MEDIUM",
+            "name": "Medium",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "SHORT",
+            "name": "Short",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "TALL",
+            "name": "Tall",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -1295,43 +1295,43 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "FONTAINE",
+            "name": "Fontaine",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "INAZUMA",
+            "name": "Inazuma",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "LIYUE",
+            "name": "Liyue",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "MONDSTADT",
+            "name": "Mondstadt",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "NATLAN",
+            "name": "Natlan",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "SNEZHNAYA",
+            "name": "Snezhnaya",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "SUMERU",
+            "name": "Sumeru",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -1391,13 +1391,13 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "ANEMO_DMG_BONUS",
+            "name": "ATK",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "ATK",
+            "name": "Anemo_DMG_Bonus",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -1409,13 +1409,13 @@
             "deprecationReason": null
           },
           {
-            "name": "CRIT_RATE",
+            "name": "CRIT_Rate",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "CRYO_DMG_BONUS",
+            "name": "Cryo_DMG_Bonus",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -1427,37 +1427,31 @@
             "deprecationReason": null
           },
           {
-            "name": "DENDRO_DMG_BONUS",
+            "name": "Dendro_DMG_Bonus",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "ELECTRO_DMG_BONUS",
+            "name": "Electro_DMG_Bonus",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "ELEMENTAL_MASTERY",
+            "name": "Elemental_Mastery",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "ENERGY_RECHARGE",
+            "name": "Energy_Recharge",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "GEO_DMG_BONUS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "HEALING_BONUS",
+            "name": "Geo_DMG_Bonus",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -1469,19 +1463,25 @@
             "deprecationReason": null
           },
           {
-            "name": "HYDRO_DMG_BONUS",
+            "name": "Healing_Bonus",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "PHYSICAL_DMG_BONUS",
+            "name": "Hydro_DMG_Bonus",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "PYRO_DMG_BONUS",
+            "name": "Physical_DMG_Bonus",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "Pyro_DMG_Bonus",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -1615,49 +1615,49 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "ALTERNATE_SPRINT",
+            "name": "Alternate_Sprint",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "ELEMENTAL_BURST",
+            "name": "Elemental_Burst",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "ELEMENTAL_SKILL",
+            "name": "Elemental_Skill",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "FIRST_ASCENSION_PASSIVE",
+            "name": "First_Ascension_Passive",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "FOURTH_ASCENSION_PASSIVE",
+            "name": "Fourth_Ascension_Passive",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "NORMAL_ATTACK",
+            "name": "Normal_Attack",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "PASSIVE",
+            "name": "Passive",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "UTILITY_PASSIVE",
+            "name": "Utility_Passive",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -1889,31 +1889,31 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "BOW",
+            "name": "Bow",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "CATALYST",
+            "name": "Catalyst",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "CLAYMORE",
+            "name": "Claymore",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "POLEARM",
+            "name": "Polearm",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "SWORD",
+            "name": "Sword",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -1973,31 +1973,31 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "CHARACTER",
+            "name": "Character",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "CONSTELLATION",
+            "name": "Constellation",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "FOOD",
+            "name": "Food",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "TALENT",
+            "name": "Talent",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "WEAPON",
+            "name": "Weapon",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

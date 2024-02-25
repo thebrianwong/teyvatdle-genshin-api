@@ -82,34 +82,34 @@ export type FoodData = {
 };
 
 export enum FoodType {
-  AdventurersDishes = 'ADVENTURERS_DISHES',
-  AtkBoostingDishes = 'ATK_BOOSTING_DISHES',
-  DefBoostingDishes = 'DEF_BOOSTING_DISHES',
-  EssentialOils = 'ESSENTIAL_OILS',
-  Potions = 'POTIONS',
-  RecoveryDishes = 'RECOVERY_DISHES'
+  AtkBoostingDishes = 'ATK_Boosting_Dishes',
+  AdventurersDishes = 'Adventurers_Dishes',
+  DefBoostingDishes = 'DEF_Boosting_dishes',
+  EssentialOils = 'Essential_Oils',
+  Potions = 'Potions',
+  RecoveryDishes = 'Recovery_Dishes'
 }
 
 export enum Gender {
-  Female = 'FEMALE',
-  Male = 'MALE',
-  Other = 'OTHER'
+  Female = 'Female',
+  Male = 'Male',
+  Other = 'Other'
 }
 
 export enum GenshinElement {
-  Anemo = 'ANEMO',
-  Cryo = 'CRYO',
-  Dendro = 'DENDRO',
-  Electro = 'ELECTRO',
-  Geo = 'GEO',
-  Hydro = 'HYDRO',
-  Pyro = 'PYRO'
+  Anemo = 'Anemo',
+  Cryo = 'Cryo',
+  Dendro = 'Dendro',
+  Electro = 'Electro',
+  Geo = 'Geo',
+  Hydro = 'Hydro',
+  Pyro = 'Pyro'
 }
 
 export enum Height {
-  Medium = 'MEDIUM',
-  Short = 'SHORT',
-  Tall = 'TALL'
+  Medium = 'Medium',
+  Short = 'Short',
+  Tall = 'Tall'
 }
 
 export type LocalSpecialtyData = {
@@ -132,13 +132,13 @@ export type Query = {
 };
 
 export enum Region {
-  Fontaine = 'FONTAINE',
-  Inazuma = 'INAZUMA',
-  Liyue = 'LIYUE',
-  Mondstadt = 'MONDSTADT',
-  Natlan = 'NATLAN',
-  Snezhnaya = 'SNEZHNAYA',
-  Sumeru = 'SUMERU'
+  Fontaine = 'Fontaine',
+  Inazuma = 'Inazuma',
+  Liyue = 'Liyue',
+  Mondstadt = 'Mondstadt',
+  Natlan = 'Natlan',
+  Snezhnaya = 'Snezhnaya',
+  Sumeru = 'Sumeru'
 }
 
 export type RegionData = {
@@ -148,22 +148,22 @@ export type RegionData = {
 };
 
 export enum Stat {
-  AnemoDmgBonus = 'ANEMO_DMG_BONUS',
   Atk = 'ATK',
+  AnemoDmgBonus = 'Anemo_DMG_Bonus',
   CritDmg = 'CRIT_DMG',
-  CritRate = 'CRIT_RATE',
-  CryoDmgBonus = 'CRYO_DMG_BONUS',
+  CritRate = 'CRIT_Rate',
+  CryoDmgBonus = 'Cryo_DMG_Bonus',
   Def = 'DEF',
-  DendroDmgBonus = 'DENDRO_DMG_BONUS',
-  ElectroDmgBonus = 'ELECTRO_DMG_BONUS',
-  ElementalMastery = 'ELEMENTAL_MASTERY',
-  EnergyRecharge = 'ENERGY_RECHARGE',
-  GeoDmgBonus = 'GEO_DMG_BONUS',
-  HealingBonus = 'HEALING_BONUS',
+  DendroDmgBonus = 'Dendro_DMG_Bonus',
+  ElectroDmgBonus = 'Electro_DMG_Bonus',
+  ElementalMastery = 'Elemental_Mastery',
+  EnergyRecharge = 'Energy_Recharge',
+  GeoDmgBonus = 'Geo_DMG_Bonus',
   Hp = 'HP',
-  HydroDmgBonus = 'HYDRO_DMG_BONUS',
-  PhysicalDmgBonus = 'PHYSICAL_DMG_BONUS',
-  PyroDmgBonus = 'PYRO_DMG_BONUS'
+  HealingBonus = 'Healing_Bonus',
+  HydroDmgBonus = 'Hydro_DMG_Bonus',
+  PhysicalDmgBonus = 'Physical_DMG_Bonus',
+  PyroDmgBonus = 'Pyro_DMG_Bonus'
 }
 
 export type TalentData = {
@@ -177,14 +177,14 @@ export type TalentData = {
 };
 
 export enum TalentType {
-  AlternateSprint = 'ALTERNATE_SPRINT',
-  ElementalBurst = 'ELEMENTAL_BURST',
-  ElementalSkill = 'ELEMENTAL_SKILL',
-  FirstAscensionPassive = 'FIRST_ASCENSION_PASSIVE',
-  FourthAscensionPassive = 'FOURTH_ASCENSION_PASSIVE',
-  NormalAttack = 'NORMAL_ATTACK',
-  Passive = 'PASSIVE',
-  UtilityPassive = 'UTILITY_PASSIVE'
+  AlternateSprint = 'Alternate_Sprint',
+  ElementalBurst = 'Elemental_Burst',
+  ElementalSkill = 'Elemental_Skill',
+  FirstAscensionPassive = 'First_Ascension_Passive',
+  FourthAscensionPassive = 'Fourth_Ascension_Passive',
+  NormalAttack = 'Normal_Attack',
+  Passive = 'Passive',
+  UtilityPassive = 'Utility_Passive'
 }
 
 export type WeaponData = {
@@ -205,11 +205,11 @@ export type WeaponData = {
 };
 
 export enum WeaponType {
-  Bow = 'BOW',
-  Catalyst = 'CATALYST',
-  Claymore = 'CLAYMORE',
-  Polearm = 'POLEARM',
-  Sword = 'SWORD'
+  Bow = 'Bow',
+  Catalyst = 'Catalyst',
+  Claymore = 'Claymore',
+  Polearm = 'Polearm',
+  Sword = 'Sword'
 }
 
 export type WebSocketData = {
@@ -219,11 +219,11 @@ export type WebSocketData = {
 };
 
 export enum WebSocketDataKeys {
-  Character = 'CHARACTER',
-  Constellation = 'CONSTELLATION',
-  Food = 'FOOD',
-  Talent = 'TALENT',
-  Weapon = 'WEAPON'
+  Character = 'Character',
+  Constellation = 'Constellation',
+  Food = 'Food',
+  Talent = 'Talent',
+  Weapon = 'Weapon'
 }
 
 
