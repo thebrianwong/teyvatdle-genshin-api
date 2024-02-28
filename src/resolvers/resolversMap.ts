@@ -17,6 +17,7 @@ import regionEnumsResolvers from "./enums/region";
 import statEnumsResolvers from "./enums/stat";
 import characterDataResolvers from "./queries/characterData";
 import queryResolvers from "./queries/query";
+import constellationDataResolvers from "./queries/constellationData";
 // import { getGameData } from "../controllers/teyvatdleGameDataController";
 
 const resolvers: Resolvers = {
@@ -32,6 +33,7 @@ const resolvers: Resolvers = {
   // queries
   Query: queryResolvers,
   CharacterData: characterDataResolvers,
+  ConstellationData: constellationDataResolvers,
 };
 
 export { resolvers };

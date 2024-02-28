@@ -1,6 +1,7 @@
 import { GraphQLResolveInfo } from "graphql";
 import { QueryResolvers } from "../../generated/graphql";
 import { retrieveCharacterData } from "../../controllers/characterController";
+import { retrieveConstellationData } from "../../controllers/constellationController";
 
 const queryResolvers: QueryResolvers<any, {}> = {
   characterData: (
@@ -9,6 +10,12 @@ const queryResolvers: QueryResolvers<any, {}> = {
     contextValue: any,
     info: GraphQLResolveInfo
   ) => retrieveCharacterData(),
+  constellationData: (
+    parent: any,
+    args: any,
+    contextValue: any,
+    info: GraphQLResolveInfo
+  ) => retrieveConstellationData(),
 };
 
 export default queryResolvers;
