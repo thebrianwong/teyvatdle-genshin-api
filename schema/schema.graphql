@@ -199,7 +199,7 @@ type WeaponData {
   rarity: Int!
   weaponType: WeaponType!
   subStat: Stat
-  weaponImageURL: String!
+  weaponImageUrl: String!
   weaponDomainMaterial: String!
   weaponDomainMaterialImageUrl: String!
   eliteEnemyMaterial: String!

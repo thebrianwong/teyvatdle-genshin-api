@@ -199,7 +199,7 @@ export type WeaponData = {
   weaponDomainMaterial: Scalars['String']['output'];
   weaponDomainMaterialImageUrl: Scalars['String']['output'];
   weaponId: Scalars['ID']['output'];
-  weaponImageURL: Scalars['String']['output'];
+  weaponImageUrl: Scalars['String']['output'];
   weaponName: Scalars['String']['output'];
   weaponType: WeaponType;
 };
@@ -456,7 +456,7 @@ export type WeaponDataResolvers<ContextType = any, ParentType extends ResolversP
   weaponDomainMaterial?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   weaponDomainMaterialImageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   weaponId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  weaponImageURL?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  weaponImageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   weaponName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   weaponType?: Resolver<ResolversTypes['WeaponType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

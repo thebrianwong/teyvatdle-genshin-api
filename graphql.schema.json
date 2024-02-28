@@ -1827,7 +1827,7 @@
             "deprecationReason": null
           },
           {
-            "name": "weaponImageURL",
+            "name": "weaponImageUrl",
             "description": null,
             "args": [],
             "type": {
