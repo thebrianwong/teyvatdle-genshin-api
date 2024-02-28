@@ -25,6 +25,7 @@ import talentTypeEnumsResolvers from "./enums/talentType";
 import foodDataResolvers from "./queries/foodData";
 import talentDataResolvers from "./queries/talentData";
 import weaponDataResolvers from "./queries/weaponData";
+import dailyRecordDataResolvers from "./queries/dailyRecordData";
 // import { getGameData } from "../controllers/teyvatdleGameDataController";
 
 const resolvers: Resolvers = {
@@ -48,6 +49,7 @@ const resolvers: Resolvers = {
   FoodData: foodDataResolvers,
   TalentData: talentDataResolvers,
   WeaponData: weaponDataResolvers,
+  DailyRecordData: dailyRecordDataResolvers,
 };
 
 export { resolvers };
