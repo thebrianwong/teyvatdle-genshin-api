@@ -3,6 +3,7 @@ import { QueryResolvers } from "../../generated/graphql";
 import { retrieveCharacterData } from "../../controllers/characterController";
 import { retrieveConstellationData } from "../../controllers/constellationController";
 import { retrieveFoodData } from "../../controllers/foodController";
+import { retrieveTalentData } from "../../controllers/talentController";
 
 const queryResolvers: QueryResolvers<any, {}> = {
   characterData: (
@@ -23,6 +24,12 @@ const queryResolvers: QueryResolvers<any, {}> = {
     contextValue: any,
     info: GraphQLResolveInfo
   ) => retrieveFoodData(),
+  talentData: (
+    parent: any,
+    args: any,
+    contextValue: any,
+    info: GraphQLResolveInfo
+  ) => retrieveTalentData(),
 };
 
 export default queryResolvers;

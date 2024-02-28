@@ -23,6 +23,7 @@ import weaponTypeEnumsResolvers from "./enums/weaponType";
 import foodTypeEnumsResolvers from "./enums/foodType";
 import talentTypeEnumsResolvers from "./enums/talentType";
 import foodDataResolvers from "./queries/foodData";
+import talentDataResolvers from "./queries/talentData";
 // import { getGameData } from "../controllers/teyvatdleGameDataController";
 
 const resolvers: Resolvers = {
@@ -44,6 +45,7 @@ const resolvers: Resolvers = {
   CharacterData: characterDataResolvers,
   ConstellationData: constellationDataResolvers,
   FoodData: foodDataResolvers,
+  TalentData: talentDataResolvers,
 };
 
 export { resolvers };
