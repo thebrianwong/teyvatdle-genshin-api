@@ -19,7 +19,8 @@ import {
 } from "../utils/normalizeDates";
 import GameData from "../types/data/gameData.type";
 import TeyvatdleEntityRepo from "../types/teyvatdleEntityRepo.type";
-import DailyRecordData from "../types/data/dailyRecordData.type";
+import DailyRecordData1 from "../types/data/dailyRecordData.type"; //old
+import { DailyRecordData } from "../generated/graphql";
 import {
   WebSocketData,
   WebSocketDataKeys,
@@ -35,7 +36,7 @@ const getGameData: RequestHandler = async (req, res, next) => {
         retrieveConstellationData(),
         retrieveFoodData(),
       ]);
-    const gameData: GameData = {
+    const gameData = {
       characterData,
       weaponData,
       talentData,
@@ -168,32 +169,32 @@ const createDailyRecord: () => Promise<void> = async () => {
   }
 };
 
-const getDailyRecord: RequestHandler = async (req, res, next) => {
+const getDailyRecord: () => Promise<DailyRecordData> = async () => {
   const currentYear = normalizeYear();
   const currentMonth = normalizeMonth();
   const currentDay = normalizeDay();
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   try {
-    const dailyRecord: DailyRecordData | undefined = await dailyRecordRepo
+    const dailyRecord = await dailyRecordRepo
       .createQueryBuilder("daily_record")
       .select([
-        "daily_record.id AS daily_record_id",
-        "daily_record.character_id AS character_id ",
-        "daily_record.character_solved AS character_solved ",
-        "daily_record.weapon_id AS weapon_id ",
-        "daily_record.weapon_solved AS weapon_solved ",
-        "daily_record.talent_id AS talent_id",
-        "daily_record.talent_solved AS talent_solved",
-        "daily_record.constellation_id AS constellation_id",
-        "daily_record.constellation_solved AS constellation_solved",
-        "daily_record.food_id AS food_id",
-        "daily_record.food_solved AS food_solved",
+        'daily_record.id AS "dailyRecordId"',
+        'daily_record.character_id AS "characterId"',
+        'daily_record.character_solved AS "characterSolved"',
+        'daily_record.weapon_id AS "weaponId"',
+        'daily_record.weapon_solved AS "weaponSolved"',
+        'daily_record.talent_id AS "talentId"',
+        'daily_record.talent_solved AS "talentSolved"',
+        'daily_record.constellation_id AS "constellationId"',
+        'daily_record.constellation_solved AS "constellationSolved"',
+        'daily_record.food_id AS "foodId"',
+        'daily_record.food_solved AS "foodSolved"',
       ])
       .where("CAST(date AS DATE) = CAST(:date AS DATE)", {
         date: `${currentYear}-${currentMonth}-${currentDay}`,
       })
       .getRawOne();
-    res.send(dailyRecord);
+    return dailyRecord as DailyRecordData;
   } catch (err) {
     throw new Error("There was an error querying today's daily record.");
   }
