@@ -4,6 +4,7 @@ import { retrieveCharacterData } from "../../controllers/characterController";
 import { retrieveConstellationData } from "../../controllers/constellationController";
 import { retrieveFoodData } from "../../controllers/foodController";
 import { retrieveTalentData } from "../../controllers/talentController";
+import { retrieveWeaponData } from "../../controllers/weaponController";
 
 const queryResolvers: QueryResolvers<any, {}> = {
   characterData: (
@@ -30,6 +31,12 @@ const queryResolvers: QueryResolvers<any, {}> = {
     contextValue: any,
     info: GraphQLResolveInfo
   ) => retrieveTalentData(),
+  weaponData: (
+    parent: any,
+    args: any,
+    contextValue: any,
+    info: GraphQLResolveInfo
+  ) => retrieveWeaponData(),
 };
 
 export default queryResolvers;
