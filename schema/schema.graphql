@@ -73,7 +73,7 @@ enum Stat {
 enum FoodType {
   Adventurers_Dishes
   Recovery_Dishes
-  DEF_Boosting_dishes
+  DEF_Boosting_Dishes
   ATK_Boosting_Dishes
   Potions
   Essential_Oils

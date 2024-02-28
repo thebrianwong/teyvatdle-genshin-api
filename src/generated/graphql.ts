@@ -84,7 +84,7 @@ export type FoodData = {
 export enum FoodType {
   AtkBoostingDishes = 'ATK_Boosting_Dishes',
   AdventurersDishes = 'Adventurers_Dishes',
-  DefBoostingDishes = 'DEF_Boosting_dishes',
+  DefBoostingDishes = 'DEF_Boosting_Dishes',
   EssentialOils = 'Essential_Oils',
   Potions = 'Potions',
   RecoveryDishes = 'Recovery_Dishes'
