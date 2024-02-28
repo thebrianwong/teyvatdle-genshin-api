@@ -1,7 +1,8 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Talent from "../models/talent.model";
-import TalentData from "../types/data/talentData.type";
+// import TalentData from "../types/data/talentData.type";
+import { TalentData } from "../generated/graphql";
 
 const retrieveTalentData: () => Promise<TalentData[]> = async () => {
   const talentRepo = AppDataSource.getRepository(Talent);
@@ -11,14 +12,14 @@ const retrieveTalentData: () => Promise<TalentData[]> = async () => {
       .innerJoin("talent.characterId", "character")
       .innerJoin("talent.typeId", "talent_type")
       .select([
-        "talent.id AS talent_id",
-        "talent.name AS talent_name",
-        "talent_type.name AS talent_type",
-        "talent.imageUrl AS talent_image_url",
-        "character.name AS character_name",
-        "character.imageUrl AS character_image_url",
+        'talent.id AS "talentId"',
+        'talent.name AS "talentName"',
+        'talent_type.name AS "talentType"',
+        'talent.imageUrl AS "talentImageUrl"',
+        'character.name AS "characterName"',
+        'character.imageUrl AS "characterImageUrl"',
       ])
-      .orderBy({ talent_id: "ASC" })
+      .orderBy({ '"talentId"': "ASC" })
       .getRawMany();
     return talents;
   } catch (err) {
