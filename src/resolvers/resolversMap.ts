@@ -18,6 +18,10 @@ import statEnumsResolvers from "./enums/stat";
 import characterDataResolvers from "./queries/characterData";
 import queryResolvers from "./queries/query";
 import constellationDataResolvers from "./queries/constellationData";
+import genshinElementEnumsResolvers from "./enums/genshinElement";
+import weaponTypeEnumsResolvers from "./enums/weaponType";
+import foodTypeEnumsResolvers from "./enums/foodType";
+import talentTypeEnumsResolvers from "./enums/talentType";
 // import { getGameData } from "../controllers/teyvatdleGameDataController";
 
 const resolvers: Resolvers = {
@@ -25,10 +29,14 @@ const resolvers: Resolvers = {
   // @ts-ignore
 
   // enums
+  FoodType: foodTypeEnumsResolvers,
   Gender: genderEnumsResolvers,
+  GenshinElement: genshinElementEnumsResolvers,
   Height: heightEnumsResolvers,
   Region: regionEnumsResolvers,
   Stat: statEnumsResolvers,
+  TalentType: talentTypeEnumsResolvers,
+  WeaponType: weaponTypeEnumsResolvers,
 
   // queries
   Query: queryResolvers,
