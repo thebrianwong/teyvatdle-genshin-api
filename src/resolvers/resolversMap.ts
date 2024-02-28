@@ -22,6 +22,7 @@ import genshinElementEnumsResolvers from "./enums/genshinElement";
 import weaponTypeEnumsResolvers from "./enums/weaponType";
 import foodTypeEnumsResolvers from "./enums/foodType";
 import talentTypeEnumsResolvers from "./enums/talentType";
+import foodDataResolvers from "./queries/foodData";
 // import { getGameData } from "../controllers/teyvatdleGameDataController";
 
 const resolvers: Resolvers = {
@@ -42,6 +43,7 @@ const resolvers: Resolvers = {
   Query: queryResolvers,
   CharacterData: characterDataResolvers,
   ConstellationData: constellationDataResolvers,
+  FoodData: foodDataResolvers,
 };
 
 export { resolvers };
