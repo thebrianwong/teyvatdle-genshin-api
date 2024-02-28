@@ -1,7 +1,8 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Constellation from "../models/constellation.model";
-import ConstellationData from "../types/data/constellationData.type";
+// import ConstellationData from "../types/data/constellationData.type";
+import { ConstellationData } from "../generated/graphql";
 
 const retrieveConstellationData: () => Promise<
   ConstellationData[]
@@ -12,14 +13,15 @@ const retrieveConstellationData: () => Promise<
       .createQueryBuilder("constellation")
       .innerJoin("constellation.characterId", "character")
       .select([
-        "constellation.id AS constellation_id",
-        "constellation.name AS constellation_name",
-        "constellation.level AS constellation_level",
-        "constellation.imageUrl AS constellation_image_url",
-        "character.name AS character_name",
-        "character.imageUrl AS character_image_url",
+        'constellation.id AS "constellationId"',
+        'constellation.name AS "constellationName"',
+        'constellation.level AS "constellationLevel"',
+        'constellation.imageUrl AS "constellationImageUrl"',
+        'constellation.character_id AS "characterId"',
+        'character.name AS "characterName"',
+        'character.imageUrl AS "characterImageUrl"',
       ])
-      .orderBy({ constellation_id: "ASC" })
+      .orderBy({ '"constellationId"': "ASC" })
       .getRawMany();
     return constellations;
   } catch (err) {
