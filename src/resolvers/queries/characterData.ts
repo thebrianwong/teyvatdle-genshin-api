@@ -1,3 +1,5 @@
+import { retrieveSingleCharacterData } from "../../controllers/characterController";
+import { retrieveCharactersTalentData } from "../../controllers/talentController";
 import { CharacterData, CharacterDataResolvers } from "../../generated/graphql";
 
 const characterDataResolvers: CharacterDataResolvers<any, CharacterData> = {
@@ -28,6 +30,12 @@ const characterDataResolvers: CharacterDataResolvers<any, CharacterData> = {
   talentBossMaterialImageUrl: (parent) => parent.talentBossMaterialImageUrl,
   talentBook: (parent) => parent.talentBook,
   talentBookImageUrl: (parent) => parent.talentBookImageUrl,
+  talents: async (parent) => {
+    return await retrieveCharactersTalentData(
+      "characterName",
+      parent.characterName
+    );
+  },
 };
 
 export default characterDataResolvers;

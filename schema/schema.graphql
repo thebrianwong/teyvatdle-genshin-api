@@ -126,6 +126,8 @@ type CharacterData {
   talentBossMaterialImageUrl: String!
   talentBook: [String!]!
   talentBookImageUrl: [String!]!
+  talents: [TalentData!]!
+  constellations: [ConstellationData!]!
 }
 
 type ConstellationData {

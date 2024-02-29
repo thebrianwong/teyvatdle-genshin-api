@@ -27,6 +27,7 @@ export type CharacterData = {
   characterImageUrl: Scalars['String']['output'];
   characterName: Scalars['String']['output'];
   characterWrongImageUrl: Scalars['String']['output'];
+  constellations: Array<ConstellationData>;
   element: GenshinElement;
   enhancementMaterial: Scalars['String']['output'];
   enhancementMaterialImageUrl: Scalars['String']['output'];
@@ -40,6 +41,7 @@ export type CharacterData = {
   talentBookImageUrl: Array<Scalars['String']['output']>;
   talentBossMaterial: Scalars['String']['output'];
   talentBossMaterialImageUrl: Scalars['String']['output'];
+  talents: Array<TalentData>;
   weaponType: WeaponType;
 };
 
@@ -364,6 +366,7 @@ export type CharacterDataResolvers<ContextType = any, ParentType extends Resolve
   characterImageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   characterName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   characterWrongImageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  constellations?: Resolver<Array<ResolversTypes['ConstellationData']>, ParentType, ContextType>;
   element?: Resolver<ResolversTypes['GenshinElement'], ParentType, ContextType>;
   enhancementMaterial?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   enhancementMaterialImageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -377,6 +380,7 @@ export type CharacterDataResolvers<ContextType = any, ParentType extends Resolve
   talentBookImageUrl?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   talentBossMaterial?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   talentBossMaterialImageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  talents?: Resolver<Array<ResolversTypes['TalentData']>, ParentType, ContextType>;
   weaponType?: Resolver<ResolversTypes['WeaponType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
