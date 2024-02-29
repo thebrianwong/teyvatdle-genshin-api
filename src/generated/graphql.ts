@@ -43,6 +43,11 @@ export type CharacterData = {
   weaponType: WeaponType;
 };
 
+export type CharacterFilter = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type ConstellationData = {
   __typename?: 'ConstellationData';
   characterImageUrl: Scalars['String']['output'];
@@ -129,6 +134,11 @@ export type Query = {
   regionData: Array<RegionData>;
   talentData: Array<TalentData>;
   weaponData: Array<WeaponData>;
+};
+
+
+export type QueryCharacterDataArgs = {
+  filter?: InputMaybe<CharacterFilter>;
 };
 
 export enum Region {
@@ -299,6 +309,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CharacterData: ResolverTypeWrapper<CharacterData>;
+  CharacterFilter: CharacterFilter;
   ConstellationData: ResolverTypeWrapper<ConstellationData>;
   DailyRecordData: ResolverTypeWrapper<DailyRecordData>;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
@@ -327,6 +338,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   CharacterData: CharacterData;
+  CharacterFilter: CharacterFilter;
   ConstellationData: ConstellationData;
   DailyRecordData: DailyRecordData;
   Date: Scalars['Date']['output'];
@@ -419,7 +431,7 @@ export type LocalSpecialtyDataResolvers<ContextType = any, ParentType extends Re
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  characterData?: Resolver<Array<ResolversTypes['CharacterData']>, ParentType, ContextType>;
+  characterData?: Resolver<Array<ResolversTypes['CharacterData']>, ParentType, ContextType, Partial<QueryCharacterDataArgs>>;
   constellationData?: Resolver<Array<ResolversTypes['ConstellationData']>, ParentType, ContextType>;
   dailyRecord?: Resolver<ResolversTypes['DailyRecordData'], ParentType, ContextType>;
   foodData?: Resolver<Array<ResolversTypes['FoodData']>, ParentType, ContextType>;

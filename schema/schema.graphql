@@ -215,10 +215,15 @@ type WebSocketData {
   newSolvedValue: Int!
 }
 
+input CharacterFilter {
+  id: ID
+  name: String
+}
+
 # query
 type Query {
   # gameData: GameData
-  characterData: [CharacterData!]!
+  characterData(filter: CharacterFilter): [CharacterData!]!
   constellationData: [ConstellationData!]!
   dailyRecord: DailyRecordData!
   foodData: [FoodData!]!
