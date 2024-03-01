@@ -48,6 +48,7 @@ export type CharacterData = {
 export type CharacterFilter = {
   id?: InputMaybe<Scalars['ID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  random?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type ConstellationData = {

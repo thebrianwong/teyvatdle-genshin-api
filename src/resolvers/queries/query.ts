@@ -2,6 +2,7 @@ import { GraphQLError, GraphQLResolveInfo } from "graphql";
 import { QueryResolvers } from "../../generated/graphql";
 import {
   retrieveCharacterData,
+  retrieveRandomCharacterData,
   retrieveSingleCharacterData,
 } from "../../controllers/characterController";
 import { retrieveConstellationData } from "../../controllers/constellationController";
@@ -26,7 +27,7 @@ const queryResolvers: QueryResolvers<any, {}> = {
         },
       });
     } else if (args.filter) {
-      if ("id" in args.filter && "name" in args.filter) {
+      if (Object.keys(args.filter).length > 1) {
         throw new GraphQLError("Please enter a single filter value.", {
           extensions: {
             code: "BAD_USER_INPUT",
@@ -44,6 +45,8 @@ const queryResolvers: QueryResolvers<any, {}> = {
         }
       } else if (args.filter.name) {
         return retrieveSingleCharacterData("name", args.filter.name);
+      } else if (args.filter.random) {
+        return retrieveRandomCharacterData();
       }
     }
     return retrieveCharacterData();

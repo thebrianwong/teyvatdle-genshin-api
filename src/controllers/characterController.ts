@@ -166,9 +166,23 @@ const retrieveSingleCharacterData: (
   }
 };
 
+const retrieveRandomCharacterData: () => Promise<
+  CharacterData[]
+> = async () => {
+  const characters = await retrieveCharacterData();
+  const randomIndex = Math.trunc(Math.random() * characters.length);
+  const randomCharacter = characters[randomIndex];
+  return [randomCharacter];
+};
+
 const getCharacters: RequestHandler = async (req, res, next) => {
   const characterData = await retrieveCharacterData();
   res.send(characterData);
 };
 
-export { getCharacters, retrieveCharacterData, retrieveSingleCharacterData };
+export {
+  getCharacters,
+  retrieveCharacterData,
+  retrieveSingleCharacterData,
+  retrieveRandomCharacterData,
+};
