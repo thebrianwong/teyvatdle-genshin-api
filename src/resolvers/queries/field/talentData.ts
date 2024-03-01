@@ -1,4 +1,4 @@
-import { TalentData, TalentDataResolvers } from "../../generated/graphql";
+import { TalentData, TalentDataResolvers } from "../../../generated/graphql";
 
 const talentDataResolvers: TalentDataResolvers<any, TalentData> = {
   talentId: (parent) => parent.talentId,

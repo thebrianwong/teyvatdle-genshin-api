@@ -1,7 +1,7 @@
 import {
   ConstellationData,
   ConstellationDataResolvers,
-} from "../../generated/graphql";
+} from "../../../generated/graphql";
 
 const constellationDataResolvers: ConstellationDataResolvers<
   any,

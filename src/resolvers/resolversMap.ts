@@ -15,17 +15,17 @@ import genderEnumsResolvers from "./enums/gender";
 import heightEnumsResolvers from "./enums/height";
 import regionEnumsResolvers from "./enums/region";
 import statEnumsResolvers from "./enums/stat";
-import characterDataResolvers from "./queries/characterData";
+import characterDataResolvers from "./queries/field/characterData";
 import queryResolvers from "./queries/query";
-import constellationDataResolvers from "./queries/constellationData";
+import constellationDataResolvers from "./queries/field/constellationData";
 import genshinElementEnumsResolvers from "./enums/genshinElement";
 import weaponTypeEnumsResolvers from "./enums/weaponType";
 import foodTypeEnumsResolvers from "./enums/foodType";
 import talentTypeEnumsResolvers from "./enums/talentType";
-import foodDataResolvers from "./queries/foodData";
-import talentDataResolvers from "./queries/talentData";
-import weaponDataResolvers from "./queries/weaponData";
-import dailyRecordDataResolvers from "./queries/dailyRecordData";
+import foodDataResolvers from "./queries/field/foodData";
+import talentDataResolvers from "./queries/field/talentData";
+import weaponDataResolvers from "./queries/field/weaponData";
+import dailyRecordDataResolvers from "./queries/field/dailyRecordData";
 // import { getGameData } from "../controllers/teyvatdleGameDataController";
 
 const resolvers: Resolvers = {

@@ -1,4 +1,4 @@
-import { FoodData, FoodDataResolvers } from "../../generated/graphql";
+import { FoodData, FoodDataResolvers } from "../../../generated/graphql";
 
 const foodDataResolvers: FoodDataResolvers<any, FoodData> = {
   foodId: (parent) => parent.foodId,

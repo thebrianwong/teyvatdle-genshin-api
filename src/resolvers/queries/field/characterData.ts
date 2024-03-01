@@ -1,7 +1,10 @@
-import { retrieveSingleCharacterData } from "../../controllers/characterController";
-import { retrieveCharactersConstellationData } from "../../controllers/constellationController";
-import { retrieveCharactersTalentData } from "../../controllers/talentController";
-import { CharacterData, CharacterDataResolvers } from "../../generated/graphql";
+import { retrieveSingleCharacterData } from "../../../controllers/characterController";
+import { retrieveCharactersConstellationData } from "../../../controllers/constellationController";
+import { retrieveCharactersTalentData } from "../../../controllers/talentController";
+import {
+  CharacterData,
+  CharacterDataResolvers,
+} from "../../../generated/graphql";
 
 const characterDataResolvers: CharacterDataResolvers<any, CharacterData> = {
   characterId: (parent) => parent.characterId,
