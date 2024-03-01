@@ -217,7 +217,7 @@ type WebSocketData {
   newSolvedValue: Int!
 }
 
-input CharacterFilter {
+input SearchFilter {
   id: ID
   name: String
   random: Boolean
@@ -226,7 +226,7 @@ input CharacterFilter {
 # query
 type Query {
   # gameData: GameData
-  characterData(filter: CharacterFilter): [CharacterData!]!
+  characterData(filter: SearchFilter): [CharacterData!]!
   constellationData: [ConstellationData!]!
   dailyRecord: DailyRecordData!
   foodData: [FoodData!]!

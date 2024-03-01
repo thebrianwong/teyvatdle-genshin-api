@@ -45,12 +45,6 @@ export type CharacterData = {
   weaponType: WeaponType;
 };
 
-export type CharacterFilter = {
-  id?: InputMaybe<Scalars['ID']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  random?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
 export type ConstellationData = {
   __typename?: 'ConstellationData';
   characterImageUrl: Scalars['String']['output'];
@@ -141,7 +135,7 @@ export type Query = {
 
 
 export type QueryCharacterDataArgs = {
-  filter?: InputMaybe<CharacterFilter>;
+  filter?: InputMaybe<SearchFilter>;
 };
 
 export enum Region {
@@ -158,6 +152,12 @@ export type RegionData = {
   __typename?: 'RegionData';
   id: Scalars['ID']['output'];
   name: Region;
+};
+
+export type SearchFilter = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  random?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export enum Stat {
@@ -312,7 +312,6 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CharacterData: ResolverTypeWrapper<CharacterData>;
-  CharacterFilter: CharacterFilter;
   ConstellationData: ResolverTypeWrapper<ConstellationData>;
   DailyRecordData: ResolverTypeWrapper<DailyRecordData>;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
@@ -327,6 +326,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Region: Region;
   RegionData: ResolverTypeWrapper<RegionData>;
+  SearchFilter: SearchFilter;
   Stat: Stat;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   TalentData: ResolverTypeWrapper<TalentData>;
@@ -341,7 +341,6 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   CharacterData: CharacterData;
-  CharacterFilter: CharacterFilter;
   ConstellationData: ConstellationData;
   DailyRecordData: DailyRecordData;
   Date: Scalars['Date']['output'];
@@ -351,6 +350,7 @@ export type ResolversParentTypes = {
   LocalSpecialtyData: LocalSpecialtyData;
   Query: {};
   RegionData: RegionData;
+  SearchFilter: SearchFilter;
   String: Scalars['String']['output'];
   TalentData: TalentData;
   WeaponData: WeaponData;
