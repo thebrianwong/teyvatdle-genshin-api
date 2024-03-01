@@ -40,10 +40,10 @@ const queryResolvers: QueryResolvers<any, {}> = {
             },
           });
         } else {
-          return await retrieveSingleCharacterData("id", args.filter.id);
+          return retrieveSingleCharacterData("id", args.filter.id);
         }
       } else if (args.filter.name) {
-        return await retrieveSingleCharacterData("name", args.filter.name);
+        return retrieveSingleCharacterData("name", args.filter.name);
       }
     }
     return retrieveCharacterData();
