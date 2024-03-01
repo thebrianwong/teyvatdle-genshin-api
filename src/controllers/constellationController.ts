@@ -29,9 +29,47 @@ const retrieveConstellationData: () => Promise<
   }
 };
 
+const retrieveCharactersConstellationData: (
+  filterType: "id" | "characterName",
+  searchValue: String
+) => Promise<ConstellationData[]> = async (filterType, searchValue) => {
+  const constellationRepo = AppDataSource.getRepository(Constellation);
+  try {
+    const baseQuery = constellationRepo
+      .createQueryBuilder("constellation")
+      .innerJoin("constellation.characterId", "character")
+      .select([
+        'constellation.id AS "constellationId"',
+        'constellation.name AS "constellationName"',
+        'constellation.level AS "constellationLevel"',
+        'constellation.imageUrl AS "constellationImageUrl"',
+        'constellation.character_id AS "characterId"',
+        'character.name AS "characterName"',
+        'character.imageUrl AS "characterImageUrl"',
+      ]);
+    if (filterType === "id") {
+      baseQuery.where("constellation.id = :id", { id: Number(searchValue) });
+    } else if (filterType === "characterName") {
+      baseQuery.where("character.name = :characterName", {
+        characterName: searchValue,
+      });
+    }
+    const constellations: ConstellationData[] = await baseQuery
+      .orderBy({ '"constellationId"': "ASC" })
+      .getRawMany();
+    return constellations;
+  } catch (err) {
+    throw new Error("There was an error querying constellations.");
+  }
+};
+
 const getConstellations: RequestHandler = async (req, res, next) => {
   const constellationData = await retrieveConstellationData();
   res.send(constellationData);
 };
 
-export { getConstellations, retrieveConstellationData };
+export {
+  getConstellations,
+  retrieveConstellationData,
+  retrieveCharactersConstellationData,
+};

@@ -1,4 +1,5 @@
 import { retrieveSingleCharacterData } from "../../controllers/characterController";
+import { retrieveCharactersConstellationData } from "../../controllers/constellationController";
 import { retrieveCharactersTalentData } from "../../controllers/talentController";
 import { CharacterData, CharacterDataResolvers } from "../../generated/graphql";
 
@@ -32,6 +33,12 @@ const characterDataResolvers: CharacterDataResolvers<any, CharacterData> = {
   talentBookImageUrl: (parent) => parent.talentBookImageUrl,
   talents: async (parent) => {
     return await retrieveCharactersTalentData(
+      "characterName",
+      parent.characterName
+    );
+  },
+  constellations: async (parent) => {
+    return await retrieveCharactersConstellationData(
       "characterName",
       parent.characterName
     );
