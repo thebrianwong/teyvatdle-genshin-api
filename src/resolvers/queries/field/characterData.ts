@@ -1,5 +1,5 @@
 import { retrieveSingleCharacterData } from "../../../controllers/characterController";
-import { retrieveCharactersConstellationData } from "../../../controllers/constellationController";
+import { retrieveFilteredConstellationData } from "../../../controllers/constellationController";
 import { retrieveCharactersTalentData } from "../../../controllers/talentController";
 import {
   CharacterData,
@@ -41,7 +41,7 @@ const characterDataResolvers: CharacterDataResolvers<any, CharacterData> = {
     );
   },
   constellations: async (parent) => {
-    return await retrieveCharactersConstellationData(
+    return await retrieveFilteredConstellationData(
       "characterName",
       parent.characterName
     );

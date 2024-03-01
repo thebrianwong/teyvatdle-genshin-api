@@ -29,7 +29,7 @@ const retrieveConstellationData: () => Promise<
   }
 };
 
-const retrieveCharactersConstellationData: (
+const retrieveFilteredConstellationData: (
   filterType: "id" | "characterName",
   searchValue: String
 ) => Promise<ConstellationData[]> = async (filterType, searchValue) => {
@@ -71,5 +71,5 @@ const getConstellations: RequestHandler = async (req, res, next) => {
 export {
   getConstellations,
   retrieveConstellationData,
-  retrieveCharactersConstellationData,
+  retrieveFilteredConstellationData,
 };
