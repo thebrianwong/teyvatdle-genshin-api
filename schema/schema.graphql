@@ -232,6 +232,13 @@ input ConstellationSearchFilter {
   random: Boolean
 }
 
+input FoodSearchFilter {
+  id: ID
+  foodName: String
+  foodType: FoodType
+  random: Boolean
+}
+
 input TalentSearchFilter {
   id: ID
   talentName: String
@@ -245,7 +252,7 @@ type Query {
   characterData(filter: CharacterSearchFilter): [CharacterData!]!
   constellationData(filter: ConstellationSearchFilter): [ConstellationData!]!
   dailyRecord: DailyRecordData!
-  foodData: [FoodData!]!
+  foodData(filter: FoodSearchFilter): [FoodData!]!
   localSpecialtyData: [LocalSpecialtyData!]!
   regionData: [RegionData!]!
   talentData(filter: TalentSearchFilter): [TalentData!]!
