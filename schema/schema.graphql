@@ -227,7 +227,7 @@ input SearchFilter {
 type Query {
   # gameData: GameData
   characterData(filter: SearchFilter): [CharacterData!]!
-  constellationData: [ConstellationData!]!
+  constellationData(filter: SearchFilter): [ConstellationData!]!
   dailyRecord: DailyRecordData!
   foodData: [FoodData!]!
   localSpecialtyData: [LocalSpecialtyData!]!

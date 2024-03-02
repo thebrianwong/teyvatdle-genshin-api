@@ -63,6 +63,15 @@ const retrieveFilteredConstellationData: (
   }
 };
 
+const retrieveRandomConstellationData: () => Promise<
+  ConstellationData[]
+> = async () => {
+  const constellations = await retrieveConstellationData();
+  const randomIndex = Math.trunc(Math.random() * constellations.length);
+  const randomConstellation = constellations[randomIndex];
+  return [randomConstellation];
+};
+
 const getConstellations: RequestHandler = async (req, res, next) => {
   const constellationData = await retrieveConstellationData();
   res.send(constellationData);
@@ -72,4 +81,5 @@ export {
   getConstellations,
   retrieveConstellationData,
   retrieveFilteredConstellationData,
+  retrieveRandomConstellationData,
 };
