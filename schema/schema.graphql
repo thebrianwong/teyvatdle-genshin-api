@@ -219,7 +219,7 @@ type WebSocketData {
 
 input SearchFilter {
   id: ID
-  name: String
+  characterName: String
   random: Boolean
 }
 

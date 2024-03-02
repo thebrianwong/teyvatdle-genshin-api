@@ -81,7 +81,7 @@ const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
 };
 
 const retrieveSingleCharacterData: (
-  filterType: "id" | "name",
+  filterType: "id" | "characterName",
   searchValue: String
 ) => Promise<CharacterData[]> = async (filterType, searchValue) => {
   const characterRepo = AppDataSource.getRepository(Character);
@@ -132,7 +132,7 @@ const retrieveSingleCharacterData: (
 
     if (filterType === "id") {
       baseQuery.where("character.id = :id", { id: Number(searchValue) });
-    } else if (filterType === "name") {
+    } else if (filterType === "characterName") {
       baseQuery.where("character.name = :name", { name: searchValue });
     }
 

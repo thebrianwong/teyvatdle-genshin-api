@@ -46,15 +46,21 @@ const characterDataRootResolvers: (
           return retrieveSingleCharacterData("id", args.filter.id);
         }
       }
-    } else if ("name" in args.filter) {
-      if (args.filter.name === null || args.filter.name === undefined) {
+    } else if ("characterName" in args.filter) {
+      if (
+        args.filter.characterName === null ||
+        args.filter.characterName === undefined
+      ) {
         throw new GraphQLError("Invalid argument. Please enter a name value.", {
           extensions: {
             code: "BAD_USER_INPUT",
           },
         });
       } else {
-        return retrieveSingleCharacterData("name", args.filter.name);
+        return retrieveSingleCharacterData(
+          "characterName",
+          args.filter.characterName
+        );
       }
     } else if ("random" in args.filter) {
       if (args.filter.random) {
