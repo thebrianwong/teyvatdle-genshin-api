@@ -13,7 +13,7 @@ const queryResolvers: QueryResolvers<any, {}> = {
   foodData: foodDataRootResolvers,
   talentData: talentDataRootResolvers,
   weaponData: weaponDataRootResolvers,
-  dailyRecord: (
+  dailyRecordData: (
     parent: any,
     args: any,
     contextValue: any,
