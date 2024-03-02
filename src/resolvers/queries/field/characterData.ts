@@ -1,6 +1,6 @@
 import { retrieveSingleCharacterData } from "../../../controllers/characterController";
 import { retrieveFilteredConstellationData } from "../../../controllers/constellationController";
-import { retrieveCharactersTalentData } from "../../../controllers/talentController";
+import { retrieveFilteredTalentData } from "../../../controllers/talentController";
 import {
   CharacterData,
   CharacterDataResolvers,
@@ -35,7 +35,7 @@ const characterDataResolvers: CharacterDataResolvers<any, CharacterData> = {
   talentBook: (parent) => parent.talentBook,
   talentBookImageUrl: (parent) => parent.talentBookImageUrl,
   talents: async (parent) => {
-    return await retrieveCharactersTalentData(
+    return await retrieveFilteredTalentData(
       "characterName",
       parent.characterName
     );

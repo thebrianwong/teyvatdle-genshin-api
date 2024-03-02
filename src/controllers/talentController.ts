@@ -27,7 +27,7 @@ const retrieveTalentData: () => Promise<TalentData[]> = async () => {
   }
 };
 
-const retrieveCharactersTalentData: (
+const retrieveFilteredTalentData: (
   filterType: "id" | "characterName",
   searchValue: String
 ) => Promise<TalentData[]> = async (filterType, searchValue) => {
@@ -67,4 +67,4 @@ const getTalents: RequestHandler = async (req, res, next) => {
   res.send(talentData);
 };
 
-export { getTalents, retrieveTalentData, retrieveCharactersTalentData };
+export { getTalents, retrieveTalentData, retrieveFilteredTalentData };
