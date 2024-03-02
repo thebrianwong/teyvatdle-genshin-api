@@ -28,7 +28,7 @@ const retrieveTalentData: () => Promise<TalentData[]> = async () => {
 };
 
 const retrieveFilteredTalentData: (
-  filterType: "id" | "characterName",
+  filterType: "id" | "talentName" | "characterName",
   searchValue: String
 ) => Promise<TalentData[]> = async (filterType, searchValue) => {
   const talentRepo = AppDataSource.getRepository(Talent);
@@ -48,6 +48,8 @@ const retrieveFilteredTalentData: (
 
     if (filterType === "id") {
       baseQuery.where("talent.id = :id", { id: Number(searchValue) });
+    } else if (filterType === "talentName") {
+      baseQuery.where("talent.name = :talentName", { talentName: searchValue });
     } else if (filterType === "characterName") {
       baseQuery.where("character.name = :characterName", {
         characterName: searchValue,
@@ -62,9 +64,21 @@ const retrieveFilteredTalentData: (
   }
 };
 
+const retrieveRandomTalentData: () => Promise<TalentData[]> = async () => {
+  const talents = await retrieveTalentData();
+  const randomIndex = Math.trunc(Math.random() * talents.length);
+  const randomTalent = talents[randomIndex];
+  return [randomTalent];
+};
+
 const getTalents: RequestHandler = async (req, res, next) => {
   const talentData = await retrieveTalentData();
   res.send(talentData);
 };
 
-export { getTalents, retrieveTalentData, retrieveFilteredTalentData };
+export {
+  getTalents,
+  retrieveTalentData,
+  retrieveFilteredTalentData,
+  retrieveRandomTalentData,
+};

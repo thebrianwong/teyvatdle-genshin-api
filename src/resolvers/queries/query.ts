@@ -1,11 +1,11 @@
 import { GraphQLResolveInfo } from "graphql";
 import { QueryResolvers } from "../../generated/graphql";
 import { retrieveFoodData } from "../../controllers/foodController";
-import { retrieveTalentData } from "../../controllers/talentController";
 import { retrieveWeaponData } from "../../controllers/weaponController";
 import { getDailyRecord } from "../../controllers/teyvatdleGameDataController";
 import characterDataRootResolvers from "./root/characterData";
 import constellationDataRootResolvers from "./root/constellationData";
+import talentDataRootResolvers from "./root/talentData";
 
 const queryResolvers: QueryResolvers<any, {}> = {
   characterData: characterDataRootResolvers,
@@ -16,12 +16,7 @@ const queryResolvers: QueryResolvers<any, {}> = {
     contextValue: any,
     info: GraphQLResolveInfo
   ) => retrieveFoodData(),
-  talentData: (
-    parent: any,
-    args: any,
-    contextValue: any,
-    info: GraphQLResolveInfo
-  ) => retrieveTalentData(),
+  talentData: talentDataRootResolvers,
   weaponData: (
     parent: any,
     args: any,
