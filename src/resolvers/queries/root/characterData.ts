@@ -30,7 +30,7 @@ const characterDataRootResolvers: (
       });
     } else if ("id" in args.filter) {
       if (args.filter.id === null || args.filter.id === undefined) {
-        throw new GraphQLError("Invalid argument. Please enter an id value.", {
+        throw new GraphQLError("Invalid argument. Please enter an id.", {
           extensions: {
             code: "BAD_USER_INPUT",
           },
@@ -51,11 +51,14 @@ const characterDataRootResolvers: (
         args.filter.characterName === null ||
         args.filter.characterName === undefined
       ) {
-        throw new GraphQLError("Invalid argument. Please enter a name value.", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-          },
-        });
+        throw new GraphQLError(
+          "Invalid argument. Please enter a character name.",
+          {
+            extensions: {
+              code: "BAD_USER_INPUT",
+            },
+          }
+        );
       } else {
         return retrieveSingleCharacterData(
           "characterName",
