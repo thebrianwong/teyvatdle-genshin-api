@@ -37,9 +37,67 @@ const retrieveWeaponData: () => Promise<WeaponData[]> = async () => {
   }
 };
 
+const retrieveFilteredWeaponData: (
+  filterType: "id" | "weaponName" | "weaponType",
+  searchValue: String
+) => Promise<WeaponData[]> = async (filterType, searchValue) => {
+  const weaponRepo = AppDataSource.getRepository(Weapon);
+  try {
+    const baseQuery = weaponRepo
+      .createQueryBuilder("weapon")
+      .innerJoin("weapon.typeId", "weapon_type")
+      .leftJoin("weapon.subStatId", "stat")
+      .innerJoin("weapon.weaponDomainMaterialId", "weapon_domain_material")
+      .innerJoin("weapon.eliteEnemyMaterialId", "elite_enemy_drop")
+      .innerJoin("weapon.commonEnemyMaterialId", "common_enemy_drop")
+      .select([
+        'weapon.id AS "weaponId"',
+        'weapon.name AS "weaponName"',
+        "weapon.rarity AS rarity",
+        'weapon_type.name AS "weaponType"',
+        'stat.name AS "subStat"',
+        'weapon.imageUrl AS "weaponImageUrl"',
+        'weapon_domain_material.name AS "weaponDomainMaterial"',
+        'weapon_domain_material.imageUrl AS "weaponDomainMaterialImageUrl"',
+        'elite_enemy_drop.name AS "eliteEnemyMaterial"',
+        'elite_enemy_drop.imageUrl AS "eliteEnemyMaterialImageUrl"',
+        'common_enemy_drop.name AS "commonEnemyMaterial"',
+        'common_enemy_drop.imageUrl AS "commonEnemyMaterialImageUrl"',
+        "weapon.gacha AS gacha",
+      ]);
+    if (filterType === "id") {
+      baseQuery.where("weapon.id = :id", { id: searchValue });
+    } else if (filterType === "weaponName") {
+      baseQuery.where("weapon.name = :weaponName", { weaponName: searchValue });
+    } else if (filterType === "weaponType") {
+      baseQuery.where("weapon_type.name = :weaponType", {
+        weaponType: searchValue,
+      });
+    }
+    const weapons: WeaponData[] = await baseQuery
+      .orderBy({ '"weaponName"': "ASC" })
+      .getRawMany();
+    return weapons;
+  } catch (err) {
+    throw new Error("There was an error querying weapons.");
+  }
+};
+
+const retrieveRandomWeaponData: () => Promise<WeaponData[]> = async () => {
+  const weapons = await retrieveWeaponData();
+  const randomIndex = Math.trunc(Math.random() * weapons.length);
+  const randomWeapon = weapons[randomIndex];
+  return [randomWeapon];
+};
+
 const getWeapons: RequestHandler = async (req, res, next) => {
   const weaponData = await retrieveWeaponData();
   res.send(weaponData);
 };
 
-export { getWeapons, retrieveWeaponData };
+export {
+  getWeapons,
+  retrieveWeaponData,
+  retrieveFilteredWeaponData,
+  retrieveRandomWeaponData,
+};

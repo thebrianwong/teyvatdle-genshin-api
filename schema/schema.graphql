@@ -246,6 +246,13 @@ input TalentSearchFilter {
   random: Boolean
 }
 
+input WeaponSearchFilter {
+  id: ID
+  weaponName: String
+  weaponType: WeaponType
+  random: Boolean
+}
+
 # query
 type Query {
   # gameData: GameData
@@ -256,5 +263,5 @@ type Query {
   localSpecialtyData: [LocalSpecialtyData!]!
   regionData: [RegionData!]!
   talentData(filter: TalentSearchFilter): [TalentData!]!
-  weaponData: [WeaponData!]!
+  weaponData(filter: WeaponSearchFilter): [WeaponData!]!
 }
