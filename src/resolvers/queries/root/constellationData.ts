@@ -51,6 +51,25 @@ const constellationDataRootResolvers: (
           return retrieveFilteredConstellationData("id", args.filter.id);
         }
       }
+    } else if ("constellationName" in args.filter) {
+      if (
+        args.filter.constellationName === null ||
+        args.filter.constellationName === undefined
+      ) {
+        throw new GraphQLError(
+          "Invalid argument. Please enter a constellation name.",
+          {
+            extensions: {
+              code: "BAD_USER_INPUT",
+            },
+          }
+        );
+      } else {
+        return retrieveFilteredConstellationData(
+          "constellationName",
+          args.filter.constellationName
+        );
+      }
     } else if ("characterName" in args.filter) {
       if (
         args.filter.characterName === null ||

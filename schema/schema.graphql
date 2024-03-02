@@ -223,8 +223,9 @@ input CharacterSearchFilter {
   random: Boolean
 }
 
-input SearchFilter {
+input ConstellationSearchFilter {
   id: ID
+  constellationName: String
   characterName: String
   random: Boolean
 }
@@ -233,7 +234,7 @@ input SearchFilter {
 type Query {
   # gameData: GameData
   characterData(filter: CharacterSearchFilter): [CharacterData!]!
-  constellationData(filter: SearchFilter): [ConstellationData!]!
+  constellationData(filter: ConstellationSearchFilter): [ConstellationData!]!
   dailyRecord: DailyRecordData!
   foodData: [FoodData!]!
   localSpecialtyData: [LocalSpecialtyData!]!

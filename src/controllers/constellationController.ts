@@ -30,7 +30,7 @@ const retrieveConstellationData: () => Promise<
 };
 
 const retrieveFilteredConstellationData: (
-  filterType: "id" | "characterName",
+  filterType: "id" | "constellationName" | "characterName",
   searchValue: String
 ) => Promise<ConstellationData[]> = async (filterType, searchValue) => {
   const constellationRepo = AppDataSource.getRepository(Constellation);
@@ -49,6 +49,10 @@ const retrieveFilteredConstellationData: (
       ]);
     if (filterType === "id") {
       baseQuery.where("constellation.id = :id", { id: Number(searchValue) });
+    } else if (filterType === "constellationName") {
+      baseQuery.where("constellation.name = :constellationName", {
+        constellationName: searchValue,
+      });
     } else if (filterType === "characterName") {
       baseQuery.where("character.name = :characterName", {
         characterName: searchValue,
