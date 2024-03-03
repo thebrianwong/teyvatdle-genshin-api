@@ -26,6 +26,7 @@ import foodDataResolvers from "./queries/field/foodData";
 import talentDataResolvers from "./queries/field/talentData";
 import weaponDataResolvers from "./queries/field/weaponData";
 import dailyRecordDataResolvers from "./queries/field/dailyRecordData";
+import gameDataTypeEnumsResolvers from "./enums/gameDataType";
 // import { getGameData } from "../controllers/teyvatdleGameDataController";
 
 const resolvers: Resolvers = {
@@ -34,6 +35,7 @@ const resolvers: Resolvers = {
 
   // enums
   FoodType: foodTypeEnumsResolvers,
+  GameDataType: gameDataTypeEnumsResolvers,
   Gender: genderEnumsResolvers,
   GenshinElement: genshinElementEnumsResolvers,
   Height: heightEnumsResolvers,

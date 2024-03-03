@@ -91,8 +91,7 @@ enum TalentType {
   Passive
 }
 
-# not sure if will be needed
-enum WebSocketDataKeys {
+enum GameDataType {
   Character
   Weapon
   Food
@@ -213,7 +212,7 @@ type WeaponData {
 
 # prob wont need
 type WebSocketData {
-  type: WebSocketDataKeys!
+  # type: WebSocketDataKeys!
   newSolvedValue: Int!
 }
 
