@@ -210,9 +210,8 @@ type WeaponData {
   gacha: Boolean!
 }
 
-# prob wont need
-type WebSocketData {
-  # type: WebSocketDataKeys!
+type UpdatedSolvedValue {
+  type: GameDataType!
   newSolvedValue: Int!
 }
 
@@ -268,4 +267,10 @@ type Query {
 # mutation
 type Mutation {
   updateDailyRecord(id: ID!, type: GameDataType!): String!
+}
+
+# subscription
+
+type Subscription {
+  dailyRecordUpdated: UpdatedSolvedValue!
 }

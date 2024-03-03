@@ -28,6 +28,8 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import { expressMiddleware } from "@apollo/server/express4";
 import { resolvers } from "./graphql/resolversMap";
 import WebSocket from "ws";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { useServer } from "graphql-ws/lib/use/ws";
 
 dotenv.config();
 
@@ -103,12 +105,27 @@ const main = async () => {
     encoding: "utf-8",
   });
 
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+  webSocketServer = createWebSocketServer(server);
+  const serverCleanup = useServer({ schema }, webSocketServer);
+
   const apolloServer = new ApolloServer<{
     token?: String | undefined;
   }>({
-    typeDefs,
-    resolvers,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer: server })],
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer: server }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
+    ],
   });
 
   await apolloServer.start();
@@ -121,8 +138,6 @@ const main = async () => {
   );
 
   // end graphql
-
-  webSocketServer = createWebSocketServer(server);
 
   app.use((req: Request, res: Response, next: NextFunction) => {
     next(createError(404));
