@@ -20,7 +20,7 @@ import {
 import GameData from "../types/data/gameData.type";
 import TeyvatdleEntityRepo from "../types/teyvatdleEntityRepo.type";
 import DailyRecordData1 from "../types/data/dailyRecordData.type"; //old
-import { DailyRecordData } from "../generated/graphql";
+import { DailyRecordData, GameDataType } from "../generated/graphql";
 import {
   WebSocketData,
   WebSocketDataKeys,
@@ -200,27 +200,13 @@ const getDailyRecord: () => Promise<DailyRecordData> = async () => {
   }
 };
 
-const updateDailyRecord: RequestHandler = async (req, res, next) => {
-  const { id } = req.params;
-  const type = req.params.type as WebSocketDataKeys;
-  const validResources = [
-    "character",
-    "weapon",
-    "talent",
-    "constellation",
-    "food",
-  ];
-  if (!validResources.includes(type)) {
-    return res
-      .status(400)
-      .send({ message: "That is not a valid resource.", success: false });
-  }
-  // If the id param is not even a number, this skips having to query the database
-  if (isNaN(Number(id))) {
-    return res
-      .status(404)
-      .send({ message: "That daily record does not exist.", success: false });
-  }
+const updateDailyRecord: (
+  id: String,
+  gameDataType: GameDataType
+) => Promise<{ message: string; success: Boolean }> = async (
+  id,
+  gameDataType
+) => {
   const currentYear = normalizeYear();
   const currentMonth = normalizeMonth();
   const currentDay = normalizeDay();
@@ -232,9 +218,10 @@ const updateDailyRecord: RequestHandler = async (req, res, next) => {
       .where("id = :id", { id })
       .getRawOne();
     if (targetDailyRecord === undefined) {
-      return res
-        .status(404)
-        .send({ message: "That daily record does not exist.", success: false });
+      return {
+        message: "Invalid id number. That daily record does not exist.",
+        success: false,
+      };
     } else {
       const dailyRecordDate = targetDailyRecord.date;
       if (
@@ -247,28 +234,32 @@ const updateDailyRecord: RequestHandler = async (req, res, next) => {
             .createQueryBuilder()
             .update()
             .set({
-              [`${type}Solved`]: () => `${type}Solved + 1`,
+              [`${gameDataType}Solved`]: () => `${gameDataType}Solved + 1`,
             })
             .where("id = :id", { id })
-            .returning(`${type}Solved`)
+            .returning(`${gameDataType}Solved`)
             .execute();
-          const newSolvedValue = returnedUpdateResult.raw[0][`${type}_solved`];
-          const dataObject: WebSocketData = {
-            type,
-            newSolvedValue,
+          const newSolvedValue =
+            returnedUpdateResult.raw[0][`${gameDataType}_solved`];
+
+          // const dataObject: WebSocketData = {
+          //   type,
+          //   newSolvedValue,
+          // };
+          // webSocketServer.emit(`updateSolvedValue`, dataObject);
+
+          return {
+            message: `Daily record updated. ${gameDataType}: ${newSolvedValue}`,
+            success: true,
           };
-          webSocketServer.emit(`updateSolvedValue`, dataObject);
-          return res
-            .status(200)
-            .send({ message: "Daily record updated.", success: true });
         } catch (err) {
           throw new Error(`There was an error updating daily record ${id}.`);
         }
       } else {
-        return res.status(400).send({
+        return {
           message: "Unable to update past daily record.",
           success: false,
-        });
+        };
       }
     }
   } catch (err) {

@@ -264,3 +264,8 @@ type Query {
   talentData(filter: TalentSearchFilter): [TalentData!]!
   weaponData(filter: WeaponSearchFilter): [WeaponData!]!
 }
+
+# mutation
+type Mutation {
+  updateDailyRecord(id: ID!, type: GameDataType!): String!
+}

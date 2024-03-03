@@ -26,6 +26,7 @@ import foodDataResolvers from "./queries/field/foodData";
 import talentDataResolvers from "./queries/field/talentData";
 import weaponDataResolvers from "./queries/field/weaponData";
 import dailyRecordDataResolvers from "./queries/field/dailyRecordData";
+import mutations from "./mutations/mutation";
 import gameDataTypeEnumsResolvers from "./enums/gameDataType";
 // import { getGameData } from "../controllers/teyvatdleGameDataController";
 
@@ -52,6 +53,9 @@ const resolvers: Resolvers = {
   TalentData: talentDataResolvers,
   WeaponData: weaponDataResolvers,
   DailyRecordData: dailyRecordDataResolvers,
+
+  // mutations
+  Mutation: mutations,
 };
 
 export { resolvers };
