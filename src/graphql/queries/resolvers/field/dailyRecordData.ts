@@ -1,7 +1,7 @@
 import {
   DailyRecordData,
   DailyRecordDataResolvers,
-} from "../../../generated/graphql";
+} from "../../../../generated/graphql";
 
 const dailyRecordDataResolvers: DailyRecordDataResolvers<any, DailyRecordData> =
   {

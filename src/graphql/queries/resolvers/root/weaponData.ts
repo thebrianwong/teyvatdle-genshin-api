@@ -1,17 +1,17 @@
 import { GraphQLError, GraphQLResolveInfo } from "graphql";
-import { FoodData, QueryFoodDataArgs } from "../../../generated/graphql";
+import { QueryWeaponDataArgs, WeaponData } from "../../../../generated/graphql";
 import {
-  retrieveFilteredFoodData,
-  retrieveFoodData,
-  retrieveRandomFoodData,
-} from "../../../controllers/foodController";
+  retrieveFilteredWeaponData,
+  retrieveRandomWeaponData,
+  retrieveWeaponData,
+} from "../../../../controllers/weaponController";
 
-const foodDataRootResolvers: (
+const weaponDataRootResolvers: (
   parent: any,
-  args: QueryFoodDataArgs,
+  args: QueryWeaponDataArgs,
   contextValue: any,
   info: GraphQLResolveInfo
-) => Promise<FoodData[]> = async (parent, args, contextValue, info) => {
+) => Promise<WeaponData[]> = async (parent, args, contextValue, info) => {
   if (args.filter === null) {
     throw new GraphQLError("Please enter a filter value.", {
       extensions: {
@@ -40,32 +40,44 @@ const foodDataRootResolvers: (
             },
           });
         } else {
-          return retrieveFilteredFoodData("id", args.filter.id);
+          return retrieveFilteredWeaponData("id", args.filter.id);
         }
       }
-    } else if ("foodName" in args.filter) {
-      if (args.filter.foodName === null || args.filter.foodName === undefined) {
-        throw new GraphQLError("Invalid argument. Please enter a food name.", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-          },
-        });
+    } else if ("weaponName" in args.filter) {
+      if (
+        args.filter.weaponName === null ||
+        args.filter.weaponName === undefined
+      ) {
+        throw new GraphQLError(
+          "Invalid argument. Please enter a weapon name.",
+          {
+            extensions: {
+              code: "BAD_USER_INPUT",
+            },
+          }
+        );
       } else {
-        return retrieveFilteredFoodData("foodName", args.filter.foodName);
+        return retrieveFilteredWeaponData("weaponName", args.filter.weaponName);
       }
-    } else if ("foodType" in args.filter) {
-      if (args.filter.foodType === null || args.filter.foodType === undefined) {
-        throw new GraphQLError("Invalid argument. Please enter a food type.", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-          },
-        });
+    } else if ("weaponType" in args.filter) {
+      if (
+        args.filter.weaponType === null ||
+        args.filter.weaponType === undefined
+      ) {
+        throw new GraphQLError(
+          "Invalid argument. Please enter a weapon type.",
+          {
+            extensions: {
+              code: "BAD_USER_INPUT",
+            },
+          }
+        );
       } else {
-        return retrieveFilteredFoodData("foodType", args.filter.foodType);
+        return retrieveFilteredWeaponData("weaponType", args.filter.weaponType);
       }
     } else if ("random" in args.filter) {
       if (args.filter.random) {
-        return retrieveRandomFoodData();
+        return retrieveRandomWeaponData();
       } else if (args.filter.random === null) {
         throw new GraphQLError(
           'Invalid argument. Please set the argument "random" to "true" or "false".',
@@ -78,7 +90,7 @@ const foodDataRootResolvers: (
       }
     }
   }
-  return retrieveFoodData();
+  return retrieveWeaponData();
 };
 
-export default foodDataRootResolvers;
+export default weaponDataRootResolvers;

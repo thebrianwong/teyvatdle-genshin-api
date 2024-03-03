@@ -1,17 +1,25 @@
 import { GraphQLError, GraphQLResolveInfo } from "graphql";
-import { QueryTalentDataArgs, TalentData } from "../../../generated/graphql";
 import {
-  retrieveFilteredTalentData,
-  retrieveRandomTalentData,
-  retrieveTalentData,
-} from "../../../controllers/talentController";
+  ConstellationData,
+  QueryConstellationDataArgs,
+} from "../../../../generated/graphql";
+import {
+  retrieveConstellationData,
+  retrieveFilteredConstellationData,
+  retrieveRandomConstellationData,
+} from "../../../../controllers/constellationController";
 
-const talentDataRootResolvers: (
+const constellationDataRootResolvers: (
   parent: any,
-  args: QueryTalentDataArgs,
+  args: QueryConstellationDataArgs,
   contextValue: any,
   info: GraphQLResolveInfo
-) => Promise<TalentData[]> = async (parent, args, contextValue, info) => {
+) => Promise<ConstellationData[]> = async (
+  parent,
+  args,
+  contextValue,
+  info
+) => {
   if (args.filter === null) {
     throw new GraphQLError("Please enter a filter value.", {
       extensions: {
@@ -40,16 +48,16 @@ const talentDataRootResolvers: (
             },
           });
         } else {
-          return retrieveFilteredTalentData("id", args.filter.id);
+          return retrieveFilteredConstellationData("id", args.filter.id);
         }
       }
-    } else if ("talentName" in args.filter) {
+    } else if ("constellationName" in args.filter) {
       if (
-        args.filter.talentName === null ||
-        args.filter.talentName === undefined
+        args.filter.constellationName === null ||
+        args.filter.constellationName === undefined
       ) {
         throw new GraphQLError(
-          "Invalid argument. Please enter a talent name.",
+          "Invalid argument. Please enter a constellation name.",
           {
             extensions: {
               code: "BAD_USER_INPUT",
@@ -57,7 +65,10 @@ const talentDataRootResolvers: (
           }
         );
       } else {
-        return retrieveFilteredTalentData("talentName", args.filter.talentName);
+        return retrieveFilteredConstellationData(
+          "constellationName",
+          args.filter.constellationName
+        );
       }
     } else if ("characterName" in args.filter) {
       if (
@@ -73,14 +84,14 @@ const talentDataRootResolvers: (
           }
         );
       } else {
-        return retrieveFilteredTalentData(
+        return retrieveFilteredConstellationData(
           "characterName",
           args.filter.characterName
         );
       }
     } else if ("random" in args.filter) {
       if (args.filter.random) {
-        return retrieveRandomTalentData();
+        return retrieveRandomConstellationData();
       } else if (args.filter.random === null) {
         throw new GraphQLError(
           'Invalid argument. Please set the argument "random" to "true" or "false".',
@@ -93,7 +104,7 @@ const talentDataRootResolvers: (
       }
     }
   }
-  return retrieveTalentData();
+  return retrieveConstellationData();
 };
 
-export default talentDataRootResolvers;
+export default constellationDataRootResolvers;

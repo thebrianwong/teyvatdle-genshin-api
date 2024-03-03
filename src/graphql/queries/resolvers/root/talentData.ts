@@ -1,17 +1,17 @@
 import { GraphQLError, GraphQLResolveInfo } from "graphql";
-import { QueryWeaponDataArgs, WeaponData } from "../../../generated/graphql";
+import { QueryTalentDataArgs, TalentData } from "../../../../generated/graphql";
 import {
-  retrieveFilteredWeaponData,
-  retrieveRandomWeaponData,
-  retrieveWeaponData,
-} from "../../../controllers/weaponController";
+  retrieveFilteredTalentData,
+  retrieveRandomTalentData,
+  retrieveTalentData,
+} from "../../../../controllers/talentController";
 
-const weaponDataRootResolvers: (
+const talentDataRootResolvers: (
   parent: any,
-  args: QueryWeaponDataArgs,
+  args: QueryTalentDataArgs,
   contextValue: any,
   info: GraphQLResolveInfo
-) => Promise<WeaponData[]> = async (parent, args, contextValue, info) => {
+) => Promise<TalentData[]> = async (parent, args, contextValue, info) => {
   if (args.filter === null) {
     throw new GraphQLError("Please enter a filter value.", {
       extensions: {
@@ -40,16 +40,16 @@ const weaponDataRootResolvers: (
             },
           });
         } else {
-          return retrieveFilteredWeaponData("id", args.filter.id);
+          return retrieveFilteredTalentData("id", args.filter.id);
         }
       }
-    } else if ("weaponName" in args.filter) {
+    } else if ("talentName" in args.filter) {
       if (
-        args.filter.weaponName === null ||
-        args.filter.weaponName === undefined
+        args.filter.talentName === null ||
+        args.filter.talentName === undefined
       ) {
         throw new GraphQLError(
-          "Invalid argument. Please enter a weapon name.",
+          "Invalid argument. Please enter a talent name.",
           {
             extensions: {
               code: "BAD_USER_INPUT",
@@ -57,15 +57,15 @@ const weaponDataRootResolvers: (
           }
         );
       } else {
-        return retrieveFilteredWeaponData("weaponName", args.filter.weaponName);
+        return retrieveFilteredTalentData("talentName", args.filter.talentName);
       }
-    } else if ("weaponType" in args.filter) {
+    } else if ("characterName" in args.filter) {
       if (
-        args.filter.weaponType === null ||
-        args.filter.weaponType === undefined
+        args.filter.characterName === null ||
+        args.filter.characterName === undefined
       ) {
         throw new GraphQLError(
-          "Invalid argument. Please enter a weapon type.",
+          "Invalid argument. Please enter a character name.",
           {
             extensions: {
               code: "BAD_USER_INPUT",
@@ -73,11 +73,14 @@ const weaponDataRootResolvers: (
           }
         );
       } else {
-        return retrieveFilteredWeaponData("weaponType", args.filter.weaponType);
+        return retrieveFilteredTalentData(
+          "characterName",
+          args.filter.characterName
+        );
       }
     } else if ("random" in args.filter) {
       if (args.filter.random) {
-        return retrieveRandomWeaponData();
+        return retrieveRandomTalentData();
       } else if (args.filter.random === null) {
         throw new GraphQLError(
           'Invalid argument. Please set the argument "random" to "true" or "false".',
@@ -90,7 +93,7 @@ const weaponDataRootResolvers: (
       }
     }
   }
-  return retrieveWeaponData();
+  return retrieveTalentData();
 };
 
-export default weaponDataRootResolvers;
+export default talentDataRootResolvers;

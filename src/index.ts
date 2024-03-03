@@ -26,7 +26,7 @@ import { readFileSync } from "fs";
 import { ApolloServer } from "@apollo/server";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { expressMiddleware } from "@apollo/server/express4";
-import { resolvers } from "./resolvers/resolversMap";
+import { resolvers } from "./graphql/resolversMap";
 import WebSocket from "ws";
 
 dotenv.config();

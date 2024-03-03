@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo } from "graphql";
-import { DailyRecordData } from "../../../generated/graphql";
-import { getDailyRecord } from "../../../controllers/teyvatdleGameDataController";
+import { DailyRecordData } from "../../../../generated/graphql";
+import { getDailyRecord } from "../../../../controllers/teyvatdleGameDataController";
 
 const dailyRecordDataRootResolvers: (
   parent: any,

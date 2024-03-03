@@ -1,20 +1,17 @@
 import { GraphQLError, GraphQLResolveInfo } from "graphql";
+import { FoodData, QueryFoodDataArgs } from "../../../../generated/graphql";
 import {
-  CharacterData,
-  QueryCharacterDataArgs,
-} from "../../../generated/graphql";
-import {
-  retrieveCharacterData,
-  retrieveRandomCharacterData,
-  retrieveSingleCharacterData,
-} from "../../../controllers/characterController";
+  retrieveFilteredFoodData,
+  retrieveFoodData,
+  retrieveRandomFoodData,
+} from "../../../../controllers/foodController";
 
-const characterDataRootResolvers: (
+const foodDataRootResolvers: (
   parent: any,
-  args: QueryCharacterDataArgs,
+  args: QueryFoodDataArgs,
   contextValue: any,
   info: GraphQLResolveInfo
-) => Promise<CharacterData[]> = async (parent, args, contextValue, info) => {
+) => Promise<FoodData[]> = async (parent, args, contextValue, info) => {
   if (args.filter === null) {
     throw new GraphQLError("Please enter a filter value.", {
       extensions: {
@@ -43,31 +40,32 @@ const characterDataRootResolvers: (
             },
           });
         } else {
-          return retrieveSingleCharacterData("id", args.filter.id);
+          return retrieveFilteredFoodData("id", args.filter.id);
         }
       }
-    } else if ("characterName" in args.filter) {
-      if (
-        args.filter.characterName === null ||
-        args.filter.characterName === undefined
-      ) {
-        throw new GraphQLError(
-          "Invalid argument. Please enter a character name.",
-          {
-            extensions: {
-              code: "BAD_USER_INPUT",
-            },
-          }
-        );
+    } else if ("foodName" in args.filter) {
+      if (args.filter.foodName === null || args.filter.foodName === undefined) {
+        throw new GraphQLError("Invalid argument. Please enter a food name.", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
       } else {
-        return retrieveSingleCharacterData(
-          "characterName",
-          args.filter.characterName
-        );
+        return retrieveFilteredFoodData("foodName", args.filter.foodName);
+      }
+    } else if ("foodType" in args.filter) {
+      if (args.filter.foodType === null || args.filter.foodType === undefined) {
+        throw new GraphQLError("Invalid argument. Please enter a food type.", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      } else {
+        return retrieveFilteredFoodData("foodType", args.filter.foodType);
       }
     } else if ("random" in args.filter) {
       if (args.filter.random) {
-        return retrieveRandomCharacterData();
+        return retrieveRandomFoodData();
       } else if (args.filter.random === null) {
         throw new GraphQLError(
           'Invalid argument. Please set the argument "random" to "true" or "false".',
@@ -80,7 +78,7 @@ const characterDataRootResolvers: (
       }
     }
   }
-  return retrieveCharacterData();
+  return retrieveFoodData();
 };
 
-export default characterDataRootResolvers;
+export default foodDataRootResolvers;

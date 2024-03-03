@@ -1,4 +1,4 @@
-import { WeaponData, WeaponDataResolvers } from "../../../generated/graphql";
+import { WeaponData, WeaponDataResolvers } from "../../../../generated/graphql";
 
 const weaponDataResolvers: WeaponDataResolvers<any, WeaponData> = {
   weaponId: (parent) => parent.weaponId,

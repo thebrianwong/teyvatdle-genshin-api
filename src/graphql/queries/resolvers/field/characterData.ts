@@ -1,10 +1,10 @@
-import { retrieveSingleCharacterData } from "../../../controllers/characterController";
-import { retrieveFilteredConstellationData } from "../../../controllers/constellationController";
-import { retrieveFilteredTalentData } from "../../../controllers/talentController";
+import { retrieveSingleCharacterData } from "../../../../controllers/characterController";
+import { retrieveFilteredConstellationData } from "../../../../controllers/constellationController";
+import { retrieveFilteredTalentData } from "../../../../controllers/talentController";
 import {
   CharacterData,
   CharacterDataResolvers,
-} from "../../../generated/graphql";
+} from "../../../../generated/graphql";
 
 const characterDataResolvers: CharacterDataResolvers<any, CharacterData> = {
   characterId: (parent) => parent.characterId,
