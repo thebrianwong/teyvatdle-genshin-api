@@ -31,6 +31,7 @@ import mutationResolvers from "./mutations/mutation";
 import gameDataTypeEnumsResolvers from "./enums/gameDataType";
 import subscriptionResolvers from "./subscriptions/subscription";
 import { pubSub } from "..";
+import localSpecialtyDataResolvers from "./queries/resolvers/field/localSpecialtyData";
 // import { getGameData } from "../controllers/teyvatdleGameDataController";
 
 const resolvers: Resolvers = {
@@ -53,6 +54,7 @@ const resolvers: Resolvers = {
   CharacterData: characterDataResolvers,
   ConstellationData: constellationDataResolvers,
   FoodData: foodDataResolvers,
+  LocalSpecialtyData: localSpecialtyDataResolvers,
   TalentData: talentDataResolvers,
   WeaponData: weaponDataResolvers,
   DailyRecordData: dailyRecordDataResolvers,
