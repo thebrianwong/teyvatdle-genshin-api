@@ -25,6 +25,7 @@ import {
   WebSocketData,
   WebSocketDataKeys,
 } from "../types/data/webSocketData.type";
+import { pubSub } from "..";
 
 const getGameData: RequestHandler = async (req, res, next) => {
   try {
@@ -247,6 +248,13 @@ const updateDailyRecord: (
           //   newSolvedValue,
           // };
           // webSocketServer.emit(`updateSolvedValue`, dataObject);
+
+          pubSub.publish("DAILY_RECORD_UPDATED", {
+            dailyRecordUpdated: {
+              type: gameDataType,
+              newSolvedValue,
+            },
+          });
 
           return {
             message: `Daily record updated. ${gameDataType}: ${newSolvedValue}`,

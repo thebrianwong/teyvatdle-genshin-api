@@ -1,5 +1,6 @@
 import { GraphQLResolveInfo } from "graphql";
 import {
+  GameDataType,
   // GameData,
   Maybe,
   Resolver,
@@ -28,6 +29,8 @@ import weaponDataResolvers from "./queries/resolvers/field/weaponData";
 import dailyRecordDataResolvers from "./queries/resolvers/field/dailyRecordData";
 import mutationResolvers from "./mutations/mutation";
 import gameDataTypeEnumsResolvers from "./enums/gameDataType";
+import subscriptionResolvers from "./subscriptions/subscription";
+import { pubSub } from "..";
 // import { getGameData } from "../controllers/teyvatdleGameDataController";
 
 const resolvers: Resolvers = {
@@ -56,6 +59,9 @@ const resolvers: Resolvers = {
 
   // mutations
   Mutation: mutationResolvers,
+
+  // subscriptions
+  Subscription: subscriptionResolvers,
 };
 
 export { resolvers };
