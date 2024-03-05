@@ -32,6 +32,7 @@ import gameDataTypeEnumsResolvers from "./enums/gameDataType";
 import subscriptionResolvers from "./subscriptions/subscription";
 import { pubSub } from "..";
 import localSpecialtyDataResolvers from "./queries/resolvers/field/localSpecialtyData";
+import regionDataResolvers from "./queries/resolvers/field/regionData";
 // import { getGameData } from "../controllers/teyvatdleGameDataController";
 
 const resolvers: Resolvers = {
@@ -55,6 +56,7 @@ const resolvers: Resolvers = {
   ConstellationData: constellationDataResolvers,
   FoodData: foodDataResolvers,
   LocalSpecialtyData: localSpecialtyDataResolvers,
+  RegionData: regionDataResolvers,
   TalentData: talentDataResolvers,
   WeaponData: weaponDataResolvers,
   DailyRecordData: dailyRecordDataResolvers,
