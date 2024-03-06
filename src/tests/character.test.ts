@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
-import CharacterData from "../types/data/characterData.type";
+import { CharacterData } from "../generated/graphql";
 
 beforeAll(async () => {
   await configSetup("Character");
@@ -11,9 +11,40 @@ afterAll(async () => {
   await configTeardown("Character");
 });
 
-test("return Foods as JSON", (done) => {
+const queryData = {
+  query: `query CharacterData {
+    characterData {
+      characterId
+      characterName
+      gender
+      height
+      rarity
+      region
+      element
+      weaponType
+      ascensionStat
+      birthday
+      characterImageUrl
+      characterCorrectImageUrl
+      characterWrongImageUrl
+      localSpecialty
+      localSpecialtyImageUrl
+      enhancementMaterial
+      enhancementMaterialImageUrl
+      ascensionBossMaterial
+      ascensionBossMaterialImageUrl
+      talentBossMaterial
+      talentBossMaterialImageUrl
+      talentBook
+      talentBookImageUrl
+    }
+  }`,
+};
+
+test("return Characters as JSON", (done) => {
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .end(done);
@@ -21,33 +52,34 @@ test("return Foods as JSON", (done) => {
 
 test("expect the non-null Character keys/columns are not null", (done) => {
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       expect(arrayOfDataObjects).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            character_id: expect.anything(),
-            character_name: expect.anything(),
+            characterId: expect.anything(),
+            characterName: expect.anything(),
             gender: expect.anything(),
             height: expect.anything(),
             rarity: expect.anything(),
             element: expect.anything(),
-            weapon_type: expect.anything(),
-            ascension_stat: expect.anything(),
-            character_image_url: expect.anything(),
-            character_correct_image_url: expect.anything(),
-            character_wrong_image_url: expect.anything(),
-            local_specialty: expect.anything(),
-            local_specialty_image_url: expect.anything(),
-            enhancement_material: expect.anything(),
-            enhancement_material_image_url: expect.anything(),
-            talent_boss_material: expect.anything(),
-            talent_boss_material_image_url: expect.anything(),
-            talent_book: expect.anything(),
-            talent_book_image_url: expect.anything(),
+            weaponType: expect.anything(),
+            ascensionStat: expect.anything(),
+            characterImageUrl: expect.anything(),
+            characterCorrectImageUrl: expect.anything(),
+            characterWrongImageUrl: expect.anything(),
+            localSpecialty: expect.anything(),
+            localSpecialtyImageUrl: expect.anything(),
+            enhancementMaterial: expect.anything(),
+            enhancementMaterialImageUrl: expect.anything(),
+            talentBossMaterial: expect.anything(),
+            talentBossMaterialImageUrl: expect.anything(),
+            talentBook: expect.anything(),
+            talentBookImageUrl: expect.anything(),
           }),
         ])
       );
@@ -57,7 +89,8 @@ test("expect the non-null Character keys/columns are not null", (done) => {
 
 test("expect Characters other than Aloy and Traveler to have a Region", (done) => {
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
@@ -68,9 +101,9 @@ test("expect Characters other than Aloy and Traveler to have a Region", (done) =
         "Traveler (Electro)",
         "Traveler (Dendro)",
       ];
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const nonAloyTravelerCharacters = arrayOfDataObjects.filter(
-        (character) => !aloyAndTravelerNames.includes(character.character_name)
+        (character) => !aloyAndTravelerNames.includes(character.characterName)
       );
       expect(nonAloyTravelerCharacters).toEqual(
         expect.arrayContaining([
@@ -85,7 +118,8 @@ test("expect Characters other than Aloy and Traveler to have a Region", (done) =
 
 test("expect Aloy and Traveler to have null for Region", (done) => {
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
@@ -96,9 +130,9 @@ test("expect Aloy and Traveler to have null for Region", (done) => {
         "Traveler (Electro)",
         "Traveler (Dendro)",
       ];
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const aloyAndTraveler = arrayOfDataObjects.filter((character) =>
-        aloyAndTravelerNames.includes(character.character_name)
+        aloyAndTravelerNames.includes(character.characterName)
       );
       expect(aloyAndTraveler).toEqual(
         expect.arrayContaining([
@@ -113,7 +147,8 @@ test("expect Aloy and Traveler to have null for Region", (done) => {
 
 test("expect Characters other than Traveler to have a birthday", (done) => {
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
@@ -123,9 +158,9 @@ test("expect Characters other than Traveler to have a birthday", (done) => {
         "Traveler (Electro)",
         "Traveler (Dendro)",
       ];
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const nonTravelerCharacters = arrayOfDataObjects.filter(
-        (character) => !travelerNames.includes(character.character_name)
+        (character) => !travelerNames.includes(character.characterName)
       );
       expect(nonTravelerCharacters).toEqual(
         expect.arrayContaining([
@@ -140,7 +175,8 @@ test("expect Characters other than Traveler to have a birthday", (done) => {
 
 test("expect Traveler to have null for birthday", (done) => {
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
@@ -150,9 +186,9 @@ test("expect Traveler to have null for birthday", (done) => {
         "Traveler (Electro)",
         "Traveler (Dendro)",
       ];
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const travelerCharacters = arrayOfDataObjects.filter((character) =>
-        travelerNames.includes(character.character_name)
+        travelerNames.includes(character.characterName)
       );
       expect(travelerCharacters).toEqual(
         expect.arrayContaining([
@@ -167,7 +203,8 @@ test("expect Traveler to have null for birthday", (done) => {
 
 test("expect Characters other than Traveler to have ascension boss material", (done) => {
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
@@ -177,15 +214,15 @@ test("expect Characters other than Traveler to have ascension boss material", (d
         "Traveler (Electro)",
         "Traveler (Dendro)",
       ];
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const nonTravelerCharacters = arrayOfDataObjects.filter(
-        (character) => !travelerNames.includes(character.character_name)
+        (character) => !travelerNames.includes(character.characterName)
       );
       expect(nonTravelerCharacters).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            ascension_boss_material: expect.anything(),
-            ascension_boss_material_image_url: expect.anything(),
+            ascensionBossMaterial: expect.anything(),
+            ascensionBossMaterialImageUrl: expect.anything(),
           }),
         ])
       );
@@ -195,7 +232,8 @@ test("expect Characters other than Traveler to have ascension boss material", (d
 
 test("expect Traveler to have null for ascension boss material", (done) => {
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
@@ -205,15 +243,15 @@ test("expect Traveler to have null for ascension boss material", (done) => {
         "Traveler (Electro)",
         "Traveler (Dendro)",
       ];
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const travelerCharacters = arrayOfDataObjects.filter((character) =>
-        travelerNames.includes(character.character_name)
+        travelerNames.includes(character.characterName)
       );
       expect(travelerCharacters).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            ascension_boss_material: null,
-            ascension_boss_material_image_url: null,
+            ascensionBossMaterial: null,
+            ascensionBossMaterialImageUrl: null,
           }),
         ])
       );
@@ -223,7 +261,8 @@ test("expect Traveler to have null for ascension boss material", (done) => {
 
 test("expect Characters other than Traveler to only use one talent book", (done) => {
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
@@ -233,14 +272,14 @@ test("expect Characters other than Traveler to only use one talent book", (done)
         "Traveler (Electro)",
         "Traveler (Dendro)",
       ];
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const nonTravelerCharacters = arrayOfDataObjects.filter(
-        (character) => !travelerNames.includes(character.character_name)
+        (character) => !travelerNames.includes(character.characterName)
       );
       const usesOnlyOneTalentBook = nonTravelerCharacters.every(
         (character) =>
-          character.talent_book.length === 1 &&
-          character.talent_book_image_url.length === 1
+          character.talentBook.length === 1 &&
+          character.talentBookImageUrl.length === 1
       );
       expect(usesOnlyOneTalentBook).toBe(true);
     })
@@ -249,7 +288,8 @@ test("expect Characters other than Traveler to only use one talent book", (done)
 
 test("expect Traveler to use 3 talent books", (done) => {
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
@@ -259,14 +299,14 @@ test("expect Traveler to use 3 talent books", (done) => {
         "Traveler (Electro)",
         "Traveler (Dendro)",
       ];
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const travelerCharacters = arrayOfDataObjects.filter((character) =>
-        travelerNames.includes(character.character_name)
+        travelerNames.includes(character.characterName)
       );
       const usesThreeTalentBooks = travelerCharacters.every(
         (character) =>
-          character.talent_book.length === 3 &&
-          character.talent_book_image_url.length === 3
+          character.talentBook.length === 3 &&
+          character.talentBookImageUrl.length === 3
       );
       expect(usesThreeTalentBooks).toBe(true);
     })
@@ -275,14 +315,15 @@ test("expect Traveler to use 3 talent books", (done) => {
 
 test("returned Character data has the correct types for values", (done) => {
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       arrayOfDataObjects.forEach((data) => {
-        expect(typeof data.character_id).toBe("number");
-        expect(typeof data.character_name).toBe("string");
+        expect(typeof data.characterId).toBe("string");
+        expect(typeof data.characterName).toBe("string");
         expect(["Male", "Female", "Other"]).toContain(data.gender);
         expect(["Short", "Medium", "Tall"]).toContain(data.height);
         expect(typeof data.rarity).toBe("number");
@@ -306,53 +347,54 @@ test("returned Character data has the correct types for values", (done) => {
           "Cryo",
         ]).toContain(data.element);
         expect(["Sword", "Claymore", "Polearm", "Catalyst", "Bow"]).toContain(
-          data.weapon_type
+          data.weaponType
         );
         expect([
-          "Anemo DMG Bonus",
+          "Anemo_DMG_Bonus",
           "ATK",
-          "CRIT DMG",
-          "CRIT Rate",
-          "Cryo DMG Bonus",
+          "CRIT_DMG",
+          "CRIT_Rate",
+          "Cryo_DMG_Bonus",
           "DEF",
-          "Dendro DMG Bonus",
-          "Electro DMG Bonus",
-          "Elemental Mastery",
-          "Energy Recharge",
-          "Geo DMG Bonus",
-          "Healing Bonus",
+          "Dendro_DMG_Bonus",
+          "Electro_DMG_Bonus",
+          "Elemental_Mastery",
+          "Energy_Recharge",
+          "Geo_DMG_Bonus",
+          "Healing_Bonus",
           "HP",
-          "Hydro DMG Bonus",
-          "Physical DMG Bonus",
-          "Pyro DMG Bonus",
+          "Hydro_DMG_Bonus",
+          "Physical_DMG_Bonus",
+          "Pyro_DMG_Bonus",
           null,
-        ]).toContain(data.ascension_stat);
+        ]).toContain(data.ascensionStat);
         if (data.birthday) {
           // ex: 2020-08-10T00:00:00.000Z
-          expect(data.birthday).toMatch(
-            /^\d{4}-(0|1)\d-(0|1|2|3)\dT((\d){2}:){2}\d{2}\.\d{3}Z$/
-          );
+          // expect(data.birthday).toMatch(
+          //   /^\d{4}-(0|1)\d-(0|1|2|3)\dT((\d){2}:){2}\d{2}\.\d{3}Z$/
+          // );
+          expect(typeof data.birthday).toBe("number");
         } else {
           expect(data.birthday).toBeNull();
         }
-        expect(typeof data.character_image_url).toBe("string");
-        expect(typeof data.character_correct_image_url).toBe("string");
-        expect(typeof data.character_wrong_image_url).toBe("string");
-        expect(typeof data.local_specialty).toBe("string");
-        expect(typeof data.local_specialty_image_url).toBe("string");
-        expect(typeof data.enhancement_material).toBe("string");
-        expect(typeof data.enhancement_material_image_url).toBe("string");
-        if (data.ascension_boss_material) {
-          expect(typeof data.ascension_boss_material).toBe("string");
-          expect(typeof data.ascension_boss_material_image_url).toBe("string");
+        expect(typeof data.characterImageUrl).toBe("string");
+        expect(typeof data.characterCorrectImageUrl).toBe("string");
+        expect(typeof data.characterWrongImageUrl).toBe("string");
+        expect(typeof data.localSpecialty).toBe("string");
+        expect(typeof data.localSpecialtyImageUrl).toBe("string");
+        expect(typeof data.enhancementMaterial).toBe("string");
+        expect(typeof data.enhancementMaterialImageUrl).toBe("string");
+        if (data.ascensionBossMaterial) {
+          expect(typeof data.ascensionBossMaterial).toBe("string");
+          expect(typeof data.ascensionBossMaterialImageUrl).toBe("string");
         } else {
-          expect(data.ascension_boss_material).toBeNull();
-          expect(data.ascension_boss_material_image_url).toBeNull();
+          expect(data.ascensionBossMaterial).toBeNull();
+          expect(data.ascensionBossMaterialImageUrl).toBeNull();
         }
-        expect(typeof data.talent_boss_material).toBe("string");
-        expect(typeof data.talent_boss_material_image_url).toBe("string");
-        expect(data.talent_book).toBeInstanceOf(Array);
-        expect(data.talent_book_image_url).toBeInstanceOf(Array);
+        expect(typeof data.talentBossMaterial).toBe("string");
+        expect(typeof data.talentBossMaterialImageUrl).toBe("string");
+        expect(data.talentBook).toBeInstanceOf(Array);
+        expect(data.talentBookImageUrl).toBeInstanceOf(Array);
       });
     })
     .end(done);
@@ -362,11 +404,12 @@ test("return the correct number of Characters", (done) => {
   const numOfCharacters = 71;
 
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       expect(arrayOfDataObjects).toHaveLength(numOfCharacters);
     })
     .end(done);
@@ -378,11 +421,12 @@ test("return the correct number of Characters based on gender", (done) => {
   const numOfOthers = 4;
 
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       let maleCharacters = 0;
       let femaleCharacters = 0;
       let otherCharacters = 0;
@@ -410,11 +454,12 @@ test("return the correct number of Characters based on height", (done) => {
   const numOfTalls = 23;
 
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       let shortCharacters = 0;
       let mediumCharacters = 0;
       let tallCharacters = 0;
@@ -441,11 +486,12 @@ test("return the correct number of Characters based on rarity", (done) => {
   const numOfFiveStars = 36;
 
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       let fourStarCharacters = 0;
       let fiveStartCharacters = 0;
 
@@ -474,11 +520,12 @@ test("return the correct number of Characters based on Region", (done) => {
   const numOfNoRegionCharacters = 5;
 
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
 
       let mondstadtCharacters = 0;
       let liyueCharacters = 0;
@@ -531,11 +578,12 @@ test("return the correct number of Characters based on GenshinElement", (done) =
   const numOfCryoCharacters = 12;
 
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
 
       let anemoCharacters = 0;
       let geoCharacters = 0;
@@ -582,11 +630,12 @@ test("return the correct number of Characters based on weapon type", (done) => {
   const numOfBowCharacters = 14;
 
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       let swordCharacters = 0;
       let claymoreCharacters = 0;
       let polearmCharacters = 0;
@@ -594,15 +643,15 @@ test("return the correct number of Characters based on weapon type", (done) => {
       let bowCharacters = 0;
 
       arrayOfDataObjects.forEach((character) => {
-        if (character.weapon_type === "Sword") {
+        if (character.weaponType === "Sword") {
           swordCharacters += 1;
-        } else if (character.weapon_type === "Claymore") {
+        } else if (character.weaponType === "Claymore") {
           claymoreCharacters += 1;
-        } else if (character.weapon_type === "Polearm") {
+        } else if (character.weaponType === "Polearm") {
           polearmCharacters += 1;
-        } else if (character.weapon_type === "Catalyst") {
+        } else if (character.weaponType === "Catalyst") {
           catalystCharacters += 1;
-        } else if (character.weapon_type === "Bow") {
+        } else if (character.weaponType === "Bow") {
           bowCharacters += 1;
         }
       });
@@ -635,11 +684,12 @@ test("return the correct number of Characters based on sub stat", (done) => {
   const numOfPyroDMGCharacters = 2;
 
   request(app)
-    .get("/api/character")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: CharacterData[] = res.body;
+      const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
 
       let anemoDMGCharacters = 0;
       let atkCharacters = 0;
@@ -659,37 +709,37 @@ test("return the correct number of Characters based on sub stat", (done) => {
       let pyroDMGCharacters = 0;
 
       arrayOfDataObjects.forEach((character) => {
-        if (character.ascension_stat === "Anemo DMG Bonus") {
+        if (character.ascensionStat === "Anemo_DMG_Bonus") {
           anemoDMGCharacters += 1;
-        } else if (character.ascension_stat === "ATK") {
+        } else if (character.ascensionStat === "ATK") {
           atkCharacters += 1;
-        } else if (character.ascension_stat === "CRIT DMG") {
+        } else if (character.ascensionStat === "CRIT_DMG") {
           critDMGCharacters += 1;
-        } else if (character.ascension_stat === "CRIT Rate") {
+        } else if (character.ascensionStat === "CRIT_Rate") {
           critRateCharacters += 1;
-        } else if (character.ascension_stat === "Cryo DMG Bonus") {
+        } else if (character.ascensionStat === "Cryo_DMG_Bonus") {
           cryoDMGCharacters += 1;
-        } else if (character.ascension_stat === "DEF") {
+        } else if (character.ascensionStat === "DEF") {
           defCharacters += 1;
-        } else if (character.ascension_stat === "Dendro DMG Bonus") {
+        } else if (character.ascensionStat === "Dendro_DMG_Bonus") {
           dendroDMGCharacters += 1;
-        } else if (character.ascension_stat === "Electro DMG Bonus") {
+        } else if (character.ascensionStat === "Electro_DMG_Bonus") {
           electroDMGCharacters += 1;
-        } else if (character.ascension_stat === "Elemental Mastery") {
+        } else if (character.ascensionStat === "Elemental_Mastery") {
           elementalMasteryCharacters += 1;
-        } else if (character.ascension_stat === "Energy Recharge") {
+        } else if (character.ascensionStat === "Energy_Recharge") {
           energyRechargeCharacters += 1;
-        } else if (character.ascension_stat === "Geo DMG Bonus") {
+        } else if (character.ascensionStat === "Geo_DMG_Bonus") {
           geoDMGCharacters += 1;
-        } else if (character.ascension_stat === "Healing Bonus") {
+        } else if (character.ascensionStat === "Healing_Bonus") {
           healingBonusCharacters += 1;
-        } else if (character.ascension_stat === "HP") {
+        } else if (character.ascensionStat === "HP") {
           hpCharacters += 1;
-        } else if (character.ascension_stat === "Hydro DMG Bonus") {
+        } else if (character.ascensionStat === "Hydro_DMG_Bonus") {
           hydroDMGCharacters += 1;
-        } else if (character.ascension_stat === "Physical DMG Bonus") {
+        } else if (character.ascensionStat === "Physical_DMG_Bonus") {
           physicalDMGCharacters += 1;
-        } else if (character.ascension_stat === "Pyro DMG Bonus") {
+        } else if (character.ascensionStat === "Pyro_DMG_Bonus") {
           pyroDMGCharacters += 1;
         }
       });
