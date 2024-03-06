@@ -33,9 +33,13 @@ import subscriptionResolvers from "./subscriptions/subscription";
 import { pubSub } from "..";
 import localSpecialtyDataResolvers from "./queries/resolvers/field/localSpecialtyData";
 import regionDataResolvers from "./queries/resolvers/field/regionData";
+import dateScalar from "./scalars/data";
 // import { getGameData } from "../controllers/teyvatdleGameDataController";
 
 const resolvers: Resolvers = {
+  // custom scalars
+  Date: dateScalar,
+
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
 
