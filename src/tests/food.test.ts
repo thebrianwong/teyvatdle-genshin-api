@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
-import FoodData from "../types/data/foodData.type";
+import { FoodData } from "../generated/graphql";
 
 beforeAll(async () => {
   await configSetup("Food");
@@ -11,9 +11,26 @@ afterAll(async () => {
   await configTeardown("Food");
 });
 
+const queryData = {
+  query: `query FoodData {
+    foodData {
+      foodId
+      foodName
+      rarity
+      foodType
+      specialDish
+      purchasable
+      recipe
+      event
+      foodImageUrl
+    }
+  }`,
+};
+
 test("return Foods as JSON", (done) => {
   request(app)
-    .get("/api/food")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .end(done);
@@ -21,23 +38,24 @@ test("return Foods as JSON", (done) => {
 
 test("expect none of the Food keys/columns are null", (done) => {
   request(app)
-    .get("/api/food")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: FoodData[] = res.body;
+      const arrayOfDataObjects: FoodData[] = res.body.data.foodData;
       expect(arrayOfDataObjects).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            food_id: expect.anything(),
-            food_name: expect.anything(),
+            foodId: expect.anything(),
+            foodName: expect.anything(),
             rarity: expect.anything(),
-            food_type: expect.anything(),
-            special_dish: expect.anything(),
+            foodType: expect.anything(),
+            specialDish: expect.anything(),
             purchasable: expect.anything(),
             recipe: expect.anything(),
             event: expect.anything(),
-            food_image_url: expect.anything(),
+            foodImageUrl: expect.anything(),
           }),
         ])
       );
@@ -47,28 +65,29 @@ test("expect none of the Food keys/columns are null", (done) => {
 
 test("returned Food data has the correct types for values", (done) => {
   request(app)
-    .get("/api/food")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: FoodData[] = res.body;
+      const arrayOfDataObjects: FoodData[] = res.body.data.foodData;
       arrayOfDataObjects.forEach((data) => {
-        expect(typeof data.food_id).toBe("number");
-        expect(typeof data.food_name).toBe("string");
+        expect(typeof data.foodId).toBe("string");
+        expect(typeof data.foodName).toBe("string");
         expect(typeof data.rarity).toBe("number");
         expect([
-          "Adventurer's Dishes",
-          "Recovery Dishes",
-          "DEF-Boosting Dishes",
-          "ATK-Boosting Dishes",
+          "Adventurers_Dishes",
+          "Recovery_Dishes",
+          "DEF_Boosting_Dishes",
+          "ATK_Boosting_Dishes",
           "Potions",
-          "Essential Oils",
-        ]).toContain(data.food_type);
-        expect(typeof data.special_dish).toBe("boolean");
+          "Essential_Oils",
+        ]).toContain(data.foodType);
+        expect(typeof data.specialDish).toBe("boolean");
         expect(typeof data.purchasable).toBe("boolean");
         expect(typeof data.recipe).toBe("boolean");
         expect(typeof data.event).toBe("boolean");
-        expect(typeof data.food_image_url).toBe("string");
+        expect(typeof data.foodImageUrl).toBe("string");
       });
     })
     .end(done);
@@ -102,11 +121,12 @@ test("return the correct number of Foods", (done) => {
   const numOfEventDishes = 22;
   const numOfNonEventDishes = 222;
   request(app)
-    .get("/api/food")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: FoodData[] = res.body;
+      const arrayOfDataObjects: FoodData[] = res.body.data.foodData;
 
       let oneStarFoods = 0;
       let twoStarFoods = 0;
@@ -143,21 +163,21 @@ test("return the correct number of Foods", (done) => {
           fiveStarFoods += 1;
         }
 
-        if (food.food_type === "Adventurer's Dishes") {
+        if (food.foodType === "Adventurers_Dishes") {
           adventureDishes += 1;
-        } else if (food.food_type === "ATK-Boosting Dishes") {
+        } else if (food.foodType === "ATK_Boosting_Dishes") {
           attackDishes += 1;
-        } else if (food.food_type === "DEF-Boosting Dishes") {
+        } else if (food.foodType === "DEF_Boosting_Dishes") {
           defenseDishes += 1;
-        } else if (food.food_type === "Essential Oils") {
+        } else if (food.foodType === "Essential_Oils") {
           essentialOils += 1;
-        } else if (food.food_type === "Potions") {
+        } else if (food.foodType === "Potions") {
           potions += 1;
-        } else if (food.food_type === "Recovery Dishes") {
+        } else if (food.foodType === "Recovery_Dishes") {
           recoveryDishes += 1;
         }
 
-        if (food.special_dish) {
+        if (food.specialDish) {
           specialDishes += 1;
         } else {
           nonSpecialDishes += 1;
