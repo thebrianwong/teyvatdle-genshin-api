@@ -763,3 +763,335 @@ test("return the correct number of Characters based on sub stat", (done) => {
     })
     .end(done);
 });
+
+describe("character query argument test suite", () => {
+  test("a null filter argument returns an error", (done) => {
+    const queryData = {
+      query: `query CharacterData {
+        characterData(filter: null) {
+          characterId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe("Please enter a filter value.");
+      })
+      .end(done);
+  });
+
+  test("if multiple null arguments are provided, return an error", (done) => {
+    const queryData = {
+      query: `query CharacterData {
+        characterData(filter: { id: null, characterName: null, random: null }) {
+          characterId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+        console.log(response);
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe("Please enter a single filter value.");
+      })
+      .end(done);
+  });
+
+  test("if multiple valid arguments are provided, return an error", (done) => {
+    const queryData = {
+      query: `query CharacterData {
+        characterData(filter: { id: 1, characterName: "Amber", random: true }) {
+          characterId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+        console.log(response);
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe("Please enter a single filter value.");
+      })
+      .end(done);
+  });
+
+  describe("a null argument returns an error", () => {
+    test("id", (done) => {
+      const queryData = {
+        query: `query CharacterData {
+          characterData(filter: {id: null}) {
+            characterId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            "Invalid argument. Please enter an id."
+          );
+        })
+        .end(done);
+    });
+
+    test("characterName", (done) => {
+      const queryData = {
+        query: `query CharacterData {
+          characterData(filter: {characterName: null}) {
+            characterId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            "Invalid argument. Please enter a character name."
+          );
+        })
+        .end(done);
+    });
+
+    test("random", (done) => {
+      const queryData = {
+        query: `query CharacterData {
+          characterData(filter: {random: null}) {
+            characterId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            'Invalid argument. Please set the argument "random" to "true" or "false".'
+          );
+        })
+        .end(done);
+    });
+  });
+
+  test("a non-number id returns an error", (done) => {
+    const queryData = {
+      query: `query CharacterData {
+        characterData(filter: {id: "hello"}) {
+          characterId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe(
+          "Invalid argument. Please enter a number."
+        );
+      })
+      .end(done);
+  });
+
+  test("if the character id exists, return the character", (done) => {
+    const queryData = {
+      query: `query CharacterData {
+        characterData(filter: {id: 1}) {
+          characterId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const character = response.data.characterData[0];
+
+        expect(character).toHaveProperty("characterId", "1");
+      })
+      .end(done);
+  });
+
+  test("if the character id does not exist, return an empty array", (done) => {
+    const queryData = {
+      query: `query CharacterData {
+        characterData(filter: {id: 14347}) {
+          characterId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const emptyArray = response.data.characterData;
+
+        expect(emptyArray.length).toBe(0);
+      })
+      .end(done);
+  });
+
+  test("if the character name exists, return the character", (done) => {
+    const queryData = {
+      query: `query CharacterData {
+        characterData(filter: {characterName: "Amber"}) {
+          characterName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const character = response.data.characterData[0];
+
+        expect(character).toHaveProperty("characterName", "Amber");
+      })
+      .end(done);
+  });
+
+  test("if the character name does not exist, return an empty array", (done) => {
+    const queryData = {
+      query: `query CharacterData {
+        characterData(filter: {characterName: "Paimon"}) {
+          characterName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const emptyArray = response.data.characterData;
+
+        expect(emptyArray.length).toBe(0);
+      })
+      .end(done);
+  });
+
+  test("if the random argument is set to true, return a random character", (done) => {
+    const queryData = {
+      query: `query CharacterData {
+        characterData(filter: {random: true}) {
+          characterName
+        }
+      }`,
+    };
+
+    const mathRandomSpy = jest.spyOn(Math, "random").mockImplementation(() => {
+      return 0;
+    });
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const character = response.data.characterData[0];
+
+        expect(character).toHaveProperty("characterName", "Albedo");
+        mathRandomSpy.mockRestore();
+      })
+      .end(done);
+  });
+
+  test("if the random argument is set to false, return character data as if no argument was provided", (done) => {
+    const queryData = {
+      query: `query CharacterData {
+        characterData(filter: {random: false}) {
+          characterName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const characters = response.data.characterData;
+
+        expect(characters.length).toBeGreaterThan(1);
+      })
+      .end(done);
+  });
+});
