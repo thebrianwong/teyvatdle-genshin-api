@@ -819,7 +819,7 @@ describe("Character query argument test suite", () => {
   test("if multiple valid arguments are provided, return an error", (done) => {
     const queryData = {
       query: `query CharacterData {
-        characterData(filter: { id: 1, characterName: "Amber", random: true }) {
+        characterData(filter: { id: "1", characterName: "Amber", random: true }) {
           characterId
         }
       }`,
@@ -955,7 +955,7 @@ describe("Character query argument test suite", () => {
   test("if the Character ID exists, return the Character", (done) => {
     const queryData = {
       query: `query CharacterData {
-        characterData(filter: {id: 1}) {
+        characterData(filter: {id: "1"}) {
           characterId
         }
       }`,
@@ -978,7 +978,7 @@ describe("Character query argument test suite", () => {
   test("if the Character ID does not exist, return an empty array", (done) => {
     const queryData = {
       query: `query CharacterData {
-        characterData(filter: {id: 14347}) {
+        characterData(filter: {id: "14347"}) {
           characterId
         }
       }`,
