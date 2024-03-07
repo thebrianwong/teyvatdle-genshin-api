@@ -1093,3 +1093,75 @@ describe("Character query argument test suite", () => {
       .end(done);
   });
 });
+
+test("Character Talents can be nested in the query ", (done) => {
+  const queryData = {
+    query: `query CharacterData {
+      characterData(filter: { id: "1" }) {
+        characterId
+        characterName
+        talents {
+          talentId
+          talentName
+          talentType
+          talentImageUrl
+        }
+      }
+    }`,
+  };
+
+  const mathRandomSpy = jest.spyOn(Math, "random").mockImplementation(() => {
+    return 0;
+  });
+
+  request(app)
+    .post("/graphql")
+    .send(queryData)
+    .expect("Content-Type", /json/)
+    .expect(200)
+    .expect((res) => {
+      const response = res.body;
+      const character = response.data.characterData[0];
+
+      expect(character).toHaveProperty("talents");
+      expect(character.talents.length).toBe(6);
+      mathRandomSpy.mockRestore();
+    })
+    .end(done);
+});
+
+test("Character Constellations can be nested in the query ", (done) => {
+  const queryData = {
+    query: `query CharacterData {
+      characterData(filter: { id: "1" }) {
+        characterId
+        characterName
+        constellations {
+          constellationId
+          constellationName
+          constellationLevel
+          constellationImageUrl
+        }
+      }
+    }`,
+  };
+
+  const mathRandomSpy = jest.spyOn(Math, "random").mockImplementation(() => {
+    return 0;
+  });
+
+  request(app)
+    .post("/graphql")
+    .send(queryData)
+    .expect("Content-Type", /json/)
+    .expect(200)
+    .expect((res) => {
+      const response = res.body;
+      const character = response.data.characterData[0];
+
+      expect(character).toHaveProperty("constellations");
+      expect(character.constellations.length).toBe(6);
+      mathRandomSpy.mockRestore();
+    })
+    .end(done);
+});
