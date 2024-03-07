@@ -808,7 +808,6 @@ describe("Character query argument test suite", () => {
         const response = res.body;
         const data = response.data;
         const errors = response.errors;
-        console.log(response);
 
         expect(data).toBeNull();
         expect(errors[0].message).toBe("Please enter a single filter value.");
@@ -834,7 +833,6 @@ describe("Character query argument test suite", () => {
         const response = res.body;
         const data = response.data;
         const errors = response.errors;
-        console.log(response);
 
         expect(data).toBeNull();
         expect(errors[0].message).toBe("Please enter a single filter value.");
