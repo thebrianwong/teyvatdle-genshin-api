@@ -206,8 +206,7 @@ describe("Constellation query argument test suite", () => {
           constellationData(filter: { constellationName: null }) {
             constellationId
           }
-        }
-        `,
+        }`,
       };
 
       request(app)
