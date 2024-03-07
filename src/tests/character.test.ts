@@ -764,7 +764,7 @@ test("return the correct number of Characters based on sub stat", (done) => {
     .end(done);
 });
 
-describe("character query argument test suite", () => {
+describe("Character query argument test suite", () => {
   test("a null filter argument returns an error", (done) => {
     const queryData = {
       query: `query CharacterData {
@@ -952,7 +952,7 @@ describe("character query argument test suite", () => {
       .end(done);
   });
 
-  test("if the character id exists, return the character", (done) => {
+  test("if the Character ID exists, return the Character", (done) => {
     const queryData = {
       query: `query CharacterData {
         characterData(filter: {id: 1}) {
@@ -975,7 +975,7 @@ describe("character query argument test suite", () => {
       .end(done);
   });
 
-  test("if the character id does not exist, return an empty array", (done) => {
+  test("if the Character ID does not exist, return an empty array", (done) => {
     const queryData = {
       query: `query CharacterData {
         characterData(filter: {id: 14347}) {
@@ -998,7 +998,7 @@ describe("character query argument test suite", () => {
       .end(done);
   });
 
-  test("if the character name exists, return the character", (done) => {
+  test("if the Character name exists, return the Character", (done) => {
     const queryData = {
       query: `query CharacterData {
         characterData(filter: {characterName: "Amber"}) {
@@ -1021,7 +1021,7 @@ describe("character query argument test suite", () => {
       .end(done);
   });
 
-  test("if the character name does not exist, return an empty array", (done) => {
+  test("if the Character name does not exist, return an empty array", (done) => {
     const queryData = {
       query: `query CharacterData {
         characterData(filter: {characterName: "Paimon"}) {
@@ -1044,7 +1044,7 @@ describe("character query argument test suite", () => {
       .end(done);
   });
 
-  test("if the random argument is set to true, return a random character", (done) => {
+  test("if the random argument is set to true, return a random Character", (done) => {
     const queryData = {
       query: `query CharacterData {
         characterData(filter: {random: true}) {
@@ -1072,7 +1072,7 @@ describe("character query argument test suite", () => {
       .end(done);
   });
 
-  test("if the random argument is set to false, return character data as if no argument was provided", (done) => {
+  test("if the random argument is set to false, return Character data as if no argument was provided", (done) => {
     const queryData = {
       query: `query CharacterData {
         characterData(filter: {random: false}) {
