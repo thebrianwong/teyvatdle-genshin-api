@@ -595,3 +595,423 @@ test("return the correct number of Weapons based on gacha or not", (done) => {
     })
     .end(done);
 });
+
+describe("Weapon query argument test suite", () => {
+  test("a null filter argument returns an error", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: null) {
+          weaponId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe("Please enter a filter value.");
+      })
+      .end(done);
+  });
+
+  test("if multiple null arguments are provided, return an error", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(
+          filter: { id: null, weaponName: null, weaponType: null, random: null }
+        ) {
+          weaponId
+        }
+      }
+      `,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe("Please enter a single filter value.");
+      })
+      .end(done);
+  });
+
+  test("if multiple valid arguments are provided, return an error", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(
+          filter: {
+            id: "1"
+            weaponName: "A Thousand Floating Dreams"
+            weaponType: Sword
+            random: true
+          }
+        ) {
+          weaponId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe("Please enter a single filter value.");
+      })
+      .end(done);
+  });
+
+  describe("a null argument returns an error", () => {
+    test("id", (done) => {
+      const queryData = {
+        query: `query WeaponData {
+          weaponData(filter: { id: null }) {
+            weaponId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            "Invalid argument. Please enter an id."
+          );
+        })
+        .end(done);
+    });
+
+    test("weaponName", (done) => {
+      const queryData = {
+        query: `query WeaponData {
+          weaponData(filter: { weaponName: null }) {
+            weaponId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            "Invalid argument. Please enter a weapon name."
+          );
+        })
+        .end(done);
+    });
+
+    test("foodType", (done) => {
+      const queryData = {
+        query: `query WeaponData {
+          weaponData(filter: { weaponType: null }) {
+            weaponId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            "Invalid argument. Please enter a weapon type."
+          );
+        })
+        .end(done);
+    });
+
+    test("random", (done) => {
+      const queryData = {
+        query: `query WeaponData {
+          weaponData(filter: { random: null }) {
+            weaponId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            'Invalid argument. Please set the argument "random" to "true" or "false".'
+          );
+        })
+        .end(done);
+    });
+  });
+
+  test("a non-number id returns an error", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { id: "hello" }) {
+          weaponId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe(
+          "Invalid argument. Please enter a number."
+        );
+      })
+      .end(done);
+  });
+
+  test("if the Weapon ID exists, return the Weapon", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { id: "1" }) {
+          weaponId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const weapon = response.data.weaponData[0];
+
+        expect(weapon).toHaveProperty("weaponId", "1");
+      })
+      .end(done);
+  });
+
+  test("if the Weapon ID does not exist, return an empty array", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { id: "14347" }) {
+          weaponId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const emptyArray = response.data.weaponData;
+
+        expect(emptyArray.length).toBe(0);
+      })
+      .end(done);
+  });
+
+  test("if the Weapon name exists, return the Weapon", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { weaponName: "A Thousand Floating Dreams" }) {
+          weaponName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const weapon = response.data.weaponData[0];
+
+        expect(weapon).toHaveProperty(
+          "weaponName",
+          "A Thousand Floating Dreams"
+        );
+      })
+      .end(done);
+  });
+
+  test("if the Weapon name does not exist, return an empty array", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { weaponName: "An Actual Gun" }) {
+          weaponName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const emptyArray = response.data.weaponData;
+
+        expect(emptyArray.length).toBe(0);
+      })
+      .end(done);
+  });
+
+  test("return all Weapons of a given Weapon Type", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { weaponType: Sword }) {
+          weaponName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const weapons = response.data.weaponData;
+
+        expect(weapons.length).toBeGreaterThan(1);
+      })
+      .end(done);
+  });
+
+  test("return an error if passing a value that doesn't conform to the Weapon Type enum", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { weaponType: "Gun" }) {
+          weaponName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const error = response.errors;
+
+        expect(data).toBeUndefined();
+        expect(error[0].message).toBe(
+          'Enum "WeaponType" cannot represent non-enum value: "Gun".'
+        );
+      })
+      .end(done);
+  });
+
+  test("if the random argument is set to true, return a random Weapon", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { random: true }) {
+          weaponName
+        }
+      }`,
+    };
+
+    const mathRandomSpy = jest.spyOn(Math, "random").mockImplementation(() => {
+      return 0;
+    });
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const weapon = response.data.weaponData[0];
+
+        expect(weapon).toHaveProperty("weaponName", "Akuoumaru");
+        mathRandomSpy.mockRestore();
+      })
+      .end(done);
+  });
+
+  test("if the random argument is set to false, return Weapon data as if no argument was provided", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { random: false }) {
+          weaponName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const weapons = response.data.weaponData;
+
+        expect(weapons.length).toBeGreaterThan(1);
+      })
+      .end(done);
+  });
+});
