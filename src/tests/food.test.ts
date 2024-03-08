@@ -498,8 +498,7 @@ describe("Food query argument test suite", () => {
         foodData(filter: { foodName: "Aaru Mixed Rice" }) {
           foodName
         }
-      }
-      `,
+      }`,
     };
 
     request(app)
