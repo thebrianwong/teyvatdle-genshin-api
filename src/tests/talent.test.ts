@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
-import TalentData from "../types/data/talentData.type";
+import { TalentData } from "../generated/graphql";
 
 beforeAll(async () => {
   await configSetup("Talent");
@@ -11,9 +11,23 @@ afterAll(async () => {
   await configTeardown("Talent");
 });
 
+const queryData = {
+  query: `query TalentData {
+    talentData {
+      talentId
+      talentName
+      talentType
+      talentImageUrl
+      characterName
+      characterImageUrl
+    }
+  }`,
+};
+
 test("return Talents as JSON", (done) => {
   request(app)
-    .get("/api/talent")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .end(done);
@@ -21,20 +35,21 @@ test("return Talents as JSON", (done) => {
 
 test("expect none of the Talent keys/columns are null", (done) => {
   request(app)
-    .get("/api/talent")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: TalentData[] = res.body;
+      const arrayOfDataObjects: TalentData[] = res.body.data.talentData;
       expect(arrayOfDataObjects).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            talent_id: expect.anything(),
-            talent_name: expect.anything(),
-            talent_type: expect.anything(),
-            talent_image_url: expect.anything(),
-            character_name: expect.anything(),
-            character_image_url: expect.anything(),
+            talentId: expect.anything(),
+            talentName: expect.anything(),
+            talentType: expect.anything(),
+            talentImageUrl: expect.anything(),
+            characterName: expect.anything(),
+            characterImageUrl: expect.anything(),
           }),
         ])
       );
@@ -44,27 +59,28 @@ test("expect none of the Talent keys/columns are null", (done) => {
 
 test("returned Talent data has the correct types for values", (done) => {
   request(app)
-    .get("/api/talent")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: TalentData[] = res.body;
+      const arrayOfDataObjects: TalentData[] = res.body.data.talentData;
       arrayOfDataObjects.forEach((data) => {
-        expect(typeof data.talent_id).toBe("number");
-        expect(typeof data.talent_name).toBe("string");
+        expect(typeof data.talentId).toBe("string");
+        expect(typeof data.talentName).toBe("string");
         expect([
-          "Normal Attack",
-          "Elemental Skill",
-          "Alternate Sprint",
-          "Elemental Burst",
-          "1st Ascension Passive",
-          "4th Ascension Passive",
-          "Utility Passive",
+          "Normal_Attack",
+          "Elemental_Skill",
+          "Alternate_Sprint",
+          "Elemental_Burst",
+          "First_Ascension_Passive",
+          "Fourth_Ascension_Passive",
+          "Utility_Passive",
           "Passive",
-        ]).toContain(data.talent_type);
-        expect(typeof data.talent_image_url).toBe("string");
-        expect(typeof data.character_name).toBe("string");
-        expect(typeof data.character_image_url).toBe("string");
+        ]).toContain(data.talentType);
+        expect(typeof data.talentImageUrl).toBe("string");
+        expect(typeof data.characterName).toBe("string");
+        expect(typeof data.characterImageUrl).toBe("string");
       });
     })
     .end(done);
@@ -83,25 +99,26 @@ test("return the correct number of Talents", (done) => {
     "Traveler (Dendro)",
   ];
   request(app)
-    .get("/api/talent")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: TalentData[] = res.body;
+      const arrayOfDataObjects: TalentData[] = res.body.data.talentData;
       let nonTravelerTalents = 0;
       let travelerTalents = 0;
       let altSprintTalents = 0;
       let kokomiPassiveTalents = 0;
 
       arrayOfDataObjects.forEach((talent) => {
-        if (!travelerNames.includes(talent.character_name)) {
+        if (!travelerNames.includes(talent.characterName)) {
           nonTravelerTalents += 1;
         } else {
           travelerTalents += 1;
         }
-        if (talent.talent_type === "Alternate Sprint") {
+        if (talent.talentType === "Alternate_Sprint") {
           altSprintTalents += 1;
-        } else if (talent.talent_type === "Passive") {
+        } else if (talent.talentType === "Passive") {
           kokomiPassiveTalents += 1;
         }
       });
