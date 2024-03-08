@@ -561,6 +561,33 @@ describe("Food query argument test suite", () => {
       .end(done);
   });
 
+  test("return an error if passing a value that doesn't conform to the Food Type enum", (done) => {
+    const queryData = {
+      query: `query FoodData {
+        foodData(filter: { foodType: "Yummy Food" }) {
+          foodName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const error = response.errors;
+
+        expect(data).toBeUndefined();
+        expect(error[0].message).toBe(
+          'Enum "FoodType" cannot represent non-enum value: "Yummy Food".'
+        );
+      })
+      .end(done);
+  });
+
   test("if the random argument is set to true, return a random Food", (done) => {
     const queryData = {
       query: `query FoodData {
