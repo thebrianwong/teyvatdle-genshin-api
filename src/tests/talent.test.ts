@@ -131,3 +131,415 @@ test("return the correct number of Talents", (done) => {
     })
     .end(done);
 });
+
+describe("Talent query argument test suite", () => {
+  test("a null filter argument returns an error", (done) => {
+    const queryData = {
+      query: `query TalentData {
+        talentData(filter: null) {
+          talentId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe("Please enter a filter value.");
+      })
+      .end(done);
+  });
+
+  test("if multiple null arguments are provided, return an error", (done) => {
+    const queryData = {
+      query: `query TalentData {
+        talentData(
+          filter: { id: null, talentName: null, characterName: null, random: null }
+        ) {
+          talentId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe("Please enter a single filter value.");
+      })
+      .end(done);
+  });
+
+  test("if multiple valid arguments are provided, return an error", (done) => {
+    const queryData = {
+      query: `query TalentData {
+        talentData(
+          filter: {
+            id: "1"
+            talentName: "Sharpshooter"
+            characterName: "Amber"
+            random: true
+          }
+        ) {
+          talentId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe("Please enter a single filter value.");
+      })
+      .end(done);
+  });
+
+  describe("a null argument returns an error", () => {
+    test("id", (done) => {
+      const queryData = {
+        query: `query TalentData {
+          talentData(filter: { id: null }) {
+            talentId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            "Invalid argument. Please enter an id."
+          );
+        })
+        .end(done);
+    });
+
+    test("talentName", (done) => {
+      const queryData = {
+        query: `query TalentData {
+          talentData(filter: { talentName: null }) {
+            talentId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            "Invalid argument. Please enter a talent name."
+          );
+        })
+        .end(done);
+    });
+
+    test("characterName", (done) => {
+      const queryData = {
+        query: `query TalentData {
+          talentData(filter: { characterName: null }) {
+            talentId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            "Invalid argument. Please enter a character name."
+          );
+        })
+        .end(done);
+    });
+
+    test("random", (done) => {
+      const queryData = {
+        query: `query TalentData {
+          talentData(filter: { random: null }) {
+            talentId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            'Invalid argument. Please set the argument "random" to "true" or "false".'
+          );
+        })
+        .end(done);
+    });
+  });
+
+  test("a non-number id returns an error", (done) => {
+    const queryData = {
+      query: `query TalentData {
+        talentData(filter: { id: "hello" }) {
+          talentId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe(
+          "Invalid argument. Please enter a number."
+        );
+      })
+      .end(done);
+  });
+
+  test("if the Talent ID exists, return the Talent", (done) => {
+    const queryData = {
+      query: `query TalentData {
+        talentData(filter: { id: "1" }) {
+          talentId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const talent = response.data.talentData[0];
+
+        expect(talent).toHaveProperty("talentId", "1");
+      })
+      .end(done);
+  });
+
+  test("if the Talent ID does not exist, return an empty array", (done) => {
+    const queryData = {
+      query: `query TalentData {
+        talentData(filter: { id: "14347" }) {
+          talentId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const emptyArray = response.data.talentData;
+
+        expect(emptyArray.length).toBe(0);
+      })
+      .end(done);
+  });
+
+  test("if the Talent name exists, return the Talent", (done) => {
+    const queryData = {
+      query: `query TalentData {
+        talentData(filter: { talentName: "Sharpshooter" }) {
+          talentName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const talent = response.data.talentData[0];
+
+        expect(talent).toHaveProperty("talentName", "Sharpshooter");
+      })
+      .end(done);
+  });
+
+  test("if the Talent name does not exist, return an empty array", (done) => {
+    const queryData = {
+      query: `query TalentData {
+        talentData(filter: { talentName: "Very Cool Move" }) {
+          talentName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const emptyArray = response.data.talentData;
+
+        expect(emptyArray.length).toBe(0);
+      })
+      .end(done);
+  });
+
+  test("return all Talents for a given Character", (done) => {
+    const queryData = {
+      query: `query TalentData {
+        talentData(filter: { characterName: "Amber" }) {
+          talentName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const talents = response.data.talentData;
+
+        expect(talents.length).toBeGreaterThan(1);
+      })
+      .end(done);
+  });
+
+  test("return an empty array if searching for Talents of a Character that doesn't exist", (done) => {
+    const queryData = {
+      query: `query TalentData {
+        talentData(filter: { characterName: "Paimon" }) {
+          talentName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const emptyArray = response.data.talentData;
+
+        expect(emptyArray.length).toBe(0);
+      })
+      .end(done);
+  });
+
+  test("if the random argument is set to true, return a random Talent", (done) => {
+    const queryData = {
+      query: `query TalentData {
+        talentData(filter: { random: true }) {
+          talentName
+        }
+      }`,
+    };
+
+    const mathRandomSpy = jest.spyOn(Math, "random").mockImplementation(() => {
+      return 0;
+    });
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const talent = response.data.talentData[0];
+
+        expect(talent).toHaveProperty("talentName", "Sharpshooter");
+        mathRandomSpy.mockRestore();
+      })
+      .end(done);
+  });
+
+  test("if the random argument is set to false, return Talent data as if no argument was provided", (done) => {
+    const queryData = {
+      query: `query TalentData {
+        talentData(filter: { random: false }) {
+          talentName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const talents = response.data.talentData;
+
+        expect(talents.length).toBeGreaterThan(1);
+      })
+      .end(done);
+  });
+});
