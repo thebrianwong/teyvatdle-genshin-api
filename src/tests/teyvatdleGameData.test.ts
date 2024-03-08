@@ -2,9 +2,16 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import GameData from "../types/data/gameData.type";
-import DailyRecordData from "../types/data/dailyRecordData.type";
+import { DailyRecordData } from "../generated/graphql";
 import { RawData, WebSocket } from "ws";
 import { WebSocketData } from "../types/data/webSocketData.type";
+import {
+  CharacterData,
+  ConstellationData,
+  FoodData,
+  TalentData,
+  WeaponData,
+} from "../generated/graphql";
 
 beforeAll(async () => {
   await configSetup("Teyvatdle Game Data");
@@ -27,21 +34,100 @@ afterEach(() => {
   dateNowSpy.mockRestore();
 });
 
-test("return Game Data as JSON", (done) => {
-  request(app)
-    .get("/api/teyvatdle")
-    .expect("Content-Type", /json/)
-    .expect(200)
-    .end(done);
-});
+// test.skip("return Game Data as JSON", (done) => {
+//   request(app)
+//     .get("/api/teyvatdle")
+//     .expect("Content-Type", /json/)
+//     .expect(200)
+//     .end(done);
+// });
 
 test("expect none of the Game Data keys/columns are null", (done) => {
+  const queryData = {
+    query: `query CharacterData {
+      characterData {
+        characterId
+        characterName
+        gender
+        height
+        rarity
+        region
+        element
+        weaponType
+        ascensionStat
+        birthday
+        characterImageUrl
+        characterCorrectImageUrl
+        characterWrongImageUrl
+        localSpecialty
+        localSpecialtyImageUrl
+        enhancementMaterial
+        enhancementMaterialImageUrl
+        ascensionBossMaterial
+        ascensionBossMaterialImageUrl
+        talentBossMaterial
+        talentBossMaterialImageUrl
+        talentBook
+        talentBookImageUrl
+      }
+      constellationData {
+        constellationId
+        constellationName
+        constellationLevel
+        constellationImageUrl
+        characterName
+        characterImageUrl
+      }
+      foodData {
+        foodId
+        foodName
+        rarity
+        foodType
+        specialDish
+        purchasable
+        recipe
+        event
+        foodImageUrl
+      }
+      talentData {
+        talentId
+        talentName
+        talentType
+        talentImageUrl
+        characterName
+        characterImageUrl
+      }
+      weaponData {
+        weaponId
+        weaponName
+        rarity
+        weaponType
+        subStat
+        weaponImageUrl
+        weaponDomainMaterial
+        weaponDomainMaterialImageUrl
+        eliteEnemyMaterial
+        eliteEnemyMaterialImageUrl
+        commonEnemyMaterial
+        commonEnemyMaterialImageUrl
+        gacha
+      }
+    }`,
+  };
+
   request(app)
-    .get("/api/teyvatdle")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const gameData: GameData = res.body;
+      const gameData: {
+        characterData: CharacterData[];
+        constellationData: ConstellationData[];
+        foodData: FoodData[];
+        talentData: TalentData[];
+        weaponData: WeaponData[];
+      } = res.body.data;
       expect(gameData).toEqual(
         expect.objectContaining({
           characterData: expect.anything(),
@@ -56,33 +142,71 @@ test("expect none of the Game Data keys/columns are null", (done) => {
 });
 
 test("return the daily record as JSON", (done) => {
+  const queryData = {
+    query: `query DailyRecordData {
+      dailyRecordData {
+        dailyRecordId
+        characterId
+        characterSolved
+        weaponId
+        weaponSolved
+        talentId
+        talentSolved
+        constellationId
+        constellationSolved
+        foodId
+        foodSolved
+      }
+    }`,
+  };
+
   request(app)
-    .get("/api/teyvatdle/daily_record")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .end(done);
 });
 
 test("expect the daily record to contain non-null values", (done) => {
+  const queryData = {
+    query: `query DailyRecordData {
+      dailyRecordData {
+        dailyRecordId
+        characterId
+        characterSolved
+        weaponId
+        weaponSolved
+        talentId
+        talentSolved
+        constellationId
+        constellationSolved
+        foodId
+        foodSolved
+      }
+    }`,
+  };
+
   request(app)
-    .get("/api/teyvatdle/daily_record")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const dailyRecord: DailyRecordData = res.body;
+      const dailyRecord: DailyRecordData = res.body.data.dailyRecordData;
       expect(dailyRecord).toEqual(
         expect.objectContaining({
-          daily_record_id: expect.anything(),
-          character_id: expect.anything(),
-          character_solved: expect.anything(),
-          weapon_id: expect.anything(),
-          weapon_solved: expect.anything(),
-          talent_id: expect.anything(),
-          talent_solved: expect.anything(),
-          constellation_id: expect.anything(),
-          constellation_solved: expect.anything(),
-          food_id: expect.anything(),
-          food_solved: expect.anything(),
+          dailyRecordId: expect.anything(),
+          characterId: expect.anything(),
+          characterSolved: expect.anything(),
+          weaponId: expect.anything(),
+          weaponSolved: expect.anything(),
+          talentId: expect.anything(),
+          talentSolved: expect.anything(),
+          constellationId: expect.anything(),
+          constellationSolved: expect.anything(),
+          foodId: expect.anything(),
+          foodSolved: expect.anything(),
         })
       );
     })
@@ -90,54 +214,65 @@ test("expect the daily record to contain non-null values", (done) => {
 });
 
 test("returns the correct daily record for the current mocked date", (done) => {
-  const expectedDailyRecordId = 38;
+  const expectedDailyRecordId = "38";
+  const queryData = {
+    query: `query DailyRecordData {
+      dailyRecordData {
+        dailyRecordId
+      }
+    }`,
+  };
+
   request(app)
-    .get("/api/teyvatdle/daily_record")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const dailyRecord: DailyRecordData = res.body;
+      const dailyRecord: DailyRecordData = res.body.data.dailyRecordData;
       expect(dailyRecord).toEqual(
         expect.objectContaining({
-          daily_record_id: expectedDailyRecordId,
+          dailyRecordId: expectedDailyRecordId,
         })
       );
     })
     .end(done);
 });
 
-test("patching the current daily record for character returns a success", (done) => {
-  const validDailyRecordID = 38;
+test("updating the current daily record for Character returns a success", (done) => {
+  const mutationData = {
+    query: `mutation UpdateDailyRecord {
+      updateDailyRecord(id: "38", type: Character)
+    }`,
+  };
+
   request(app)
-    .patch(`/api/teyvatdle/daily_record/${validDailyRecordID}/character`)
+    .post("/graphql")
+    .send(mutationData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const resultsMessage: { message: string; success: boolean } = res.body;
-      expect(resultsMessage).toEqual(
-        expect.objectContaining({
-          message: "Daily record updated.",
-          success: true,
-        })
-      );
+      const resultsMessage: string = res.body.data.updateDailyRecord;
+      expect(resultsMessage).toContain("Daily record updated. character:");
     })
     .end(done);
 });
 
-test("patching the current daily record for weapon returns a success", (done) => {
-  const validDailyRecordID = 38;
+test("updating the current daily record for Weapon returns a success", (done) => {
+  const mutationData = {
+    query: `mutation UpdateDailyRecord {
+      updateDailyRecord(id: "38", type: Weapon)
+    }`,
+  };
+
   request(app)
-    .patch(`/api/teyvatdle/daily_record/${validDailyRecordID}/weapon`)
+    .post("/graphql")
+    .send(mutationData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const resultsMessage: { message: string; success: boolean } = res.body;
-      expect(resultsMessage).toEqual(
-        expect.objectContaining({
-          message: "Daily record updated.",
-          success: true,
-        })
-      );
+      const resultsMessage: string = res.body.data.updateDailyRecord;
+      expect(resultsMessage).toContain("Daily record updated. weapon:");
     })
     .end(done);
 });
