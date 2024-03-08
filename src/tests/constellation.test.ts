@@ -450,7 +450,7 @@ describe("Constellation query argument test suite", () => {
       .end(done);
   });
 
-  test("if the random argument is set to true, return a random character", (done) => {
+  test("if the random argument is set to true, return a random Constellation", (done) => {
     const queryData = {
       query: `query ConstellationData {
         constellationData(filter: { random: true }) {
@@ -481,7 +481,7 @@ describe("Constellation query argument test suite", () => {
       .end(done);
   });
 
-  test("if the random argument is set to false, return character data as if no argument was provided", (done) => {
+  test("if the random argument is set to false, return Constellation data as if no argument was provided", (done) => {
     const queryData = {
       query: `query ConstellationData {
         constellationData(filter: { random: false }) {
