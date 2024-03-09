@@ -42,6 +42,8 @@ afterEach(() => {
 //     .end(done);
 // });
 
+const validDailyRecordID = 38;
+
 test("expect none of the Game Data keys/columns are null", (done) => {
   const queryData = {
     query: `query CharacterData {
@@ -242,7 +244,7 @@ test("returns the correct daily record for the current mocked date", (done) => {
 test("updating the current daily record for Character returns a success", (done) => {
   const mutationData = {
     query: `mutation UpdateDailyRecord {
-      updateDailyRecord(id: "38", type: Character)
+      updateDailyRecord(id: "${validDailyRecordID}", type: Character)
     }`,
   };
 
@@ -261,7 +263,7 @@ test("updating the current daily record for Character returns a success", (done)
 test("updating the current daily record for Weapon returns a success", (done) => {
   const mutationData = {
     query: `mutation UpdateDailyRecord {
-      updateDailyRecord(id: "38", type: Weapon)
+      updateDailyRecord(id: "${validDailyRecordID}", type: Weapon)
     }`,
   };
 
@@ -277,85 +279,106 @@ test("updating the current daily record for Weapon returns a success", (done) =>
     .end(done);
 });
 
-test("patching the current daily record for talent returns a success", (done) => {
-  const validDailyRecordID = 38;
+test("updating the current daily record for Talent returns a success", (done) => {
+  const mutationData = {
+    query: `mutation UpdateDailyRecord {
+      updateDailyRecord(id: "${validDailyRecordID}", type: Talent)
+    }`,
+  };
+
   request(app)
-    .patch(`/api/teyvatdle/daily_record/${validDailyRecordID}/talent`)
+    .post("/graphql")
+    .send(mutationData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const resultsMessage: { message: string; success: boolean } = res.body;
-      expect(resultsMessage).toEqual(
-        expect.objectContaining({
-          message: "Daily record updated.",
-          success: true,
-        })
-      );
+      const resultsMessage: string = res.body.data.updateDailyRecord;
+      expect(resultsMessage).toContain("Daily record updated. talent:");
     })
     .end(done);
 });
 
-test("patching the current daily record for constellation returns a success", (done) => {
-  const validDailyRecordID = 38;
+test("updating the current daily record for Constellation returns a success", (done) => {
+  const mutationData = {
+    query: `mutation UpdateDailyRecord {
+      updateDailyRecord(id: "${validDailyRecordID}", type: Constellation)
+    }`,
+  };
+
   request(app)
-    .patch(`/api/teyvatdle/daily_record/${validDailyRecordID}/constellation`)
+    .post("/graphql")
+    .send(mutationData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const resultsMessage: { message: string; success: boolean } = res.body;
-      expect(resultsMessage).toEqual(
-        expect.objectContaining({
-          message: "Daily record updated.",
-          success: true,
-        })
-      );
+      const resultsMessage: string = res.body.data.updateDailyRecord;
+      expect(resultsMessage).toContain("Daily record updated. constellation:");
     })
     .end(done);
 });
 
-test("patching the current daily record for food returns a success", (done) => {
-  const validDailyRecordID = 38;
+test("updating the current daily record for Food returns a success", (done) => {
+  const mutationData = {
+    query: `mutation UpdateDailyRecord {
+      updateDailyRecord(id: "${validDailyRecordID}", type: Food)
+    }`,
+  };
+
   request(app)
-    .patch(`/api/teyvatdle/daily_record/${validDailyRecordID}/food`)
+    .post("/graphql")
+    .send(mutationData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const resultsMessage: { message: string; success: boolean } = res.body;
-      expect(resultsMessage).toEqual(
-        expect.objectContaining({
-          message: "Daily record updated.",
-          success: true,
-        })
-      );
+      const resultsMessage: string = res.body.data.updateDailyRecord;
+      expect(resultsMessage).toContain("Daily record updated. food:");
     })
     .end(done);
 });
 
 test("patching the current daily record for character increases the number of time character has been solved by 1", (done) => {
-  const validDailyRecordID = 38;
   let beforeCharacterSolved: number;
 
+  const dailyCharacterQuery = {
+    query: `query DailyRecordData {
+      dailyRecordData {
+        characterSolved
+      }
+    }`,
+  };
+
   request(app)
-    .get("/api/teyvatdle/daily_record")
+    .post("/graphql")
+    .send(dailyCharacterQuery)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const beforeDailyRecord: DailyRecordData = res.body;
-      beforeCharacterSolved = beforeDailyRecord.character_solved;
+      const beforeDailyRecord: { characterSolved: number } =
+        res.body.data.dailyRecordData;
+      beforeCharacterSolved = beforeDailyRecord.characterSolved;
     })
     .then(() => {
+      const mutationData = {
+        query: `mutation UpdateDailyRecord {
+            updateDailyRecord(id: "${validDailyRecordID}", type: Character)
+          }`,
+      };
+
       request(app)
-        .patch(`/api/teyvatdle/daily_record/${validDailyRecordID}/character`)
+        .post("/graphql")
+        .send(mutationData)
         .expect("Content-Type", /json/)
         .expect(200)
         .then(() => {
           request(app)
-            .get("/api/teyvatdle/daily_record")
+            .post("/graphql")
+            .send(dailyCharacterQuery)
             .expect("Content-Type", /json/)
             .expect(200)
             .expect((res) => {
-              const afterDailyRecord: DailyRecordData = res.body;
-              const afterCharacterSolved = afterDailyRecord.character_solved;
+              const afterDailyRecord: { characterSolved: number } =
+                res.body.data.dailyRecordData;
+              const afterCharacterSolved = afterDailyRecord.characterSolved;
               expect(afterCharacterSolved).toBe(beforeCharacterSolved + 1);
             })
             .end(done);
@@ -363,76 +386,91 @@ test("patching the current daily record for character increases the number of ti
     });
 });
 
-test("attempting to patch an invalid resource in the daily record returns a 400 and corresponding error message", (done) => {
-  const validDailyRecordID = 38;
+test("attempting to update an invalid Game Type in the daily record returns a 400 and corresponding error message", (done) => {
+  const invalidGameType = "ReallyReal";
+  const mutationData = {
+    query: `mutation UpdateDailyRecord {
+        updateDailyRecord(id: "${validDailyRecordID}", type: ${invalidGameType})
+      }`,
+  };
+
   request(app)
-    .patch(
-      `/api/teyvatdle/daily_record/${validDailyRecordID}/reallyrealresource`
-    )
+    .post("/graphql")
+    .send(mutationData)
     .expect("Content-Type", /json/)
     .expect(400)
     .expect((res) => {
-      const resultsMessage: { message: string; success: boolean } = res.body;
-      expect(resultsMessage).toEqual(
-        expect.objectContaining({
-          message: "That is not a valid resource.",
-          success: false,
-        })
+      const resultsMessage: { message: string } = res.body.errors[0];
+      expect(resultsMessage.message).toEqual(
+        'Value "ReallyReal" does not exist in "GameDataType" enum.'
       );
     })
     .end(done);
 });
 
-test("attempting to patch a daily record with an invalid ID (not a number) returns a 404 and corresponding error message", (done) => {
+test("attempting to update a daily record with an invalid ID (not a number) returns an error message", (done) => {
+  const invalidId = "i am error";
+  const mutationData = {
+    query: `mutation UpdateDailyRecord {
+        updateDailyRecord(id: "${invalidId}", type: Character)
+      }`,
+  };
+
   request(app)
-    .patch("/api/teyvatdle/daily_record/onemillion/character")
+    .post("/graphql")
+    .send(mutationData)
     .expect("Content-Type", /json/)
-    .expect(404)
+    .expect(200)
     .expect((res) => {
-      const resultsMessage: { message: string; success: boolean } = res.body;
-      expect(resultsMessage).toEqual(
-        expect.objectContaining({
-          message: "That daily record does not exist.",
-          success: false,
-        })
+      const resultsMessage: { message: string } = res.body.errors[0];
+      expect(resultsMessage.message).toEqual(
+        "Invalid argument. Please enter an id number."
       );
     })
     .end(done);
 });
 
-test("attempting to patch a nonexistent daily record returns a 404 and corresponding error message", (done) => {
+test("attempting to update a nonexistent daily record returns an error message", (done) => {
   const nonexistentDailyRecordID = -1;
+  const mutationData = {
+    query: `mutation UpdateDailyRecord {
+        updateDailyRecord(id: "${nonexistentDailyRecordID}", type: Character)
+      }`,
+  };
+
   request(app)
-    .patch(`/api/teyvatdle/daily_record/${nonexistentDailyRecordID}/character`)
+    .post("/graphql")
+    .send(mutationData)
     .expect("Content-Type", /json/)
-    .expect(404)
+    .expect(200)
     .expect((res) => {
-      const resultsMessage: { message: string; success: boolean } = res.body;
-      expect(resultsMessage).toEqual(
-        expect.objectContaining({
-          message: "That daily record does not exist.",
-          success: false,
-        })
+      const resultsMessage: { message: string } = res.body.errors[0];
+      expect(resultsMessage.message).toEqual(
+        "Invalid id number. That daily record does not exist."
       );
     })
     .end(done);
 });
 
-test("attempting to patch a daily record from the past returns a 400 and corresponding error message", (done) => {
+test("attempting to update a daily record from the past returns an error message", (done) => {
   // prevents returned daily record from also having the mocked Date
   dateNowSpy.mockRestore();
   const pastDailyRecordID = 2;
+  const mutationData = {
+    query: `mutation UpdateDailyRecord {
+        updateDailyRecord(id: "${pastDailyRecordID}", type: Character)
+      }`,
+  };
+
   request(app)
-    .patch(`/api/teyvatdle/daily_record/${pastDailyRecordID}/character`)
+    .post("/graphql")
+    .send(mutationData)
     .expect("Content-Type", /json/)
-    .expect(400)
+    .expect(200)
     .expect((res) => {
-      const resultsMessage: { message: string; success: boolean } = res.body;
-      expect(resultsMessage).toEqual(
-        expect.objectContaining({
-          message: "Unable to update past daily record.",
-          success: false,
-        })
+      const resultsMessage: { message: string } = res.body.errors[0];
+      expect(resultsMessage.message).toEqual(
+        "Unable to update past daily record."
       );
     })
     .end(done);
