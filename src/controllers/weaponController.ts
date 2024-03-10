@@ -85,7 +85,7 @@ const retrieveFilteredWeaponData: (
 
 const retrieveRandomWeaponData: () => Promise<WeaponData[]> = async () => {
   const weapons = await retrieveWeaponData();
-  const randomIndex = Math.trunc(Math.random() * weapons.length);
+  const randomIndex = Math.floor(Math.random() * weapons.length);
   const randomWeapon = weapons[randomIndex];
   return [randomWeapon];
 };

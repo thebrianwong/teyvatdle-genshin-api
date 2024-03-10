@@ -71,7 +71,7 @@ const retrieveFilteredFoodData: (
 
 const retrieveRandomFoodData: () => Promise<FoodData[]> = async () => {
   const foods = await retrieveFoodData();
-  const randomIndex = Math.trunc(Math.random() * foods.length);
+  const randomIndex = Math.floor(Math.random() * foods.length);
   const randomFood = foods[randomIndex];
   return [randomFood];
 };

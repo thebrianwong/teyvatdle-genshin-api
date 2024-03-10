@@ -71,7 +71,7 @@ const retrieveRandomConstellationData: () => Promise<
   ConstellationData[]
 > = async () => {
   const constellations = await retrieveConstellationData();
-  const randomIndex = Math.trunc(Math.random() * constellations.length);
+  const randomIndex = Math.floor(Math.random() * constellations.length);
   const randomConstellation = constellations[randomIndex];
   return [randomConstellation];
 };

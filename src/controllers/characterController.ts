@@ -170,7 +170,7 @@ const retrieveRandomCharacterData: () => Promise<
   CharacterData[]
 > = async () => {
   const characters = await retrieveCharacterData();
-  const randomIndex = Math.trunc(Math.random() * characters.length);
+  const randomIndex = Math.floor(Math.random() * characters.length);
   const randomCharacter = characters[randomIndex];
   return [randomCharacter];
 };

@@ -66,7 +66,7 @@ const retrieveFilteredTalentData: (
 
 const retrieveRandomTalentData: () => Promise<TalentData[]> = async () => {
   const talents = await retrieveTalentData();
-  const randomIndex = Math.trunc(Math.random() * talents.length);
+  const randomIndex = Math.floor(Math.random() * talents.length);
   const randomTalent = talents[randomIndex];
   return [randomTalent];
 };
