@@ -1,10 +1,8 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
-import GameData from "../types/data/gameData.type";
-import { DailyRecordData } from "../generated/graphql";
-import { RawData, WebSocket } from "ws";
-import { WebSocketData } from "../types/data/webSocketData.type";
+import { DailyRecordData, GameDataType } from "../generated/graphql";
+import { WebSocket } from "ws";
 import {
   CharacterData,
   ConstellationData,
@@ -12,6 +10,9 @@ import {
   TalentData,
   WeaponData,
 } from "../generated/graphql";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
+import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
 
 beforeAll(async () => {
   await configSetup("Teyvatdle Game Data");
@@ -476,54 +477,119 @@ test("attempting to update a daily record from the past returns an error message
     .end(done);
 });
 
-describe("WebSocket related tests", () => {
-  test("an updated daily record solved value is sent via WebSocket after patching the daily record", (done) => {
-    const wsConnection = new WebSocket("ws://localhost:3001");
-    let wsData: RawData;
-    wsConnection.on("message", (data) => {
-      wsData = data;
+describe("subscription related tests", () => {
+  test("an updated daily record solved value is sent via subscription after updating the daily record", (done) => {
+    const wsLink = new GraphQLWsLink(
+      createClient({
+        url: "ws://localhost:4000",
+        webSocketImpl: WebSocket,
+      })
+    );
+
+    const client = new ApolloClient({
+      link: wsLink,
+      cache: new InMemoryCache(),
     });
 
-    const validDailyRecordID = 38;
+    const observable = client.subscribe({
+      query: gql`
+        subscription DailyRecordUpdated {
+          dailyRecordUpdated {
+            type
+            newSolvedValue
+          }
+        }
+      `,
+    });
+
+    const mutationData = {
+      query: `mutation UpdateDailyRecord {
+        updateDailyRecord(id: "${validDailyRecordID}", type: Character)
+      }`,
+    };
 
     request(app)
-      .patch(`/api/teyvatdle/daily_record/${validDailyRecordID}/character`)
+      .post("/graphql")
+      .send(mutationData)
       .expect("Content-Type", /json/)
       .expect(200)
       .expect(() => {
-        expect(wsData).toBeDefined();
-        wsConnection.terminate();
+        observable.subscribe({
+          next(value) {
+            expect(value.data.dailyRecordUpdated).toBeDefined();
+            expect(value.data.dailyRecordUpdated.type).toBe(
+              GameDataType.Character
+            );
+          },
+        });
       })
       .end(done);
   });
 
-  test("the updated value sent via WebSocket is greater than the value before the patch request by 1", (done) => {
-    const validDailyRecordID = 38;
+  test("the updated value sent via subscription is greater than the value before the update request by 1", (done) => {
     let beforeCharacterSolved: number;
 
-    const wsConnection = new WebSocket("ws://localhost:3001");
-    let wsData: WebSocketData;
-    wsConnection.on("message", async (data) => {
-      const parsedData: WebSocketData = await JSON.parse(data.toString());
-      wsData = parsedData;
+    const wsLink = new GraphQLWsLink(
+      createClient({
+        url: "ws://localhost:4000",
+        webSocketImpl: WebSocket,
+      })
+    );
+
+    const client = new ApolloClient({
+      link: wsLink,
+      cache: new InMemoryCache(),
     });
 
+    const observable = client.subscribe({
+      query: gql`
+        subscription DailyRecordUpdated {
+          dailyRecordUpdated {
+            type
+            newSolvedValue
+          }
+        }
+      `,
+    });
+
+    const queryData = {
+      query: `query DailyRecordData {
+      dailyRecordData {
+        characterSolved
+      }
+    }`,
+    };
+
+    const mutationData = {
+      query: `mutation UpdateDailyRecord {
+        updateDailyRecord(id: "${validDailyRecordID}", type: Character)
+      }`,
+    };
+
     request(app)
-      .get("/api/teyvatdle/daily_record")
+      .post("/graphql")
+      .send(queryData)
       .expect("Content-Type", /json/)
       .expect(200)
       .expect((res) => {
-        const beforeDailyRecord: DailyRecordData = res.body;
-        beforeCharacterSolved = beforeDailyRecord.character_solved;
+        const beforeDailyRecord: { characterSolved: number } =
+          res.body.data.dailyRecordData;
+        beforeCharacterSolved = beforeDailyRecord.characterSolved;
       })
       .then(() => {
         request(app)
-          .patch(`/api/teyvatdle/daily_record/${validDailyRecordID}/character`)
+          .post("/graphql")
+          .send(mutationData)
           .expect("Content-Type", /json/)
           .expect(200)
           .expect(() => {
-            expect(wsData.newSolvedValue).toBe(beforeCharacterSolved + 1);
-            wsConnection.terminate();
+            observable.subscribe({
+              next(value) {
+                expect(value.data.dailyRecordUpdated.newSolvedValue).toBe(
+                  beforeCharacterSolved + 1
+                );
+              },
+            });
           })
           .end(done);
       });
