@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
-import { WeaponData } from "../generated/graphql";
+import { Stat, WeaponData, WeaponType } from "../generated/graphql";
 
 beforeAll(async () => {
   await configSetup("Weapon");
@@ -97,6 +97,9 @@ test("expect 1 and 2 star weapons have null Sub Stats", (done) => {
 });
 
 test("returned Weapon data has the correct types for values", (done) => {
+  const weaponTypeEnumValues = Object.values(WeaponType);
+  const statEnumValues = Object.values(Stat);
+
   request(app)
     .post("/graphql")
     .send(queryData)
@@ -108,28 +111,8 @@ test("returned Weapon data has the correct types for values", (done) => {
         expect(typeof data.weaponId).toBe("string");
         expect(typeof data.weaponName).toBe("string");
         expect(typeof data.rarity).toBe("number");
-        expect(["Sword", "Claymore", "Polearm", "Catalyst", "Bow"]).toContain(
-          data.weaponType
-        );
-        expect([
-          "Anemo_DMG_Bonus",
-          "ATK",
-          "CRIT_DMG",
-          "CRIT_Rate",
-          "Cryo_DMG_Bonus",
-          "DEF",
-          "Dendro_DMG_Bonus",
-          "Electro_DMG_Bonus",
-          "Elemental_Mastery",
-          "Energy_Recharge",
-          "Geo_DMG_Bonus",
-          "Healing_Bonus",
-          "HP",
-          "Hydro_DMG_Bonus",
-          "Physical_DMG_Bonus",
-          "Pyro_DMG_Bonus",
-          null,
-        ]).toContain(data.subStat);
+        expect(weaponTypeEnumValues).toContain(data.weaponType);
+        expect([...statEnumValues, null]).toContain(data.subStat);
         expect(typeof data.weaponImageUrl).toBe("string");
         expect(typeof data.weaponDomainMaterial).toBe("string");
         expect(typeof data.weaponDomainMaterialImageUrl).toBe("string");
@@ -223,15 +206,15 @@ test("return the correct number of Weapons based on weapon type", (done) => {
       let bows = 0;
 
       arrayOfDataObjects.forEach((weapon) => {
-        if (weapon.weaponType === "Sword") {
+        if (weapon.weaponType === WeaponType.Sword) {
           swords += 1;
-        } else if (weapon.weaponType === "Claymore") {
+        } else if (weapon.weaponType === WeaponType.Claymore) {
           claymores += 1;
-        } else if (weapon.weaponType === "Polearm") {
+        } else if (weapon.weaponType === WeaponType.Polearm) {
           polearms += 1;
-        } else if (weapon.weaponType === "Catalyst") {
+        } else if (weapon.weaponType === WeaponType.Catalyst) {
           catalysts += 1;
-        } else if (weapon.weaponType === "Bow") {
+        } else if (weapon.weaponType === WeaponType.Bow) {
           bows += 1;
         }
       });
@@ -274,21 +257,21 @@ test("return the correct number of Weapons based on sub stat", (done) => {
       let noSubStatWeapons = 0;
 
       arrayOfDataObjects.forEach((weapon) => {
-        if (weapon.subStat === "ATK") {
+        if (weapon.subStat === Stat.Atk) {
           atkWeapons += 1;
-        } else if (weapon.subStat === "CRIT_DMG") {
+        } else if (weapon.subStat === Stat.CritDmg) {
           critDMGWeapons += 1;
-        } else if (weapon.subStat === "CRIT_Rate") {
+        } else if (weapon.subStat === Stat.CritRate) {
           critRateWeapons += 1;
-        } else if (weapon.subStat === "DEF") {
+        } else if (weapon.subStat === Stat.Def) {
           defWeapons += 1;
-        } else if (weapon.subStat === "Elemental_Mastery") {
+        } else if (weapon.subStat === Stat.ElementalMastery) {
           elementalMasteryWeapons += 1;
-        } else if (weapon.subStat === "Energy_Recharge") {
+        } else if (weapon.subStat === Stat.EnergyRecharge) {
           energyRechargeWeapons += 1;
-        } else if (weapon.subStat === "HP") {
+        } else if (weapon.subStat === Stat.Hp) {
           hpWeapons += 1;
-        } else if (weapon.subStat === "Physical_DMG_Bonus") {
+        } else if (weapon.subStat === Stat.PhysicalDmgBonus) {
           physicalDMGWeapons += 1;
         } else if (weapon.subStat === null) {
           noSubStatWeapons += 1;

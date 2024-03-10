@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
-import { TalentData } from "../generated/graphql";
+import { TalentData, TalentType } from "../generated/graphql";
 
 beforeAll(async () => {
   await configSetup("Talent");
@@ -58,6 +58,8 @@ test("expect none of the Talent keys/columns are null", (done) => {
 });
 
 test("returned Talent data has the correct types for values", (done) => {
+  const talentTypeEnumValues = Object.values(TalentType);
+
   request(app)
     .post("/graphql")
     .send(queryData)
@@ -68,16 +70,7 @@ test("returned Talent data has the correct types for values", (done) => {
       arrayOfDataObjects.forEach((data) => {
         expect(typeof data.talentId).toBe("string");
         expect(typeof data.talentName).toBe("string");
-        expect([
-          "Normal_Attack",
-          "Elemental_Skill",
-          "Alternate_Sprint",
-          "Elemental_Burst",
-          "First_Ascension_Passive",
-          "Fourth_Ascension_Passive",
-          "Utility_Passive",
-          "Passive",
-        ]).toContain(data.talentType);
+        expect(talentTypeEnumValues).toContain(data.talentType);
         expect(typeof data.talentImageUrl).toBe("string");
         expect(typeof data.characterName).toBe("string");
         expect(typeof data.characterImageUrl).toBe("string");
@@ -116,9 +109,9 @@ test("return the correct number of Talents", (done) => {
         } else {
           travelerTalents += 1;
         }
-        if (talent.talentType === "Alternate_Sprint") {
+        if (talent.talentType === TalentType.AlternateSprint) {
           altSprintTalents += 1;
-        } else if (talent.talentType === "Passive") {
+        } else if (talent.talentType === TalentType.Passive) {
           kokomiPassiveTalents += 1;
         }
       });

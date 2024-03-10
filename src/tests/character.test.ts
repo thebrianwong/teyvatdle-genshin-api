@@ -1,7 +1,15 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
-import { CharacterData } from "../generated/graphql";
+import {
+  CharacterData,
+  Gender,
+  GenshinElement,
+  Height,
+  Region,
+  Stat,
+  WeaponType,
+} from "../generated/graphql";
 
 beforeAll(async () => {
   await configSetup("Character");
@@ -314,6 +322,13 @@ test("expect Traveler to use 3 talent books", (done) => {
 });
 
 test("returned Character data has the correct types for values", (done) => {
+  const genderEnumValues = Object.values(Gender);
+  const heightEnumValues = Object.values(Height);
+  const regionEnumValues = Object.values(Region);
+  const genshinElementEnumValues = Object.values(GenshinElement);
+  const weaponTypeEnumValues = Object.values(WeaponType);
+  const statEnumValues = Object.values(Stat);
+
   request(app)
     .post("/graphql")
     .send(queryData)
@@ -324,50 +339,13 @@ test("returned Character data has the correct types for values", (done) => {
       arrayOfDataObjects.forEach((data) => {
         expect(typeof data.characterId).toBe("string");
         expect(typeof data.characterName).toBe("string");
-        expect(["Male", "Female", "Other"]).toContain(data.gender);
-        expect(["Short", "Medium", "Tall"]).toContain(data.height);
+        expect(genderEnumValues).toContain(data.gender);
+        expect(heightEnumValues).toContain(data.height);
         expect(typeof data.rarity).toBe("number");
-        expect([
-          "Mondstadt",
-          "Liyue",
-          "Inazuma",
-          "Sumeru",
-          "Fontaine",
-          "Natlan",
-          "Snezhnaya",
-          null,
-        ]).toContain(data.region);
-        expect([
-          "Anemo",
-          "Geo",
-          "Electro",
-          "Dendro",
-          "Hydro",
-          "Pyro",
-          "Cryo",
-        ]).toContain(data.element);
-        expect(["Sword", "Claymore", "Polearm", "Catalyst", "Bow"]).toContain(
-          data.weaponType
-        );
-        expect([
-          "Anemo_DMG_Bonus",
-          "ATK",
-          "CRIT_DMG",
-          "CRIT_Rate",
-          "Cryo_DMG_Bonus",
-          "DEF",
-          "Dendro_DMG_Bonus",
-          "Electro_DMG_Bonus",
-          "Elemental_Mastery",
-          "Energy_Recharge",
-          "Geo_DMG_Bonus",
-          "Healing_Bonus",
-          "HP",
-          "Hydro_DMG_Bonus",
-          "Physical_DMG_Bonus",
-          "Pyro_DMG_Bonus",
-          null,
-        ]).toContain(data.ascensionStat);
+        expect([...regionEnumValues, null]).toContain(data.region);
+        expect(genshinElementEnumValues).toContain(data.element);
+        expect(weaponTypeEnumValues).toContain(data.weaponType);
+        expect([...statEnumValues, null]).toContain(data.ascensionStat);
         if (data.birthday) {
           // ex: 2020-08-10T00:00:00.000Z
           // expect(data.birthday).toMatch(
@@ -432,11 +410,11 @@ test("return the correct number of Characters based on gender", (done) => {
       let otherCharacters = 0;
 
       arrayOfDataObjects.forEach((character) => {
-        if (character.gender === "Male") {
+        if (character.gender === Gender.Male) {
           maleCharacters += 1;
-        } else if (character.gender === "Female") {
+        } else if (character.gender === Gender.Female) {
           femaleCharacters += 1;
-        } else if (character.gender === "Other") {
+        } else if (character.gender === Gender.Other) {
           otherCharacters += 1;
         }
       });
@@ -465,11 +443,11 @@ test("return the correct number of Characters based on height", (done) => {
       let tallCharacters = 0;
 
       arrayOfDataObjects.forEach((character) => {
-        if (character.height === "Short") {
+        if (character.height === Height.Short) {
           shortCharacters += 1;
-        } else if (character.height === "Medium") {
+        } else if (character.height === Height.Medium) {
           mediumCharacters += 1;
-        } else if (character.height === "Tall") {
+        } else if (character.height === Height.Tall) {
           tallCharacters += 1;
         }
       });
@@ -537,19 +515,19 @@ test("return the correct number of Characters based on Region", (done) => {
       let noRegionCharacters = 0;
 
       arrayOfDataObjects.forEach((character) => {
-        if (character.region === "Mondstadt") {
+        if (character.region === Region.Mondstadt) {
           mondstadtCharacters += 1;
-        } else if (character.region === "Liyue") {
+        } else if (character.region === Region.Liyue) {
           liyueCharacters += 1;
-        } else if (character.region === "Inazuma") {
+        } else if (character.region === Region.Inazuma) {
           inazumaCharacters += 1;
-        } else if (character.region === "Sumeru") {
+        } else if (character.region === Region.Sumeru) {
           sumeruCharacters += 1;
-        } else if (character.region === "Fontaine") {
+        } else if (character.region === Region.Fontaine) {
           fontaineCharacters += 1;
-        } else if (character.region === "Natlan") {
+        } else if (character.region === Region.Natlan) {
           natlanCharacters += 1;
-        } else if (character.region === "Snezhnaya") {
+        } else if (character.region === Region.Snezhnaya) {
           snezhnayaCharacters += 1;
         } else if (character.region === null) {
           noRegionCharacters += 1;
@@ -594,19 +572,19 @@ test("return the correct number of Characters based on GenshinElement", (done) =
       let cryoCharacters = 0;
 
       arrayOfDataObjects.forEach((character) => {
-        if (character.element === "Anemo") {
+        if (character.element === GenshinElement.Anemo) {
           anemoCharacters += 1;
-        } else if (character.element === "Geo") {
+        } else if (character.element === GenshinElement.Geo) {
           geoCharacters += 1;
-        } else if (character.element === "Electro") {
+        } else if (character.element === GenshinElement.Electro) {
           electroCharacters += 1;
-        } else if (character.element === "Dendro") {
+        } else if (character.element === GenshinElement.Dendro) {
           dendroCharacters += 1;
-        } else if (character.element === "Hydro") {
+        } else if (character.element === GenshinElement.Hydro) {
           hydroCharacters += 1;
-        } else if (character.element === "Pyro") {
+        } else if (character.element === GenshinElement.Pyro) {
           pyroCharacters += 1;
-        } else if (character.element === "Cryo") {
+        } else if (character.element === GenshinElement.Cryo) {
           cryoCharacters += 1;
         }
       });
@@ -643,15 +621,15 @@ test("return the correct number of Characters based on weapon type", (done) => {
       let bowCharacters = 0;
 
       arrayOfDataObjects.forEach((character) => {
-        if (character.weaponType === "Sword") {
+        if (character.weaponType === WeaponType.Sword) {
           swordCharacters += 1;
-        } else if (character.weaponType === "Claymore") {
+        } else if (character.weaponType === WeaponType.Claymore) {
           claymoreCharacters += 1;
-        } else if (character.weaponType === "Polearm") {
+        } else if (character.weaponType === WeaponType.Polearm) {
           polearmCharacters += 1;
-        } else if (character.weaponType === "Catalyst") {
+        } else if (character.weaponType === WeaponType.Catalyst) {
           catalystCharacters += 1;
-        } else if (character.weaponType === "Bow") {
+        } else if (character.weaponType === WeaponType.Bow) {
           bowCharacters += 1;
         }
       });
@@ -709,37 +687,37 @@ test("return the correct number of Characters based on sub stat", (done) => {
       let pyroDMGCharacters = 0;
 
       arrayOfDataObjects.forEach((character) => {
-        if (character.ascensionStat === "Anemo_DMG_Bonus") {
+        if (character.ascensionStat === Stat.AnemoDmgBonus) {
           anemoDMGCharacters += 1;
-        } else if (character.ascensionStat === "ATK") {
+        } else if (character.ascensionStat === Stat.Atk) {
           atkCharacters += 1;
-        } else if (character.ascensionStat === "CRIT_DMG") {
+        } else if (character.ascensionStat === Stat.CritDmg) {
           critDMGCharacters += 1;
-        } else if (character.ascensionStat === "CRIT_Rate") {
+        } else if (character.ascensionStat === Stat.CritRate) {
           critRateCharacters += 1;
-        } else if (character.ascensionStat === "Cryo_DMG_Bonus") {
+        } else if (character.ascensionStat === Stat.CryoDmgBonus) {
           cryoDMGCharacters += 1;
-        } else if (character.ascensionStat === "DEF") {
+        } else if (character.ascensionStat === Stat.Def) {
           defCharacters += 1;
-        } else if (character.ascensionStat === "Dendro_DMG_Bonus") {
+        } else if (character.ascensionStat === Stat.DendroDmgBonus) {
           dendroDMGCharacters += 1;
-        } else if (character.ascensionStat === "Electro_DMG_Bonus") {
+        } else if (character.ascensionStat === Stat.ElectroDmgBonus) {
           electroDMGCharacters += 1;
-        } else if (character.ascensionStat === "Elemental_Mastery") {
+        } else if (character.ascensionStat === Stat.ElementalMastery) {
           elementalMasteryCharacters += 1;
-        } else if (character.ascensionStat === "Energy_Recharge") {
+        } else if (character.ascensionStat === Stat.EnergyRecharge) {
           energyRechargeCharacters += 1;
-        } else if (character.ascensionStat === "Geo_DMG_Bonus") {
+        } else if (character.ascensionStat === Stat.GeoDmgBonus) {
           geoDMGCharacters += 1;
-        } else if (character.ascensionStat === "Healing_Bonus") {
+        } else if (character.ascensionStat === Stat.HealingBonus) {
           healingBonusCharacters += 1;
-        } else if (character.ascensionStat === "HP") {
+        } else if (character.ascensionStat === Stat.Hp) {
           hpCharacters += 1;
-        } else if (character.ascensionStat === "Hydro_DMG_Bonus") {
+        } else if (character.ascensionStat === Stat.HydroDmgBonus) {
           hydroDMGCharacters += 1;
-        } else if (character.ascensionStat === "Physical_DMG_Bonus") {
+        } else if (character.ascensionStat === Stat.PhysicalDmgBonus) {
           physicalDMGCharacters += 1;
-        } else if (character.ascensionStat === "Pyro_DMG_Bonus") {
+        } else if (character.ascensionStat === Stat.PyroDmgBonus) {
           pyroDMGCharacters += 1;
         }
       });

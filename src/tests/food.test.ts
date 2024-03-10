@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
-import { FoodData } from "../generated/graphql";
+import { FoodData, FoodType } from "../generated/graphql";
 
 beforeAll(async () => {
   await configSetup("Food");
@@ -64,6 +64,8 @@ test("expect none of the Food keys/columns are null", (done) => {
 });
 
 test("returned Food data has the correct types for values", (done) => {
+  const foodTypeEnumValues = Object.values(FoodType);
+
   request(app)
     .post("/graphql")
     .send(queryData)
@@ -75,14 +77,7 @@ test("returned Food data has the correct types for values", (done) => {
         expect(typeof data.foodId).toBe("string");
         expect(typeof data.foodName).toBe("string");
         expect(typeof data.rarity).toBe("number");
-        expect([
-          "Adventurers_Dishes",
-          "Recovery_Dishes",
-          "DEF_Boosting_Dishes",
-          "ATK_Boosting_Dishes",
-          "Potions",
-          "Essential_Oils",
-        ]).toContain(data.foodType);
+        expect(foodTypeEnumValues).toContain(data.foodType);
         expect(typeof data.specialDish).toBe("boolean");
         expect(typeof data.purchasable).toBe("boolean");
         expect(typeof data.recipe).toBe("boolean");
@@ -163,17 +158,17 @@ test("return the correct number of Foods", (done) => {
           fiveStarFoods += 1;
         }
 
-        if (food.foodType === "Adventurers_Dishes") {
+        if (food.foodType === FoodType.AdventurersDishes) {
           adventureDishes += 1;
-        } else if (food.foodType === "ATK_Boosting_Dishes") {
+        } else if (food.foodType === FoodType.AtkBoostingDishes) {
           attackDishes += 1;
-        } else if (food.foodType === "DEF_Boosting_Dishes") {
+        } else if (food.foodType === FoodType.DefBoostingDishes) {
           defenseDishes += 1;
-        } else if (food.foodType === "Essential_Oils") {
+        } else if (food.foodType === FoodType.EssentialOils) {
           essentialOils += 1;
-        } else if (food.foodType === "Potions") {
+        } else if (food.foodType === FoodType.Potions) {
           potions += 1;
-        } else if (food.foodType === "Recovery_Dishes") {
+        } else if (food.foodType === FoodType.RecoveryDishes) {
           recoveryDishes += 1;
         }
 
