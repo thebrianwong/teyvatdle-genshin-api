@@ -17,13 +17,6 @@ enum Height {
 }
 
 enum Region {
-  # MONDSTADT
-  # LIYUE
-  # INAZUMA
-  # SUMERU
-  # FONTAINE
-  # NATLAN
-  # SNEZHNAYA
   Mondstadt
   Liyue
   Inazuma
@@ -84,7 +77,6 @@ enum TalentType {
   Elemental_Skill
   Alternate_Sprint
   Elemental_Burst
-  # First_Ascension_Passive = "1st Ascension Passive"
   First_Ascension_Passive
   Fourth_Ascension_Passive
   Utility_Passive
@@ -164,22 +156,12 @@ type FoodData {
   foodImageUrl: String!
 }
 
-# type GameData {
-#   characterData: [CharacterData!]!
-#   weaponData: [WeaponData!]!
-#   talentData: [TalentData!]!
-#   constellationData: [ConstellationData!]!
-#   foodData: [FoodData!]!
-# }
-
-# not actually used but copying over for posterity
 type LocalSpecialtyData {
   localSpecialty: String!
   region: Region!
   imageUrl: String!
 }
 
-# this isn't really used either but whatever
 type RegionData {
   id: ID!
   name: Region!
@@ -253,7 +235,6 @@ input WeaponSearchFilter {
 
 # query
 type Query {
-  # gameData: GameData
   characterData(filter: CharacterSearchFilter): [CharacterData!]!
   constellationData(filter: ConstellationSearchFilter): [ConstellationData!]!
   dailyRecordData: DailyRecordData!
