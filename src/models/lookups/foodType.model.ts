@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { FoodType as FoodTypeString } from "../../types/foodType.type";
+import { FoodType as FoodTypeName } from "../../generated/graphql";
 
 @Entity({ name: "food_type" })
 export default class FoodType {
@@ -7,5 +7,5 @@ export default class FoodType {
   id!: number;
 
   @Column()
-  name!: FoodTypeString;
+  name!: FoodTypeName;
 }

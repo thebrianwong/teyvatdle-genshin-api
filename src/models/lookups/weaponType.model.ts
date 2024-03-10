@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { WeaponType as WeaponTypeString } from "../../types/weaponType.type";
+import { WeaponType as WeaponTypeName } from "../../generated/graphql";
 
 @Entity({ name: "weapon_type" })
 export default class WeaponType {
@@ -7,5 +7,5 @@ export default class WeaponType {
   id!: number;
 
   @Column()
-  name!: WeaponTypeString;
+  name!: WeaponTypeName;
 }

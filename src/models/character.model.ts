@@ -13,6 +13,7 @@ import Element from "./lookups/element.model";
 import LocalSpecialty from "./localSpecialty.model";
 import BossDrop from "./bossDrop.model";
 import Food from "./food.model";
+import { Gender, Height } from "../generated/graphql";
 
 @Entity()
 export default class Character {
@@ -23,10 +24,10 @@ export default class Character {
   name!: string;
 
   @Column()
-  gender!: "Male" | "Female" | "Other";
+  gender!: Gender;
 
   @Column()
-  height!: "Short" | "Medium" | "Tall";
+  height!: Height;
 
   @Column()
   rarity!: number;
