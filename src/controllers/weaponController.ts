@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Weapon from "../models/weapon.model";
-// import WeaponData from "../types//data/weaponData.type";
 import { WeaponData } from "../generated/graphql";
 
 const retrieveWeaponData: () => Promise<WeaponData[]> = async () => {

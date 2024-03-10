@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Food from "../models/food.model";
-// import FoodData from "../types/data/foodData.type";
 import { FoodData } from "../generated/graphql";
 
 const retrieveFoodData: () => Promise<FoodData[]> = async () => {

@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Constellation from "../models/constellation.model";
-// import ConstellationData from "../types/data/constellationData.type";
 import { ConstellationData } from "../generated/graphql";
 
 const retrieveConstellationData: () => Promise<

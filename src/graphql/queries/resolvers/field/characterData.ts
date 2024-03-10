@@ -1,4 +1,3 @@
-import { retrieveSingleCharacterData } from "../../../../controllers/characterController";
 import { retrieveFilteredConstellationData } from "../../../../controllers/constellationController";
 import { retrieveFilteredTalentData } from "../../../../controllers/talentController";
 import {

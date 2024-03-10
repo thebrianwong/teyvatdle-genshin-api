@@ -4,27 +4,20 @@ import { retrieveConstellationData } from "./constellationController";
 import { retrieveFoodData } from "./foodController";
 import { retrieveTalentData } from "./talentController";
 import { retrieveWeaponData } from "./weaponController";
-import { AppDataSource, webSocketServer } from "..";
+import { AppDataSource } from "..";
 import Character from "../models/character.model";
 import Weapon from "../models/weapon.model";
 import Talent from "../models/talent.model";
 import Constellation from "../models/constellation.model";
 import Food from "../models/food.model";
-import { Repository } from "typeorm";
 import DailyRecord from "../models/dailyRecord.model";
 import {
   normalizeDay,
   normalizeMonth,
   normalizeYear,
 } from "../utils/normalizeDates";
-import GameData from "../types/data/gameData.type";
 import TeyvatdleEntityRepo from "../types/teyvatdleEntityRepo.type";
-import DailyRecordData1 from "../types/data/dailyRecordData.type"; //old
 import { DailyRecordData, GameDataType } from "../generated/graphql";
-import {
-  WebSocketData,
-  WebSocketDataKeys,
-} from "../types/data/webSocketData.type";
 import { pubSub } from "..";
 
 const getGameData: RequestHandler = async (req, res, next) => {
@@ -242,12 +235,6 @@ const updateDailyRecord: (
             .execute();
           const newSolvedValue =
             returnedUpdateResult.raw[0][`${gameDataType}_solved`];
-
-          // const dataObject: WebSocketData = {
-          //   type,
-          //   newSolvedValue,
-          // };
-          // webSocketServer.emit(`updateSolvedValue`, dataObject);
 
           pubSub.publish("DAILY_RECORD_UPDATED", {
             dailyRecordUpdated: {

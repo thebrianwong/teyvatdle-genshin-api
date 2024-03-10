@@ -2,7 +2,6 @@ import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Character from "../models/character.model";
 import CharacterBookMap from "../models/maps/characterBookMap.model";
-import CharacterData1 from "../types/data/characterData.type"; // old manually created type
 import { CharacterData } from "../generated/graphql";
 
 const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {

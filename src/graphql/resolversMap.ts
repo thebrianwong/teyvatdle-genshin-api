@@ -1,17 +1,4 @@
-import { GraphQLResolveInfo } from "graphql";
-import {
-  GameDataType,
-  // GameData,
-  Maybe,
-  Resolver,
-  ResolverTypeWrapper,
-  Resolvers,
-} from "../generated/graphql";
-import { getGameData } from "../controllers/teyvatdleGameDataController";
-import {
-  getCharacters,
-  retrieveCharacterData,
-} from "../controllers/characterController";
+import { Resolvers } from "../generated/graphql";
 import genderEnumsResolvers from "./enums/gender";
 import heightEnumsResolvers from "./enums/height";
 import regionEnumsResolvers from "./enums/region";
@@ -30,11 +17,9 @@ import dailyRecordDataResolvers from "./queries/resolvers/field/dailyRecordData"
 import mutationResolvers from "./mutations/mutation";
 import gameDataTypeEnumsResolvers from "./enums/gameDataType";
 import subscriptionResolvers from "./subscriptions/subscription";
-import { pubSub } from "..";
 import localSpecialtyDataResolvers from "./queries/resolvers/field/localSpecialtyData";
 import regionDataResolvers from "./queries/resolvers/field/regionData";
 import dateScalar from "./scalars/data";
-// import { getGameData } from "../controllers/teyvatdleGameDataController";
 
 const resolvers: Resolvers = {
   // custom scalars

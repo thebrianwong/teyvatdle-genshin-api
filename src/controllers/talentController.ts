@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Talent from "../models/talent.model";
-// import TalentData from "../types/data/talentData.type";
 import { TalentData } from "../generated/graphql";
 
 const retrieveTalentData: () => Promise<TalentData[]> = async () => {
