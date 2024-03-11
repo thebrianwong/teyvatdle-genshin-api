@@ -132,15 +132,15 @@ type ConstellationData {
 
 type DailyRecordData {
   dailyRecordId: ID!
-  characterId: ID!
+  character: CharacterData!
   characterSolved: Int!
-  weaponId: ID!
+  weapon: WeaponData!
   weaponSolved: Int!
-  talentId: ID!
+  talent: TalentData!
   talentSolved: Int!
-  constellationId: ID!
+  constellation: ConstellationData!
   constellationSolved: Int!
-  foodId: ID!
+  food: FoodData!
   foodSolved: Int!
 }
 

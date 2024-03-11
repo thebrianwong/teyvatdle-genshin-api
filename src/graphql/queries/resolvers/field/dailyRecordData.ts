@@ -1,4 +1,11 @@
 import {
+  retrieveDailyCharacterData,
+  retrieveDailyConstellationData,
+  retrieveDailyFoodData,
+  retrieveDailyTalentData,
+  retrieveDailyWeaponData,
+} from "../../../../controllers/teyvatdleGameDataController";
+import {
   DailyRecordData,
   DailyRecordDataResolvers,
 } from "../../../../generated/graphql";
@@ -6,15 +13,32 @@ import {
 const dailyRecordDataResolvers: DailyRecordDataResolvers<any, DailyRecordData> =
   {
     dailyRecordId: (parent) => parent.dailyRecordId,
-    characterId: (parent) => parent.characterId,
+    character: async (parent) => {
+      const character = await retrieveDailyCharacterData(parent.dailyRecordId);
+      return character;
+    },
     characterSolved: (parent) => parent.characterSolved,
-    weaponId: (parent) => parent.weaponId,
+    weapon: async (parent) => {
+      const weapon = await retrieveDailyWeaponData(parent.dailyRecordId);
+      return weapon;
+    },
     weaponSolved: (parent) => parent.weaponSolved,
-    talentId: (parent) => parent.talentId,
+    talent: async (parent) => {
+      const talent = await retrieveDailyTalentData(parent.dailyRecordId);
+      return talent;
+    },
     talentSolved: (parent) => parent.talentSolved,
-    constellationId: (parent) => parent.constellationId,
+    constellation: async (parent) => {
+      const constellation = await retrieveDailyConstellationData(
+        parent.dailyRecordId
+      );
+      return constellation;
+    },
     constellationSolved: (parent) => parent.constellationSolved,
-    foodId: (parent) => parent.foodId,
+    food: async (parent) => {
+      const food = await retrieveDailyFoodData(parent.dailyRecordId);
+      return food;
+    },
     foodSolved: (parent) => parent.foodSolved,
   };
 

@@ -1,9 +1,21 @@
 import { RequestHandler } from "express";
-import { retrieveCharacterData } from "./characterController";
-import { retrieveConstellationData } from "./constellationController";
-import { retrieveFoodData } from "./foodController";
-import { retrieveTalentData } from "./talentController";
-import { retrieveWeaponData } from "./weaponController";
+import {
+  retrieveCharacterData,
+  retrieveSingleCharacterData,
+} from "./characterController";
+import {
+  retrieveConstellationData,
+  retrieveFilteredConstellationData,
+} from "./constellationController";
+import { retrieveFilteredFoodData, retrieveFoodData } from "./foodController";
+import {
+  retrieveFilteredTalentData,
+  retrieveTalentData,
+} from "./talentController";
+import {
+  retrieveFilteredWeaponData,
+  retrieveWeaponData,
+} from "./weaponController";
 import { AppDataSource } from "..";
 import Character from "../models/character.model";
 import Weapon from "../models/weapon.model";
@@ -17,7 +29,15 @@ import {
   normalizeYear,
 } from "../utils/normalizeDates";
 import TeyvatdleEntityRepo from "../types/teyvatdleEntityRepo.type";
-import { DailyRecordData, GameDataType } from "../generated/graphql";
+import {
+  CharacterData,
+  ConstellationData,
+  DailyRecordData,
+  FoodData,
+  GameDataType,
+  TalentData,
+  WeaponData,
+} from "../generated/graphql";
 import { pubSub } from "..";
 
 const getGameData: RequestHandler = async (req, res, next) => {
@@ -194,6 +214,133 @@ const getDailyRecord: () => Promise<DailyRecordData> = async () => {
   }
 };
 
+const retrieveDailyCharacterData: (
+  dailyId: string
+) => Promise<CharacterData> = async (dailyId) => {
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  try {
+    const characterIdRecord = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select(['daily_record.character_id AS "characterId"'])
+      .where("daily_record.id = :id", {
+        id: dailyId,
+      })
+      .getRawOne();
+    const characterId = characterIdRecord.characterId;
+    try {
+      const character = await retrieveSingleCharacterData("id", characterId);
+      return character[0];
+    } catch (err) {
+      throw new Error("There was an error querying today's daily character.");
+    }
+  } catch (err) {
+    throw new Error("There was an error querying today's daily character id.");
+  }
+};
+
+const retrieveDailyWeaponData: (
+  dailyId: string
+) => Promise<WeaponData> = async (dailyId) => {
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  try {
+    const weaponIdRecord = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select(['daily_record.weapon_id AS "weaponId"'])
+      .where("daily_record.id = :id", {
+        id: dailyId,
+      })
+      .getRawOne();
+    const weaponId = weaponIdRecord.weaponId;
+    try {
+      const weapon = await retrieveFilteredWeaponData("id", weaponId);
+      return weapon[0];
+    } catch (err) {
+      throw new Error("There was an error querying today's daily weapon.");
+    }
+  } catch (err) {
+    throw new Error("There was an error querying today's daily weapon id.");
+  }
+};
+
+const retrieveDailyTalentData: (
+  dailyId: string
+) => Promise<TalentData> = async (dailyId) => {
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  try {
+    const talentIdRecord = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select(['daily_record.talent_id AS "talentId"'])
+      .where("daily_record.id = :id", {
+        id: dailyId,
+      })
+      .getRawOne();
+    const talentId = talentIdRecord.talentId;
+    try {
+      const talent = await retrieveFilteredTalentData("id", talentId);
+      return talent[0];
+    } catch (err) {
+      throw new Error("There was an error querying today's daily talent.");
+    }
+  } catch (err) {
+    throw new Error("There was an error querying today's daily talent id.");
+  }
+};
+
+const retrieveDailyConstellationData: (
+  dailyId: string
+) => Promise<ConstellationData> = async (dailyId) => {
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  try {
+    const constellationIdRecord = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select(['daily_record.constellation_id AS "constellationId"'])
+      .where("daily_record.id = :id", {
+        id: dailyId,
+      })
+      .getRawOne();
+    const constellationId = constellationIdRecord.constellationId;
+    try {
+      const constellation = await retrieveFilteredConstellationData(
+        "id",
+        constellationId
+      );
+      return constellation[0];
+    } catch (err) {
+      throw new Error(
+        "There was an error querying today's daily constellation."
+      );
+    }
+  } catch (err) {
+    throw new Error(
+      "There was an error querying today's daily constellation id."
+    );
+  }
+};
+
+const retrieveDailyFoodData: (dailyId: string) => Promise<FoodData> = async (
+  dailyId
+) => {
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  try {
+    const foodIdRecord = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select(['daily_record.food_id AS "foodId"'])
+      .where("daily_record.id = :id", {
+        id: dailyId,
+      })
+      .getRawOne();
+    const foodId = foodIdRecord.foodId;
+    try {
+      const food = await retrieveFilteredFoodData("id", foodId);
+      return food[0];
+    } catch (err) {
+      throw new Error("There was an error querying today's daily food.");
+    }
+  } catch (err) {
+    throw new Error("There was an error querying today's daily food id.");
+  }
+};
+
 const updateDailyRecord: (
   id: String,
   gameDataType: GameDataType
@@ -262,4 +409,14 @@ const updateDailyRecord: (
   }
 };
 
-export { getGameData, createDailyRecord, getDailyRecord, updateDailyRecord };
+export {
+  getGameData,
+  createDailyRecord,
+  getDailyRecord,
+  updateDailyRecord,
+  retrieveDailyCharacterData,
+  retrieveDailyWeaponData,
+  retrieveDailyTalentData,
+  retrieveDailyConstellationData,
+  retrieveDailyFoodData,
+};
