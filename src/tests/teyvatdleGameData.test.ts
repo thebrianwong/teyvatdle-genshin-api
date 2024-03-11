@@ -149,16 +149,78 @@ test("return the daily record as JSON", (done) => {
     query: `query DailyRecordData {
       dailyRecordData {
         dailyRecordId
-        characterId
         characterSolved
-        weaponId
         weaponSolved
-        talentId
         talentSolved
-        constellationId
         constellationSolved
-        foodId
         foodSolved
+        character {
+          characterId
+          characterName
+          gender
+          height
+          rarity
+          region
+          element
+          weaponType
+          ascensionStat
+          birthday
+          characterImageUrl
+          characterCorrectImageUrl
+          characterWrongImageUrl
+          localSpecialty
+          localSpecialtyImageUrl
+          enhancementMaterial
+          enhancementMaterialImageUrl
+          ascensionBossMaterial
+          ascensionBossMaterialImageUrl
+          talentBossMaterial
+          talentBossMaterialImageUrl
+          talentBook
+          talentBookImageUrl
+        }
+        weapon {
+          weaponId
+          weaponName
+          rarity
+          weaponType
+          subStat
+          weaponImageUrl
+          weaponDomainMaterial
+          weaponDomainMaterialImageUrl
+          eliteEnemyMaterial
+          eliteEnemyMaterialImageUrl
+          commonEnemyMaterial
+          commonEnemyMaterialImageUrl
+          gacha
+        }
+        talent {
+          talentId
+          talentName
+          talentType
+          talentImageUrl
+          characterName
+          characterImageUrl
+        }
+        constellation {
+          constellationId
+          constellationName
+          constellationLevel
+          constellationImageUrl
+          characterName
+          characterImageUrl
+        }
+        food {
+          foodId
+          foodName
+          rarity
+          foodType
+          specialDish
+          purchasable
+          recipe
+          event
+          foodImageUrl
+        }
       }
     }`,
   };
@@ -176,16 +238,78 @@ test("expect the daily record to contain non-null values", (done) => {
     query: `query DailyRecordData {
       dailyRecordData {
         dailyRecordId
-        characterId
         characterSolved
-        weaponId
         weaponSolved
-        talentId
         talentSolved
-        constellationId
         constellationSolved
-        foodId
         foodSolved
+        character {
+          characterId
+          characterName
+          gender
+          height
+          rarity
+          region
+          element
+          weaponType
+          ascensionStat
+          birthday
+          characterImageUrl
+          characterCorrectImageUrl
+          characterWrongImageUrl
+          localSpecialty
+          localSpecialtyImageUrl
+          enhancementMaterial
+          enhancementMaterialImageUrl
+          ascensionBossMaterial
+          ascensionBossMaterialImageUrl
+          talentBossMaterial
+          talentBossMaterialImageUrl
+          talentBook
+          talentBookImageUrl
+        }
+        weapon {
+          weaponId
+          weaponName
+          rarity
+          weaponType
+          subStat
+          weaponImageUrl
+          weaponDomainMaterial
+          weaponDomainMaterialImageUrl
+          eliteEnemyMaterial
+          eliteEnemyMaterialImageUrl
+          commonEnemyMaterial
+          commonEnemyMaterialImageUrl
+          gacha
+        }
+        talent {
+          talentId
+          talentName
+          talentType
+          talentImageUrl
+          characterName
+          characterImageUrl
+        }
+        constellation {
+          constellationId
+          constellationName
+          constellationLevel
+          constellationImageUrl
+          characterName
+          characterImageUrl
+        }
+        food {
+          foodId
+          foodName
+          rarity
+          foodType
+          specialDish
+          purchasable
+          recipe
+          event
+          foodImageUrl
+        }
       }
     }`,
   };
@@ -200,20 +324,260 @@ test("expect the daily record to contain non-null values", (done) => {
       expect(dailyRecord).toEqual(
         expect.objectContaining({
           dailyRecordId: expect.anything(),
-          characterId: expect.anything(),
+          character: expect.anything(),
           characterSolved: expect.anything(),
-          weaponId: expect.anything(),
+          weapon: expect.anything(),
           weaponSolved: expect.anything(),
-          talentId: expect.anything(),
+          talent: expect.anything(),
           talentSolved: expect.anything(),
-          constellationId: expect.anything(),
+          constellation: expect.anything(),
           constellationSolved: expect.anything(),
-          foodId: expect.anything(),
+          food: expect.anything(),
           foodSolved: expect.anything(),
         })
       );
     })
     .end(done);
+});
+
+describe("expect the daily record to contain nested objects with queried properties", () => {
+  test("Character", (done) => {
+    const queryData = {
+      query: `query DailyRecordData {
+        dailyRecordData {
+          character {
+            characterId
+            characterName
+            gender
+            height
+            rarity
+            region
+            element
+            weaponType
+            ascensionStat
+            birthday
+            characterImageUrl
+            characterCorrectImageUrl
+            characterWrongImageUrl
+            localSpecialty
+            localSpecialtyImageUrl
+            enhancementMaterial
+            enhancementMaterialImageUrl
+            ascensionBossMaterial
+            ascensionBossMaterialImageUrl
+            talentBossMaterial
+            talentBossMaterialImageUrl
+            talentBook
+            talentBookImageUrl
+          }
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const dailyRecord: DailyRecordData = res.body.data.dailyRecordData;
+        expect(Object.keys(dailyRecord.character)).toEqual(
+          expect.arrayContaining([
+            "characterName",
+            "gender",
+            "height",
+            "rarity",
+            "region",
+            "element",
+            "weaponType",
+            "ascensionStat",
+            "birthday",
+            "characterImageUrl",
+            "characterCorrectImageUrl",
+            "characterWrongImageUrl",
+            "localSpecialty",
+            "localSpecialtyImageUrl",
+            "enhancementMaterial",
+            "enhancementMaterialImageUrl",
+            "ascensionBossMaterial",
+            "ascensionBossMaterialImageUrl",
+            "talentBossMaterial",
+            "talentBossMaterialImageUrl",
+            "talentBook",
+            "talentBookImageUrl",
+          ])
+        );
+      })
+      .end(done);
+  });
+
+  test("Weapon", (done) => {
+    const queryData = {
+      query: `query DailyRecordData {
+        dailyRecordData {
+          weapon {
+            weaponId
+            weaponName
+            rarity
+            weaponType
+            subStat
+            weaponImageUrl
+            weaponDomainMaterial
+            weaponDomainMaterialImageUrl
+            eliteEnemyMaterial
+            eliteEnemyMaterialImageUrl
+            commonEnemyMaterial
+            commonEnemyMaterialImageUrl
+            gacha
+          }
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const dailyRecord: DailyRecordData = res.body.data.dailyRecordData;
+        expect(Object.keys(dailyRecord.weapon)).toEqual(
+          expect.arrayContaining([
+            "weaponId",
+            "weaponName",
+            "rarity",
+            "weaponType",
+            "subStat",
+            "weaponImageUrl",
+            "weaponDomainMaterial",
+            "weaponDomainMaterialImageUrl",
+            "eliteEnemyMaterial",
+            "eliteEnemyMaterialImageUrl",
+            "commonEnemyMaterial",
+            "commonEnemyMaterialImageUrl",
+            "gacha",
+          ])
+        );
+      })
+      .end(done);
+  });
+
+  test("Talent", (done) => {
+    const queryData = {
+      query: `query DailyRecordData {
+        dailyRecordData {
+          talent {
+            talentId
+            talentName
+            talentType
+            talentImageUrl
+            characterName
+            characterImageUrl
+          }
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const dailyRecord: DailyRecordData = res.body.data.dailyRecordData;
+        expect(Object.keys(dailyRecord.talent)).toEqual(
+          expect.arrayContaining([
+            "talentId",
+            "talentName",
+            "talentType",
+            "talentImageUrl",
+            "characterName",
+            "characterImageUrl",
+          ])
+        );
+      })
+      .end(done);
+  });
+
+  test("Constellation", (done) => {
+    const queryData = {
+      query: `query DailyRecordData {
+        dailyRecordData {
+          constellation {
+            constellationId
+            constellationName
+            constellationLevel
+            constellationImageUrl
+            characterName
+            characterImageUrl
+          }
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const dailyRecord: DailyRecordData = res.body.data.dailyRecordData;
+        expect(Object.keys(dailyRecord.constellation)).toEqual(
+          expect.arrayContaining([
+            "constellationId",
+            "constellationName",
+            "constellationLevel",
+            "constellationImageUrl",
+            "characterName",
+            "characterImageUrl",
+          ])
+        );
+      })
+      .end(done);
+  });
+
+  test("Food", (done) => {
+    const queryData = {
+      query: `query DailyRecordData {
+        dailyRecordData {
+          food {
+            foodId
+            foodName
+            rarity
+            foodType
+            specialDish
+            purchasable
+            recipe
+            event
+            foodImageUrl
+          }
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const dailyRecord: DailyRecordData = res.body.data.dailyRecordData;
+        expect(Object.keys(dailyRecord.food)).toEqual(
+          expect.arrayContaining([
+            "foodId",
+            "foodName",
+            "rarity",
+            "foodType",
+            "specialDish",
+            "purchasable",
+            "recipe",
+            "event",
+            "foodImageUrl",
+          ])
+        );
+      })
+      .end(done);
+  });
 });
 
 test("returns the correct daily record for the current mocked date", (done) => {
