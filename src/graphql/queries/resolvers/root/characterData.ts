@@ -6,7 +6,7 @@ import {
 import {
   retrieveCharacterData,
   retrieveRandomCharacterData,
-  retrieveSingleCharacterData,
+  retrieveFilteredCharacterData,
 } from "../../../../controllers/characterController";
 
 const characterDataRootResolvers: (
@@ -43,7 +43,7 @@ const characterDataRootResolvers: (
             },
           });
         } else {
-          return retrieveSingleCharacterData("id", args.filter.id);
+          return retrieveFilteredCharacterData("id", args.filter.id);
         }
       }
     } else if ("characterName" in args.filter) {
@@ -60,7 +60,7 @@ const characterDataRootResolvers: (
           }
         );
       } else {
-        return retrieveSingleCharacterData(
+        return retrieveFilteredCharacterData(
           "characterName",
           args.filter.characterName
         );

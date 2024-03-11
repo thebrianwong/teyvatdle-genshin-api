@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import {
   retrieveCharacterData,
-  retrieveSingleCharacterData,
+  retrieveFilteredCharacterData,
 } from "./characterController";
 import {
   retrieveConstellationData,
@@ -228,7 +228,7 @@ const retrieveDailyCharacterData: (
       .getRawOne();
     const characterId = characterIdRecord.characterId;
     try {
-      const character = await retrieveSingleCharacterData("id", characterId);
+      const character = await retrieveFilteredCharacterData("id", characterId);
       return character[0];
     } catch (err) {
       throw new Error("There was an error querying today's daily character.");

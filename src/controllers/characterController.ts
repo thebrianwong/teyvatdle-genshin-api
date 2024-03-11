@@ -79,7 +79,7 @@ const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
   }
 };
 
-const retrieveSingleCharacterData: (
+const retrieveFilteredCharacterData: (
   filterType: "id" | "characterName",
   searchValue: String
 ) => Promise<CharacterData[]> = async (filterType, searchValue) => {
@@ -182,6 +182,6 @@ const getCharacters: RequestHandler = async (req, res, next) => {
 export {
   getCharacters,
   retrieveCharacterData,
-  retrieveSingleCharacterData,
+  retrieveFilteredCharacterData,
   retrieveRandomCharacterData,
 };
