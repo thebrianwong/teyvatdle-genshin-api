@@ -35,15 +35,24 @@ afterEach(() => {
   dateNowSpy.mockRestore();
 });
 
-// test.skip("return Game Data as JSON", (done) => {
-//   request(app)
-//     .get("/api/teyvatdle")
-//     .expect("Content-Type", /json/)
-//     .expect(200)
-//     .end(done);
-// });
-
 const validDailyRecordID = 38;
+
+test("return Game Data as JSON", (done) => {
+  const queryData = {
+    query: `query DailyRecordData {
+      dailyRecordData {
+        dailyRecordId
+      }
+    }`,
+  };
+
+  request(app)
+    .post("/graphql")
+    .send(queryData)
+    .expect("Content-Type", /json/)
+    .expect(200)
+    .end(done);
+});
 
 test("expect none of the Game Data keys/columns are null", (done) => {
   const queryData = {
