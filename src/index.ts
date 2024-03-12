@@ -7,13 +7,6 @@ import http from "http";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import regionRouter from "./routes/region";
-import localSpecialtyRouter from "./routes/localSpecialty";
-import weaponRouter from "./routes/weapon";
-import foodRouter from "./routes/food";
-import characterRouter from "./routes/character";
-import talentRouter from "./routes/talent";
-import constellationRouter from "./routes/constellation";
-import teyvatdleGameDataRouter from "./routes/teyvatdleGameData";
 import createWebSocketServer from "./websockets/teyvatdleGameDataWebSocket";
 import realDataSource from "./postgres/postgresConfig";
 import testDataSource from "./postgres/postgresTestConfig";
@@ -78,14 +71,8 @@ const main = async () => {
     app.use(helmet());
   }
 
+  // used to prevent server from sleeping
   app.use("/api/region", regionRouter);
-  app.use("/api/local_specialty", localSpecialtyRouter);
-  app.use("/api/weapon", weaponRouter);
-  app.use("/api/food", foodRouter);
-  app.use("/api/character", characterRouter);
-  app.use("/api/talent", talentRouter);
-  app.use("/api/constellation", constellationRouter);
-  app.use("/api/teyvatdle", teyvatdleGameDataRouter);
 
   createDailyRecordJob.start();
 
