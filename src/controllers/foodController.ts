@@ -1,4 +1,3 @@
-import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Food from "../models/food.model";
 import { FoodData } from "../generated/graphql";
@@ -75,14 +74,4 @@ const retrieveRandomFoodData: () => Promise<FoodData[]> = async () => {
   return [randomFood];
 };
 
-const getFoods: RequestHandler = async (req, res, next) => {
-  const foodData = await retrieveFoodData();
-  res.send(foodData);
-};
-
-export {
-  getFoods,
-  retrieveFoodData,
-  retrieveFilteredFoodData,
-  retrieveRandomFoodData,
-};
+export { retrieveFoodData, retrieveFilteredFoodData, retrieveRandomFoodData };

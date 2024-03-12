@@ -1,4 +1,3 @@
-import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Talent from "../models/talent.model";
 import { TalentData } from "../generated/graphql";
@@ -70,13 +69,7 @@ const retrieveRandomTalentData: () => Promise<TalentData[]> = async () => {
   return [randomTalent];
 };
 
-const getTalents: RequestHandler = async (req, res, next) => {
-  const talentData = await retrieveTalentData();
-  res.send(talentData);
-};
-
 export {
-  getTalents,
   retrieveTalentData,
   retrieveFilteredTalentData,
   retrieveRandomTalentData,

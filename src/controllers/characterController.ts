@@ -1,4 +1,3 @@
-import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Character from "../models/character.model";
 import CharacterBookMap from "../models/maps/characterBookMap.model";
@@ -174,13 +173,7 @@ const retrieveRandomCharacterData: () => Promise<
   return [randomCharacter];
 };
 
-const getCharacters: RequestHandler = async (req, res, next) => {
-  const characterData = await retrieveCharacterData();
-  res.send(characterData);
-};
-
 export {
-  getCharacters,
   retrieveCharacterData,
   retrieveFilteredCharacterData,
   retrieveRandomCharacterData,

@@ -1,21 +1,8 @@
-import { RequestHandler } from "express";
-import {
-  retrieveCharacterData,
-  retrieveFilteredCharacterData,
-} from "./characterController";
-import {
-  retrieveConstellationData,
-  retrieveFilteredConstellationData,
-} from "./constellationController";
-import { retrieveFilteredFoodData, retrieveFoodData } from "./foodController";
-import {
-  retrieveFilteredTalentData,
-  retrieveTalentData,
-} from "./talentController";
-import {
-  retrieveFilteredWeaponData,
-  retrieveWeaponData,
-} from "./weaponController";
+import { retrieveFilteredCharacterData } from "./characterController";
+import { retrieveFilteredConstellationData } from "./constellationController";
+import { retrieveFilteredFoodData } from "./foodController";
+import { retrieveFilteredTalentData } from "./talentController";
+import { retrieveFilteredWeaponData } from "./weaponController";
 import { AppDataSource } from "..";
 import Character from "../models/character.model";
 import Weapon from "../models/weapon.model";
@@ -39,29 +26,6 @@ import {
   WeaponData,
 } from "../generated/graphql";
 import { pubSub } from "..";
-
-const getGameData: RequestHandler = async (req, res, next) => {
-  try {
-    const [characterData, weaponData, talentData, constellationData, foodData] =
-      await Promise.all([
-        retrieveCharacterData(),
-        retrieveWeaponData(),
-        retrieveTalentData(),
-        retrieveConstellationData(),
-        retrieveFoodData(),
-      ]);
-    const gameData = {
-      characterData,
-      weaponData,
-      talentData,
-      constellationData,
-      foodData,
-    };
-    res.send(gameData);
-  } catch (err) {
-    throw new Error("There was an error querying game data.");
-  }
-};
 
 const getCorrespondingRepo: (type: string) => TeyvatdleEntityRepo = (
   type: string
@@ -410,7 +374,6 @@ const updateDailyRecord: (
 };
 
 export {
-  getGameData,
   createDailyRecord,
   getDailyRecord,
   updateDailyRecord,

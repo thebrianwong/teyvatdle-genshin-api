@@ -1,4 +1,3 @@
-import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Constellation from "../models/constellation.model";
 import { ConstellationData } from "../generated/graphql";
@@ -75,13 +74,7 @@ const retrieveRandomConstellationData: () => Promise<
   return [randomConstellation];
 };
 
-const getConstellations: RequestHandler = async (req, res, next) => {
-  const constellationData = await retrieveConstellationData();
-  res.send(constellationData);
-};
-
 export {
-  getConstellations,
   retrieveConstellationData,
   retrieveFilteredConstellationData,
   retrieveRandomConstellationData,

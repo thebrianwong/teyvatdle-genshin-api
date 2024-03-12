@@ -1,4 +1,3 @@
-import { RequestHandler } from "express";
 import { AppDataSource } from "../index";
 import Weapon from "../models/weapon.model";
 import { WeaponData } from "../generated/graphql";
@@ -89,13 +88,7 @@ const retrieveRandomWeaponData: () => Promise<WeaponData[]> = async () => {
   return [randomWeapon];
 };
 
-const getWeapons: RequestHandler = async (req, res, next) => {
-  const weaponData = await retrieveWeaponData();
-  res.send(weaponData);
-};
-
 export {
-  getWeapons,
   retrieveWeaponData,
   retrieveFilteredWeaponData,
   retrieveRandomWeaponData,
