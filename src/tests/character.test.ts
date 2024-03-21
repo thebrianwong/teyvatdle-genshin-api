@@ -111,7 +111,7 @@ test("expect Characters other than Aloy and Traveler to have a Region", (done) =
       ];
       const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const nonAloyTravelerCharacters = arrayOfDataObjects.filter(
-        (character) => !aloyAndTravelerNames.includes(character.characterName)
+        (character) => !aloyAndTravelerNames.includes(character.characterName!)
       );
       expect(nonAloyTravelerCharacters).toEqual(
         expect.arrayContaining([
@@ -140,7 +140,7 @@ test("expect Aloy and Traveler to have null for Region", (done) => {
       ];
       const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const aloyAndTraveler = arrayOfDataObjects.filter((character) =>
-        aloyAndTravelerNames.includes(character.characterName)
+        aloyAndTravelerNames.includes(character.characterName!)
       );
       expect(aloyAndTraveler).toEqual(
         expect.arrayContaining([
@@ -168,7 +168,7 @@ test("expect Characters other than Traveler to have a birthday", (done) => {
       ];
       const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const nonTravelerCharacters = arrayOfDataObjects.filter(
-        (character) => !travelerNames.includes(character.characterName)
+        (character) => !travelerNames.includes(character.characterName!)
       );
       expect(nonTravelerCharacters).toEqual(
         expect.arrayContaining([
@@ -196,7 +196,7 @@ test("expect Traveler to have null for birthday", (done) => {
       ];
       const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const travelerCharacters = arrayOfDataObjects.filter((character) =>
-        travelerNames.includes(character.characterName)
+        travelerNames.includes(character.characterName!)
       );
       expect(travelerCharacters).toEqual(
         expect.arrayContaining([
@@ -224,7 +224,7 @@ test("expect Characters other than Traveler to have ascension boss material", (d
       ];
       const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const nonTravelerCharacters = arrayOfDataObjects.filter(
-        (character) => !travelerNames.includes(character.characterName)
+        (character) => !travelerNames.includes(character.characterName!)
       );
       expect(nonTravelerCharacters).toEqual(
         expect.arrayContaining([
@@ -253,7 +253,7 @@ test("expect Traveler to have null for ascension boss material", (done) => {
       ];
       const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const travelerCharacters = arrayOfDataObjects.filter((character) =>
-        travelerNames.includes(character.characterName)
+        travelerNames.includes(character.characterName!)
       );
       expect(travelerCharacters).toEqual(
         expect.arrayContaining([
@@ -282,12 +282,12 @@ test("expect Characters other than Traveler to only use one talent book", (done)
       ];
       const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const nonTravelerCharacters = arrayOfDataObjects.filter(
-        (character) => !travelerNames.includes(character.characterName)
+        (character) => !travelerNames.includes(character.characterName!)
       );
       const usesOnlyOneTalentBook = nonTravelerCharacters.every(
         (character) =>
-          character.talentBook.length === 1 &&
-          character.talentBookImageUrl.length === 1
+          character.talentBook!.length === 1 &&
+          character.talentBookImageUrl!.length === 1
       );
       expect(usesOnlyOneTalentBook).toBe(true);
     })
@@ -309,12 +309,12 @@ test("expect Traveler to use 3 talent books", (done) => {
       ];
       const arrayOfDataObjects: CharacterData[] = res.body.data.characterData;
       const travelerCharacters = arrayOfDataObjects.filter((character) =>
-        travelerNames.includes(character.characterName)
+        travelerNames.includes(character.characterName!)
       );
       const usesThreeTalentBooks = travelerCharacters.every(
         (character) =>
-          character.talentBook.length === 3 &&
-          character.talentBookImageUrl.length === 3
+          character.talentBook!.length === 3 &&
+          character.talentBookImageUrl!.length === 3
       );
       expect(usesThreeTalentBooks).toBe(true);
     })

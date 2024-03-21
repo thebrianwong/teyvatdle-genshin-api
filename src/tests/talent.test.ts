@@ -104,7 +104,7 @@ test("return the correct number of Talents", (done) => {
       let kokomiPassiveTalents = 0;
 
       arrayOfDataObjects.forEach((talent) => {
-        if (!travelerNames.includes(talent.characterName)) {
+        if (!travelerNames.includes(talent.characterName!)) {
           nonTravelerTalents += 1;
         } else {
           travelerTalents += 1;
