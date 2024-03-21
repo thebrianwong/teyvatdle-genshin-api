@@ -94,40 +94,40 @@ enum GameDataType {
 # types
 
 type CharacterData {
-  characterId: ID!
-  characterName: String!
-  gender: Gender!
-  height: Height!
-  rarity: Int!
+  characterId: ID
+  characterName: String
+  gender: Gender
+  height: Height
+  rarity: Int
   region: Region
-  element: GenshinElement!
-  weaponType: WeaponType!
-  ascensionStat: Stat!
+  element: GenshinElement
+  weaponType: WeaponType
+  ascensionStat: Stat
   birthday: Date
-  characterImageUrl: String!
-  characterCorrectImageUrl: String!
-  characterWrongImageUrl: String!
-  localSpecialty: String!
-  localSpecialtyImageUrl: String!
-  enhancementMaterial: String!
-  enhancementMaterialImageUrl: String!
+  characterImageUrl: String
+  characterCorrectImageUrl: String
+  characterWrongImageUrl: String
+  localSpecialty: String
+  localSpecialtyImageUrl: String
+  enhancementMaterial: String
+  enhancementMaterialImageUrl: String
   ascensionBossMaterial: String
   ascensionBossMaterialImageUrl: String
-  talentBossMaterial: String!
-  talentBossMaterialImageUrl: String!
-  talentBook: [String!]!
-  talentBookImageUrl: [String!]!
-  talents: [TalentData!]!
-  constellations: [ConstellationData!]!
+  talentBossMaterial: String
+  talentBossMaterialImageUrl: String
+  talentBook: [String!]
+  talentBookImageUrl: [String!]
+  talents: [TalentData!]
+  constellations: [ConstellationData!]
 }
 
 type ConstellationData {
-  constellationId: ID!
-  constellationName: String!
-  constellationLevel: Int!
-  constellationImageUrl: String!
-  characterName: String!
-  characterImageUrl: String!
+  constellationId: ID
+  constellationName: String
+  constellationLevel: Int
+  constellationImageUrl: String
+  characterName: String
+  characterImageUrl: String
 }
 
 type DailyRecordData {
@@ -145,15 +145,15 @@ type DailyRecordData {
 }
 
 type FoodData {
-  foodId: ID!
-  foodName: String!
-  rarity: Int!
-  foodType: FoodType!
-  specialDish: Boolean!
-  purchasable: Boolean!
-  recipe: Boolean!
-  event: Boolean!
-  foodImageUrl: String!
+  foodId: ID
+  foodName: String
+  rarity: Int
+  foodType: FoodType
+  specialDish: Boolean
+  purchasable: Boolean
+  recipe: Boolean
+  event: Boolean
+  foodImageUrl: String
 }
 
 type LocalSpecialtyData {
@@ -168,28 +168,28 @@ type RegionData {
 }
 
 type TalentData {
-  talentId: ID!
-  talentName: String!
-  talentType: TalentType!
-  talentImageUrl: String!
-  characterName: String!
-  characterImageUrl: String!
+  talentId: ID
+  talentName: String
+  talentType: TalentType
+  talentImageUrl: String
+  characterName: String
+  characterImageUrl: String
 }
 
 type WeaponData {
-  weaponId: ID!
-  weaponName: String!
-  rarity: Int!
-  weaponType: WeaponType!
+  weaponId: ID
+  weaponName: String
+  rarity: Int
+  weaponType: WeaponType
   subStat: Stat
-  weaponImageUrl: String!
-  weaponDomainMaterial: String!
-  weaponDomainMaterialImageUrl: String!
-  eliteEnemyMaterial: String!
-  eliteEnemyMaterialImageUrl: String!
-  commonEnemyMaterial: String!
-  commonEnemyMaterialImageUrl: String!
-  gacha: Boolean!
+  weaponImageUrl: String
+  weaponDomainMaterial: String
+  weaponDomainMaterialImageUrl: String
+  eliteEnemyMaterial: String
+  eliteEnemyMaterialImageUrl: String
+  commonEnemyMaterial: String
+  commonEnemyMaterialImageUrl: String
+  gacha: Boolean
 }
 
 type UpdatedSolvedValue {
