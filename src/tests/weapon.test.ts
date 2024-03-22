@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
-import WeaponData from "../types/data/weaponData.type";
+import { Stat, WeaponData, WeaponType } from "../generated/graphql";
 
 beforeAll(async () => {
   await configSetup("Weapon");
@@ -11,9 +11,30 @@ afterAll(async () => {
   await configTeardown("Weapon");
 });
 
+const queryData = {
+  query: `query WeaponData {
+    weaponData {
+      weaponId
+      weaponName
+      rarity
+      weaponType
+      subStat
+      weaponImageUrl
+      weaponDomainMaterial
+      weaponDomainMaterialImageUrl
+      eliteEnemyMaterial
+      eliteEnemyMaterialImageUrl
+      commonEnemyMaterial
+      commonEnemyMaterialImageUrl
+      gacha
+    }
+  }`,
+};
+
 test("return Weapons as JSON", (done) => {
   request(app)
-    .get("/api/weapon")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .end(done);
@@ -21,29 +42,30 @@ test("return Weapons as JSON", (done) => {
 
 test("expect none of the Weapon keys/columns (except Sub Stat) are null", (done) => {
   request(app)
-    .get("/api/weapon")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: WeaponData[] = res.body;
+      const arrayOfDataObjects: WeaponData[] = res.body.data.weaponData;
       const oneAndTwoStarWeapons = arrayOfDataObjects.filter(
         (weapon) => weapon.rarity !== 1 && weapon.rarity !== 2
       );
       expect(oneAndTwoStarWeapons).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            weapon_id: expect.anything(),
-            weapon_name: expect.anything(),
+            weaponId: expect.anything(),
+            weaponName: expect.anything(),
             rarity: expect.anything(),
-            weapon_type: expect.anything(),
-            sub_stat: expect.anything(),
-            weapon_image_url: expect.anything(),
-            weapon_domain_material: expect.anything(),
-            weapon_domain_material_image_url: expect.anything(),
-            elite_enemy_material: expect.anything(),
-            elite_enemy_material_image_url: expect.anything(),
-            common_enemy_material: expect.anything(),
-            common_enemy_material_image_url: expect.anything(),
+            weaponType: expect.anything(),
+            subStat: expect.anything(),
+            weaponImageUrl: expect.anything(),
+            weaponDomainMaterial: expect.anything(),
+            weaponDomainMaterialImageUrl: expect.anything(),
+            eliteEnemyMaterial: expect.anything(),
+            eliteEnemyMaterialImageUrl: expect.anything(),
+            commonEnemyMaterial: expect.anything(),
+            commonEnemyMaterialImageUrl: expect.anything(),
             gacha: expect.anything(),
           }),
         ])
@@ -54,18 +76,19 @@ test("expect none of the Weapon keys/columns (except Sub Stat) are null", (done)
 
 test("expect 1 and 2 star weapons have null Sub Stats", (done) => {
   request(app)
-    .get("/api/weapon")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: WeaponData[] = res.body;
+      const arrayOfDataObjects: WeaponData[] = res.body.data.weaponData;
       const oneAndTwoStarWeapons = arrayOfDataObjects.filter(
         (weapon) => weapon.rarity === 1 || weapon.rarity === 2
       );
       expect(oneAndTwoStarWeapons).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            sub_stat: null,
+            subStat: null,
           }),
         ])
       );
@@ -74,45 +97,29 @@ test("expect 1 and 2 star weapons have null Sub Stats", (done) => {
 });
 
 test("returned Weapon data has the correct types for values", (done) => {
+  const weaponTypeEnumValues = Object.values(WeaponType);
+  const statEnumValues = Object.values(Stat);
+
   request(app)
-    .get("/api/weapon")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: WeaponData[] = res.body;
+      const arrayOfDataObjects: WeaponData[] = res.body.data.weaponData;
       arrayOfDataObjects.forEach((data) => {
-        expect(typeof data.weapon_id).toBe("number");
-        expect(typeof data.weapon_name).toBe("string");
+        expect(typeof data.weaponId).toBe("string");
+        expect(typeof data.weaponName).toBe("string");
         expect(typeof data.rarity).toBe("number");
-        expect(["Sword", "Claymore", "Polearm", "Catalyst", "Bow"]).toContain(
-          data.weapon_type
-        );
-        expect([
-          "Anemo DMG Bonus",
-          "ATK",
-          "CRIT DMG",
-          "CRIT Rate",
-          "Cryo DMG Bonus",
-          "DEF",
-          "Dendro DMG Bonus",
-          "Electro DMG Bonus",
-          "Elemental Mastery",
-          "Energy Recharge",
-          "Geo DMG Bonus",
-          "Healing Bonus",
-          "HP",
-          "Hydro DMG Bonus",
-          "Physical DMG Bonus",
-          "Pyro DMG Bonus",
-          null,
-        ]).toContain(data.sub_stat);
-        expect(typeof data.weapon_image_url).toBe("string");
-        expect(typeof data.weapon_domain_material).toBe("string");
-        expect(typeof data.weapon_domain_material_image_url).toBe("string");
-        expect(typeof data.elite_enemy_material).toBe("string");
-        expect(typeof data.elite_enemy_material_image_url).toBe("string");
-        expect(typeof data.common_enemy_material).toBe("string");
-        expect(typeof data.common_enemy_material_image_url).toBe("string");
+        expect(weaponTypeEnumValues).toContain(data.weaponType);
+        expect([...statEnumValues, null]).toContain(data.subStat);
+        expect(typeof data.weaponImageUrl).toBe("string");
+        expect(typeof data.weaponDomainMaterial).toBe("string");
+        expect(typeof data.weaponDomainMaterialImageUrl).toBe("string");
+        expect(typeof data.eliteEnemyMaterial).toBe("string");
+        expect(typeof data.eliteEnemyMaterialImageUrl).toBe("string");
+        expect(typeof data.commonEnemyMaterial).toBe("string");
+        expect(typeof data.commonEnemyMaterialImageUrl).toBe("string");
         expect(typeof data.gacha).toBe("boolean");
       });
     })
@@ -123,11 +130,12 @@ test("return the correct number of Weapons", (done) => {
   const numOfWeapons = 155;
 
   request(app)
-    .get("/api/weapon")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: WeaponData[] = res.body;
+      const arrayOfDataObjects: WeaponData[] = res.body.data.weaponData;
 
       expect(arrayOfDataObjects).toHaveLength(numOfWeapons);
     })
@@ -142,11 +150,12 @@ test("return the correct number of Weapons based on rarity", (done) => {
   const numOfFiveStarWeapons = 37;
 
   request(app)
-    .get("/api/weapon")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: WeaponData[] = res.body;
+      const arrayOfDataObjects: WeaponData[] = res.body.data.weaponData;
       let oneStarWeapons = 0;
       let twoStarWeapons = 0;
       let threeStarWeapons = 0;
@@ -184,11 +193,12 @@ test("return the correct number of Weapons based on weapon type", (done) => {
   const numOfBows = 33;
 
   request(app)
-    .get("/api/weapon")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: WeaponData[] = res.body;
+      const arrayOfDataObjects: WeaponData[] = res.body.data.weaponData;
       let swords = 0;
       let claymores = 0;
       let polearms = 0;
@@ -196,15 +206,15 @@ test("return the correct number of Weapons based on weapon type", (done) => {
       let bows = 0;
 
       arrayOfDataObjects.forEach((weapon) => {
-        if (weapon.weapon_type === "Sword") {
+        if (weapon.weaponType === WeaponType.Sword) {
           swords += 1;
-        } else if (weapon.weapon_type === "Claymore") {
+        } else if (weapon.weaponType === WeaponType.Claymore) {
           claymores += 1;
-        } else if (weapon.weapon_type === "Polearm") {
+        } else if (weapon.weaponType === WeaponType.Polearm) {
           polearms += 1;
-        } else if (weapon.weapon_type === "Catalyst") {
+        } else if (weapon.weaponType === WeaponType.Catalyst) {
           catalysts += 1;
-        } else if (weapon.weapon_type === "Bow") {
+        } else if (weapon.weaponType === WeaponType.Bow) {
           bows += 1;
         }
       });
@@ -230,11 +240,12 @@ test("return the correct number of Weapons based on sub stat", (done) => {
   const numOfNoSubStatWeapons = 10;
 
   request(app)
-    .get("/api/weapon")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: WeaponData[] = res.body;
+      const arrayOfDataObjects: WeaponData[] = res.body.data.weaponData;
       let atkWeapons = 0;
       let critDMGWeapons = 0;
       let critRateWeapons = 0;
@@ -246,23 +257,23 @@ test("return the correct number of Weapons based on sub stat", (done) => {
       let noSubStatWeapons = 0;
 
       arrayOfDataObjects.forEach((weapon) => {
-        if (weapon.sub_stat === "ATK") {
+        if (weapon.subStat === Stat.Atk) {
           atkWeapons += 1;
-        } else if (weapon.sub_stat === "CRIT DMG") {
+        } else if (weapon.subStat === Stat.CritDmg) {
           critDMGWeapons += 1;
-        } else if (weapon.sub_stat === "CRIT Rate") {
+        } else if (weapon.subStat === Stat.CritRate) {
           critRateWeapons += 1;
-        } else if (weapon.sub_stat === "DEF") {
+        } else if (weapon.subStat === Stat.Def) {
           defWeapons += 1;
-        } else if (weapon.sub_stat === "Elemental Mastery") {
+        } else if (weapon.subStat === Stat.ElementalMastery) {
           elementalMasteryWeapons += 1;
-        } else if (weapon.sub_stat === "Energy Recharge") {
+        } else if (weapon.subStat === Stat.EnergyRecharge) {
           energyRechargeWeapons += 1;
-        } else if (weapon.sub_stat === "HP") {
+        } else if (weapon.subStat === Stat.Hp) {
           hpWeapons += 1;
-        } else if (weapon.sub_stat === "Physical DMG Bonus") {
+        } else if (weapon.subStat === Stat.PhysicalDmgBonus) {
           physicalDMGWeapons += 1;
-        } else if (weapon.sub_stat === null) {
+        } else if (weapon.subStat === null) {
           noSubStatWeapons += 1;
         }
       });
@@ -295,11 +306,12 @@ test("return the correct number of Weapons based on weapon domain material", (do
   const numOfTalismansWeapons = 6;
 
   request(app)
-    .get("/api/weapon")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: WeaponData[] = res.body;
+      const arrayOfDataObjects: WeaponData[] = res.body.data.weaponData;
       let aerosideriteWeapons = 0;
       let teethWeapons = 0;
       let branchesWeapons = 0;
@@ -314,32 +326,32 @@ test("return the correct number of Weapons based on weapon domain material", (do
       let talismansWeapons = 0;
 
       arrayOfDataObjects.forEach((weapon) => {
-        if (weapon.weapon_domain_material === "Aerosiderite") {
+        if (weapon.weaponDomainMaterial === "Aerosiderite") {
           aerosideriteWeapons += 1;
-        } else if (weapon.weapon_domain_material === "Boreal Wolf Teeth") {
+        } else if (weapon.weaponDomainMaterial === "Boreal Wolf Teeth") {
           teethWeapons += 1;
         } else if (
-          weapon.weapon_domain_material === "Branches of a Distant Sea"
+          weapon.weaponDomainMaterial === "Branches of a Distant Sea"
         ) {
           branchesWeapons += 1;
-        } else if (weapon.weapon_domain_material === "Decarabian Tiles") {
+        } else if (weapon.weaponDomainMaterial === "Decarabian Tiles") {
           tilesWeapons += 1;
-        } else if (weapon.weapon_domain_material === "Elixirs") {
+        } else if (weapon.weaponDomainMaterial === "Elixirs") {
           elixirsWeapons += 1;
-        } else if (weapon.weapon_domain_material === "Gladiator Shackles") {
+        } else if (weapon.weaponDomainMaterial === "Gladiator Shackles") {
           shacklesWeapons += 1;
-        } else if (weapon.weapon_domain_material === "Guyun Pillars") {
+        } else if (weapon.weaponDomainMaterial === "Guyun Pillars") {
           pillarsWeapons += 1;
-        } else if (weapon.weapon_domain_material === "Narukami's Magatamas") {
+        } else if (weapon.weaponDomainMaterial === "Narukami's Magatamas") {
           magatamasWeapons += 1;
-        } else if (weapon.weapon_domain_material === "Oasis Gardens") {
+        } else if (weapon.weaponDomainMaterial === "Oasis Gardens") {
           gardensWeapons += 1;
-        } else if (weapon.weapon_domain_material === "Oni Masks") {
+        } else if (weapon.weaponDomainMaterial === "Oni Masks") {
           oniWeapons += 1;
-        } else if (weapon.weapon_domain_material === "Scorching Mights") {
+        } else if (weapon.weaponDomainMaterial === "Scorching Mights") {
           mightsWeapons += 1;
         } else if (
-          weapon.weapon_domain_material === "Talismans of the Forest Dew"
+          weapon.weaponDomainMaterial === "Talismans of the Forest Dew"
         ) {
           talismansWeapons += 1;
         }
@@ -379,11 +391,12 @@ test("return the correct number of Weapons based on elite enemy material", (done
   const numOfVishapsWeapons = 13;
 
   request(app)
-    .get("/api/weapon")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: WeaponData[] = res.body;
+      const arrayOfDataObjects: WeaponData[] = res.body.data.weaponData;
       let abyssMagesWeapons = 0;
       let consBeastsWeapons = 0;
       let fatuiMagesWeapons = 0;
@@ -401,51 +414,43 @@ test("return the correct number of Weapons based on elite enemy material", (done
       let vishapsWeapons = 0;
 
       arrayOfDataObjects.forEach((weapon) => {
-        if (weapon.elite_enemy_material === "Abyss Mage Materials") {
+        if (weapon.eliteEnemyMaterial === "Abyss Mage Materials") {
           abyssMagesWeapons += 1;
         } else if (
-          weapon.elite_enemy_material === "Consecrated Beast Materials"
+          weapon.eliteEnemyMaterial === "Consecrated Beast Materials"
         ) {
           consBeastsWeapons += 1;
-        } else if (
-          weapon.elite_enemy_material === "Fatui Cicin Mage Materials"
-        ) {
+        } else if (weapon.eliteEnemyMaterial === "Fatui Cicin Mage Materials") {
           fatuiMagesWeapons += 1;
-        } else if (
-          weapon.elite_enemy_material === "Fatui Pyro Agent Materials"
-        ) {
+        } else if (weapon.eliteEnemyMaterial === "Fatui Pyro Agent Materials") {
           fatuiAgentsWeapons += 1;
-        } else if (
-          weapon.elite_enemy_material === "Hilichurl Rogue Materials"
-        ) {
+        } else if (weapon.eliteEnemyMaterial === "Hilichurl Rogue Materials") {
           hilichurlRoguesWeapons += 1;
         } else if (
-          weapon.elite_enemy_material === "Humanoid Ruin Machine Materials"
+          weapon.eliteEnemyMaterial === "Humanoid Ruin Machine Materials"
         ) {
           ruinMachinesWeapons += 1;
-        } else if (weapon.elite_enemy_material === "Mirror Maiden Materials") {
+        } else if (weapon.eliteEnemyMaterial === "Mirror Maiden Materials") {
           mirrorMaidensWeapons += 1;
-        } else if (weapon.elite_enemy_material === "Mitachurl Materials") {
+        } else if (weapon.eliteEnemyMaterial === "Mitachurl Materials") {
           mitachurlsWeapons += 1;
-        } else if (
-          weapon.elite_enemy_material === "Primal Construct Materials"
-        ) {
+        } else if (weapon.eliteEnemyMaterial === "Primal Construct Materials") {
           primalConsWeapons += 1;
-        } else if (weapon.elite_enemy_material === "Riftwolf Materials") {
+        } else if (weapon.eliteEnemyMaterial === "Riftwolf Materials") {
           riftwolfWeapons += 1;
-        } else if (weapon.elite_enemy_material === "Ruin Drake Materials") {
+        } else if (weapon.eliteEnemyMaterial === "Ruin Drake Materials") {
           ruinDrakesWeapons += 1;
-        } else if (weapon.elite_enemy_material === "Ruin Sentinel Materials") {
+        } else if (weapon.eliteEnemyMaterial === "Ruin Sentinel Materials") {
           ruinSentsWeapons += 1;
         } else if (
-          weapon.elite_enemy_material === "State-Shifted Fungus Materials"
+          weapon.eliteEnemyMaterial === "State-Shifted Fungus Materials"
         ) {
           shiftedFungiWeapons += 1;
         } else if (
-          weapon.elite_enemy_material === "The Black Serpents Materials"
+          weapon.eliteEnemyMaterial === "The Black Serpents Materials"
         ) {
           blackSerpentsWeapons += 1;
-        } else if (weapon.elite_enemy_material === "Vishap Materials") {
+        } else if (weapon.eliteEnemyMaterial === "Vishap Materials") {
           vishapsWeapons += 1;
         }
       });
@@ -483,11 +488,12 @@ test("return the correct number of Weapons based on common enemy material", (don
   const numOfWhopperflowersWeapons = 12;
 
   request(app)
-    .get("/api/weapon")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: WeaponData[] = res.body;
+      const arrayOfDataObjects: WeaponData[] = res.body.data.weaponData;
       let fatuiSkirmsWeapons = 0;
       let fungiWeapons = 0;
       let hilichurlsWeapons = 0;
@@ -501,31 +507,31 @@ test("return the correct number of Weapons based on common enemy material", (don
       let whopperflowersWeapons = 0;
 
       arrayOfDataObjects.forEach((weapon) => {
-        if (weapon.common_enemy_material === "Fatui Skirmisher Materials") {
+        if (weapon.commonEnemyMaterial === "Fatui Skirmisher Materials") {
           fatuiSkirmsWeapons += 1;
-        } else if (weapon.common_enemy_material === "Fungus Materials") {
+        } else if (weapon.commonEnemyMaterial === "Fungus Materials") {
           fungiWeapons += 1;
-        } else if (weapon.common_enemy_material === "Hilichurl Materials") {
+        } else if (weapon.commonEnemyMaterial === "Hilichurl Materials") {
           hilichurlsWeapons += 1;
         } else if (
-          weapon.common_enemy_material === "Hilichurl Shooter Materials"
+          weapon.commonEnemyMaterial === "Hilichurl Shooter Materials"
         ) {
           hiliShootersWeapons += 1;
-        } else if (weapon.common_enemy_material === "Nobushi Materials") {
+        } else if (weapon.commonEnemyMaterial === "Nobushi Materials") {
           nobushiWeapons += 1;
-        } else if (weapon.common_enemy_material === "Samachurl Materials") {
+        } else if (weapon.commonEnemyMaterial === "Samachurl Materials") {
           samachurlsWeapons += 1;
-        } else if (weapon.common_enemy_material === "Slime Materials") {
+        } else if (weapon.commonEnemyMaterial === "Slime Materials") {
           slimesWeapons += 1;
-        } else if (weapon.common_enemy_material === "Specter Materials") {
+        } else if (weapon.commonEnemyMaterial === "Specter Materials") {
           spectersWeapons += 1;
-        } else if (weapon.common_enemy_material === "The Eremites Materials") {
+        } else if (weapon.commonEnemyMaterial === "The Eremites Materials") {
           eremitesWeapons += 1;
         } else if (
-          weapon.common_enemy_material === "Treasure Hoarder Materials"
+          weapon.commonEnemyMaterial === "Treasure Hoarder Materials"
         ) {
           treasHoardersWeapons += 1;
-        } else if (weapon.common_enemy_material === "Whopperflower Materials") {
+        } else if (weapon.commonEnemyMaterial === "Whopperflower Materials") {
           whopperflowersWeapons += 1;
         }
       });
@@ -550,11 +556,12 @@ test("return the correct number of Weapons based on gacha or not", (done) => {
   const numOfNonGachaWeapons = 75;
 
   request(app)
-    .get("/api/weapon")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: WeaponData[] = res.body;
+      const arrayOfDataObjects: WeaponData[] = res.body.data.weaponData;
       let gachaWeapons = 0;
       let nonGachaWeapons = 0;
 
@@ -570,4 +577,424 @@ test("return the correct number of Weapons based on gacha or not", (done) => {
       expect(nonGachaWeapons).toBe(numOfNonGachaWeapons);
     })
     .end(done);
+});
+
+describe("Weapon query argument test suite", () => {
+  test("a null filter argument returns an error", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: null) {
+          weaponId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe("Please enter a filter value.");
+      })
+      .end(done);
+  });
+
+  test("if multiple null arguments are provided, return an error", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(
+          filter: { id: null, weaponName: null, weaponType: null, random: null }
+        ) {
+          weaponId
+        }
+      }
+      `,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe("Please enter a single filter value.");
+      })
+      .end(done);
+  });
+
+  test("if multiple valid arguments are provided, return an error", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(
+          filter: {
+            id: "1"
+            weaponName: "A Thousand Floating Dreams"
+            weaponType: Sword
+            random: true
+          }
+        ) {
+          weaponId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe("Please enter a single filter value.");
+      })
+      .end(done);
+  });
+
+  describe("a null argument returns an error", () => {
+    test("id", (done) => {
+      const queryData = {
+        query: `query WeaponData {
+          weaponData(filter: { id: null }) {
+            weaponId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            "Invalid argument. Please enter an id."
+          );
+        })
+        .end(done);
+    });
+
+    test("weaponName", (done) => {
+      const queryData = {
+        query: `query WeaponData {
+          weaponData(filter: { weaponName: null }) {
+            weaponId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            "Invalid argument. Please enter a weapon name."
+          );
+        })
+        .end(done);
+    });
+
+    test("foodType", (done) => {
+      const queryData = {
+        query: `query WeaponData {
+          weaponData(filter: { weaponType: null }) {
+            weaponId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            "Invalid argument. Please enter a weapon type."
+          );
+        })
+        .end(done);
+    });
+
+    test("random", (done) => {
+      const queryData = {
+        query: `query WeaponData {
+          weaponData(filter: { random: null }) {
+            weaponId
+          }
+        }`,
+      };
+
+      request(app)
+        .post("/graphql")
+        .send(queryData)
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .expect((res) => {
+          const response = res.body;
+          const data = response.data;
+          const errors = response.errors;
+
+          expect(data).toBeNull();
+          expect(errors[0].message).toBe(
+            'Invalid argument. Please set the argument "random" to "true" or "false".'
+          );
+        })
+        .end(done);
+    });
+  });
+
+  test("a non-number id returns an error", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { id: "hello" }) {
+          weaponId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const errors = response.errors;
+
+        expect(data).toBeNull();
+        expect(errors[0].message).toBe(
+          "Invalid argument. Please enter a number."
+        );
+      })
+      .end(done);
+  });
+
+  test("if the Weapon ID exists, return the Weapon", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { id: "1" }) {
+          weaponId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const weapon = response.data.weaponData[0];
+
+        expect(weapon).toHaveProperty("weaponId", "1");
+      })
+      .end(done);
+  });
+
+  test("if the Weapon ID does not exist, return an empty array", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { id: "14347" }) {
+          weaponId
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const emptyArray = response.data.weaponData;
+
+        expect(emptyArray.length).toBe(0);
+      })
+      .end(done);
+  });
+
+  test("if the Weapon name exists, return the Weapon", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { weaponName: "A Thousand Floating Dreams" }) {
+          weaponName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const weapon = response.data.weaponData[0];
+
+        expect(weapon).toHaveProperty(
+          "weaponName",
+          "A Thousand Floating Dreams"
+        );
+      })
+      .end(done);
+  });
+
+  test("if the Weapon name does not exist, return an empty array", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { weaponName: "An Actual Gun" }) {
+          weaponName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const emptyArray = response.data.weaponData;
+
+        expect(emptyArray.length).toBe(0);
+      })
+      .end(done);
+  });
+
+  test("return all Weapons of a given Weapon Type", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { weaponType: Sword }) {
+          weaponName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const weapons = response.data.weaponData;
+
+        expect(weapons.length).toBeGreaterThan(1);
+      })
+      .end(done);
+  });
+
+  test("return an error if passing a value that doesn't conform to the Weapon Type enum", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { weaponType: "Gun" }) {
+          weaponName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .expect((res) => {
+        const response = res.body;
+        const data = response.data;
+        const error = response.errors;
+
+        expect(data).toBeUndefined();
+        expect(error[0].message).toBe(
+          'Enum "WeaponType" cannot represent non-enum value: "Gun".'
+        );
+      })
+      .end(done);
+  });
+
+  test("if the random argument is set to true, return a random Weapon", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { random: true }) {
+          weaponName
+        }
+      }`,
+    };
+
+    const mathRandomSpy = jest.spyOn(Math, "random").mockImplementation(() => {
+      return 0;
+    });
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const weapon = response.data.weaponData[0];
+
+        expect(weapon).toHaveProperty("weaponName", "Akuoumaru");
+        mathRandomSpy.mockRestore();
+      })
+      .end(done);
+  });
+
+  test("if the random argument is set to false, return Weapon data as if no argument was provided", (done) => {
+    const queryData = {
+      query: `query WeaponData {
+        weaponData(filter: { random: false }) {
+          weaponName
+        }
+      }`,
+    };
+
+    request(app)
+      .post("/graphql")
+      .send(queryData)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        const response = res.body;
+        const weapons = response.data.weaponData;
+
+        expect(weapons.length).toBeGreaterThan(1);
+      })
+      .end(done);
+  });
 });

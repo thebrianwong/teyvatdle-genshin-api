@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { Stat as StatString } from "../../types/stat.type";
+import { Stat as StatName } from "../../generated/graphql";
 
 @Entity()
 export default class Stat {
@@ -7,5 +7,5 @@ export default class Stat {
   id!: number;
 
   @Column()
-  name!: StatString;
+  name!: StatName;
 }

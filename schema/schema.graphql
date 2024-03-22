@@ -1,0 +1,257 @@
+# scalars
+
+scalar Date
+
+# enums
+
+enum Gender {
+  Male
+  Female
+  Other
+}
+
+enum Height {
+  Tall
+  Medium
+  Short
+}
+
+enum Region {
+  Mondstadt
+  Liyue
+  Inazuma
+  Sumeru
+  Fontaine
+  Natlan
+  Snezhnaya
+}
+
+enum GenshinElement {
+  Anemo
+  Geo
+  Electro
+  Dendro
+  Hydro
+  Pyro
+  Cryo
+}
+
+enum WeaponType {
+  Sword
+  Claymore
+  Polearm
+  Catalyst
+  Bow
+}
+
+enum Stat {
+  Anemo_DMG_Bonus
+  ATK
+  CRIT_DMG
+  CRIT_Rate
+  Cryo_DMG_Bonus
+  DEF
+  Dendro_DMG_Bonus
+  Electro_DMG_Bonus
+  Elemental_Mastery
+  Energy_Recharge
+  Geo_DMG_Bonus
+  Healing_Bonus
+  HP
+  Hydro_DMG_Bonus
+  Physical_DMG_Bonus
+  Pyro_DMG_Bonus
+}
+
+enum FoodType {
+  Adventurers_Dishes
+  Recovery_Dishes
+  DEF_Boosting_Dishes
+  ATK_Boosting_Dishes
+  Potions
+  Essential_Oils
+}
+
+enum TalentType {
+  Normal_Attack
+  Elemental_Skill
+  Alternate_Sprint
+  Elemental_Burst
+  First_Ascension_Passive
+  Fourth_Ascension_Passive
+  Utility_Passive
+  Passive
+}
+
+enum GameDataType {
+  Character
+  Weapon
+  Food
+  Talent
+  Constellation
+}
+
+# types
+
+type CharacterData {
+  characterId: ID
+  characterName: String
+  gender: Gender
+  height: Height
+  rarity: Int
+  region: Region
+  element: GenshinElement
+  weaponType: WeaponType
+  ascensionStat: Stat
+  birthday: Date
+  characterImageUrl: String
+  characterCorrectImageUrl: String
+  characterWrongImageUrl: String
+  localSpecialty: String
+  localSpecialtyImageUrl: String
+  enhancementMaterial: String
+  enhancementMaterialImageUrl: String
+  ascensionBossMaterial: String
+  ascensionBossMaterialImageUrl: String
+  talentBossMaterial: String
+  talentBossMaterialImageUrl: String
+  talentBook: [String!]
+  talentBookImageUrl: [String!]
+  talents: [TalentData!]
+  constellations: [ConstellationData!]
+}
+
+type ConstellationData {
+  constellationId: ID
+  constellationName: String
+  constellationLevel: Int
+  constellationImageUrl: String
+  characterName: String
+  characterImageUrl: String
+}
+
+type DailyRecordData {
+  dailyRecordId: ID!
+  character: CharacterData!
+  characterSolved: Int!
+  weapon: WeaponData!
+  weaponSolved: Int!
+  talent: TalentData!
+  talentSolved: Int!
+  constellation: ConstellationData!
+  constellationSolved: Int!
+  food: FoodData!
+  foodSolved: Int!
+}
+
+type FoodData {
+  foodId: ID
+  foodName: String
+  rarity: Int
+  foodType: FoodType
+  specialDish: Boolean
+  purchasable: Boolean
+  recipe: Boolean
+  event: Boolean
+  foodImageUrl: String
+}
+
+type LocalSpecialtyData {
+  localSpecialty: String!
+  region: Region!
+  imageUrl: String!
+}
+
+type RegionData {
+  id: ID!
+  name: Region!
+}
+
+type TalentData {
+  talentId: ID
+  talentName: String
+  talentType: TalentType
+  talentImageUrl: String
+  characterName: String
+  characterImageUrl: String
+}
+
+type WeaponData {
+  weaponId: ID
+  weaponName: String
+  rarity: Int
+  weaponType: WeaponType
+  subStat: Stat
+  weaponImageUrl: String
+  weaponDomainMaterial: String
+  weaponDomainMaterialImageUrl: String
+  eliteEnemyMaterial: String
+  eliteEnemyMaterialImageUrl: String
+  commonEnemyMaterial: String
+  commonEnemyMaterialImageUrl: String
+  gacha: Boolean
+}
+
+type UpdatedSolvedValue {
+  type: GameDataType!
+  newSolvedValue: Int!
+}
+
+# inputs
+
+input CharacterSearchFilter {
+  id: ID
+  characterName: String
+  random: Boolean
+}
+
+input ConstellationSearchFilter {
+  id: ID
+  constellationName: String
+  characterName: String
+  random: Boolean
+}
+
+input FoodSearchFilter {
+  id: ID
+  foodName: String
+  foodType: FoodType
+  random: Boolean
+}
+
+input TalentSearchFilter {
+  id: ID
+  talentName: String
+  characterName: String
+  random: Boolean
+}
+
+input WeaponSearchFilter {
+  id: ID
+  weaponName: String
+  weaponType: WeaponType
+  random: Boolean
+}
+
+# query
+type Query {
+  characterData(filter: CharacterSearchFilter): [CharacterData!]!
+  constellationData(filter: ConstellationSearchFilter): [ConstellationData!]!
+  dailyRecordData: DailyRecordData!
+  foodData(filter: FoodSearchFilter): [FoodData!]!
+  localSpecialtyData: [LocalSpecialtyData!]!
+  regionData: [RegionData!]!
+  talentData(filter: TalentSearchFilter): [TalentData!]!
+  weaponData(filter: WeaponSearchFilter): [WeaponData!]!
+}
+
+# mutation
+type Mutation {
+  updateDailyRecord(id: ID!, type: GameDataType!): String!
+}
+
+# subscription
+
+type Subscription {
+  dailyRecordUpdated: UpdatedSolvedValue!
+}

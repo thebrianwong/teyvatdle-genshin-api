@@ -1,52 +1,31 @@
-import { RequestHandler } from "express";
-import { retrieveCharacterData } from "./characterController";
-import { retrieveConstellationData } from "./constellationController";
-import { retrieveFoodData } from "./foodController";
-import { retrieveTalentData } from "./talentController";
-import { retrieveWeaponData } from "./weaponController";
-import { AppDataSource, webSocketServer } from "..";
+import { retrieveFilteredCharacterData } from "./characterController";
+import { retrieveFilteredConstellationData } from "./constellationController";
+import { retrieveFilteredFoodData } from "./foodController";
+import { retrieveFilteredTalentData } from "./talentController";
+import { retrieveFilteredWeaponData } from "./weaponController";
+import { AppDataSource } from "..";
 import Character from "../models/character.model";
 import Weapon from "../models/weapon.model";
 import Talent from "../models/talent.model";
 import Constellation from "../models/constellation.model";
 import Food from "../models/food.model";
-import { Repository } from "typeorm";
 import DailyRecord from "../models/dailyRecord.model";
 import {
   normalizeDay,
   normalizeMonth,
   normalizeYear,
 } from "../utils/normalizeDates";
-import GameData from "../types/data/gameData.type";
 import TeyvatdleEntityRepo from "../types/teyvatdleEntityRepo.type";
-import DailyRecordData from "../types/data/dailyRecordData.type";
 import {
-  WebSocketData,
-  WebSocketDataKeys,
-} from "../types/data/webSocketData.type";
-
-const getGameData: RequestHandler = async (req, res, next) => {
-  try {
-    const [characterData, weaponData, talentData, constellationData, foodData] =
-      await Promise.all([
-        retrieveCharacterData(),
-        retrieveWeaponData(),
-        retrieveTalentData(),
-        retrieveConstellationData(),
-        retrieveFoodData(),
-      ]);
-    const gameData: GameData = {
-      characterData,
-      weaponData,
-      talentData,
-      constellationData,
-      foodData,
-    };
-    res.send(gameData);
-  } catch (err) {
-    throw new Error("There was an error querying game data.");
-  }
-};
+  CharacterData,
+  ConstellationData,
+  DailyRecordData,
+  FoodData,
+  GameDataType,
+  TalentData,
+  WeaponData,
+} from "../generated/graphql";
+import { pubSub } from "..";
 
 const getCorrespondingRepo: (type: string) => TeyvatdleEntityRepo = (
   type: string
@@ -168,58 +147,171 @@ const createDailyRecord: () => Promise<void> = async () => {
   }
 };
 
-const getDailyRecord: RequestHandler = async (req, res, next) => {
+const getDailyRecord: () => Promise<DailyRecordData> = async () => {
   const currentYear = normalizeYear();
   const currentMonth = normalizeMonth();
   const currentDay = normalizeDay();
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   try {
-    const dailyRecord: DailyRecordData | undefined = await dailyRecordRepo
+    const dailyRecord = await dailyRecordRepo
       .createQueryBuilder("daily_record")
       .select([
-        "daily_record.id AS daily_record_id",
-        "daily_record.character_id AS character_id ",
-        "daily_record.character_solved AS character_solved ",
-        "daily_record.weapon_id AS weapon_id ",
-        "daily_record.weapon_solved AS weapon_solved ",
-        "daily_record.talent_id AS talent_id",
-        "daily_record.talent_solved AS talent_solved",
-        "daily_record.constellation_id AS constellation_id",
-        "daily_record.constellation_solved AS constellation_solved",
-        "daily_record.food_id AS food_id",
-        "daily_record.food_solved AS food_solved",
+        'daily_record.id AS "dailyRecordId"',
+        'daily_record.character_id AS "characterId"',
+        'daily_record.character_solved AS "characterSolved"',
+        'daily_record.weapon_id AS "weaponId"',
+        'daily_record.weapon_solved AS "weaponSolved"',
+        'daily_record.talent_id AS "talentId"',
+        'daily_record.talent_solved AS "talentSolved"',
+        'daily_record.constellation_id AS "constellationId"',
+        'daily_record.constellation_solved AS "constellationSolved"',
+        'daily_record.food_id AS "foodId"',
+        'daily_record.food_solved AS "foodSolved"',
       ])
       .where("CAST(date AS DATE) = CAST(:date AS DATE)", {
         date: `${currentYear}-${currentMonth}-${currentDay}`,
       })
       .getRawOne();
-    res.send(dailyRecord);
+    return dailyRecord as DailyRecordData;
   } catch (err) {
     throw new Error("There was an error querying today's daily record.");
   }
 };
 
-const updateDailyRecord: RequestHandler = async (req, res, next) => {
-  const { id } = req.params;
-  const type = req.params.type as WebSocketDataKeys;
-  const validResources = [
-    "character",
-    "weapon",
-    "talent",
-    "constellation",
-    "food",
-  ];
-  if (!validResources.includes(type)) {
-    return res
-      .status(400)
-      .send({ message: "That is not a valid resource.", success: false });
+const retrieveDailyCharacterData: (
+  dailyId: string
+) => Promise<CharacterData> = async (dailyId) => {
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  try {
+    const characterIdRecord = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select(['daily_record.character_id AS "characterId"'])
+      .where("daily_record.id = :id", {
+        id: dailyId,
+      })
+      .getRawOne();
+    const characterId = characterIdRecord.characterId;
+    try {
+      const character = await retrieveFilteredCharacterData("id", characterId);
+      return character[0];
+    } catch (err) {
+      throw new Error("There was an error querying today's daily character.");
+    }
+  } catch (err) {
+    throw new Error("There was an error querying today's daily character id.");
   }
-  // If the id param is not even a number, this skips having to query the database
-  if (isNaN(Number(id))) {
-    return res
-      .status(404)
-      .send({ message: "That daily record does not exist.", success: false });
+};
+
+const retrieveDailyWeaponData: (
+  dailyId: string
+) => Promise<WeaponData> = async (dailyId) => {
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  try {
+    const weaponIdRecord = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select(['daily_record.weapon_id AS "weaponId"'])
+      .where("daily_record.id = :id", {
+        id: dailyId,
+      })
+      .getRawOne();
+    const weaponId = weaponIdRecord.weaponId;
+    try {
+      const weapon = await retrieveFilteredWeaponData("id", weaponId);
+      return weapon[0];
+    } catch (err) {
+      throw new Error("There was an error querying today's daily weapon.");
+    }
+  } catch (err) {
+    throw new Error("There was an error querying today's daily weapon id.");
   }
+};
+
+const retrieveDailyTalentData: (
+  dailyId: string
+) => Promise<TalentData> = async (dailyId) => {
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  try {
+    const talentIdRecord = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select(['daily_record.talent_id AS "talentId"'])
+      .where("daily_record.id = :id", {
+        id: dailyId,
+      })
+      .getRawOne();
+    const talentId = talentIdRecord.talentId;
+    try {
+      const talent = await retrieveFilteredTalentData("id", talentId);
+      return talent[0];
+    } catch (err) {
+      throw new Error("There was an error querying today's daily talent.");
+    }
+  } catch (err) {
+    throw new Error("There was an error querying today's daily talent id.");
+  }
+};
+
+const retrieveDailyConstellationData: (
+  dailyId: string
+) => Promise<ConstellationData> = async (dailyId) => {
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  try {
+    const constellationIdRecord = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select(['daily_record.constellation_id AS "constellationId"'])
+      .where("daily_record.id = :id", {
+        id: dailyId,
+      })
+      .getRawOne();
+    const constellationId = constellationIdRecord.constellationId;
+    try {
+      const constellation = await retrieveFilteredConstellationData(
+        "id",
+        constellationId
+      );
+      return constellation[0];
+    } catch (err) {
+      throw new Error(
+        "There was an error querying today's daily constellation."
+      );
+    }
+  } catch (err) {
+    throw new Error(
+      "There was an error querying today's daily constellation id."
+    );
+  }
+};
+
+const retrieveDailyFoodData: (dailyId: string) => Promise<FoodData> = async (
+  dailyId
+) => {
+  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+  try {
+    const foodIdRecord = await dailyRecordRepo
+      .createQueryBuilder("daily_record")
+      .select(['daily_record.food_id AS "foodId"'])
+      .where("daily_record.id = :id", {
+        id: dailyId,
+      })
+      .getRawOne();
+    const foodId = foodIdRecord.foodId;
+    try {
+      const food = await retrieveFilteredFoodData("id", foodId);
+      return food[0];
+    } catch (err) {
+      throw new Error("There was an error querying today's daily food.");
+    }
+  } catch (err) {
+    throw new Error("There was an error querying today's daily food id.");
+  }
+};
+
+const updateDailyRecord: (
+  id: String,
+  gameDataType: GameDataType
+) => Promise<{ message: string; success: Boolean }> = async (
+  id,
+  gameDataType
+) => {
   const currentYear = normalizeYear();
   const currentMonth = normalizeMonth();
   const currentDay = normalizeDay();
@@ -231,9 +323,10 @@ const updateDailyRecord: RequestHandler = async (req, res, next) => {
       .where("id = :id", { id })
       .getRawOne();
     if (targetDailyRecord === undefined) {
-      return res
-        .status(404)
-        .send({ message: "That daily record does not exist.", success: false });
+      return {
+        message: "Invalid id number. That daily record does not exist.",
+        success: false,
+      };
     } else {
       const dailyRecordDate = targetDailyRecord.date;
       if (
@@ -246,28 +339,33 @@ const updateDailyRecord: RequestHandler = async (req, res, next) => {
             .createQueryBuilder()
             .update()
             .set({
-              [`${type}Solved`]: () => `${type}Solved + 1`,
+              [`${gameDataType}Solved`]: () => `${gameDataType}Solved + 1`,
             })
             .where("id = :id", { id })
-            .returning(`${type}Solved`)
+            .returning(`${gameDataType}Solved`)
             .execute();
-          const newSolvedValue = returnedUpdateResult.raw[0][`${type}_solved`];
-          const dataObject: WebSocketData = {
-            type,
-            newSolvedValue,
+          const newSolvedValue =
+            returnedUpdateResult.raw[0][`${gameDataType}_solved`];
+
+          pubSub.publish("DAILY_RECORD_UPDATED", {
+            dailyRecordUpdated: {
+              type: gameDataType,
+              newSolvedValue,
+            },
+          });
+
+          return {
+            message: `Daily record updated. ${gameDataType}: ${newSolvedValue}`,
+            success: true,
           };
-          webSocketServer.emit(`updateSolvedValue`, dataObject);
-          return res
-            .status(200)
-            .send({ message: "Daily record updated.", success: true });
         } catch (err) {
           throw new Error(`There was an error updating daily record ${id}.`);
         }
       } else {
-        return res.status(400).send({
+        return {
           message: "Unable to update past daily record.",
           success: false,
-        });
+        };
       }
     }
   } catch (err) {
@@ -275,4 +373,13 @@ const updateDailyRecord: RequestHandler = async (req, res, next) => {
   }
 };
 
-export { getGameData, createDailyRecord, getDailyRecord, updateDailyRecord };
+export {
+  createDailyRecord,
+  getDailyRecord,
+  updateDailyRecord,
+  retrieveDailyCharacterData,
+  retrieveDailyWeaponData,
+  retrieveDailyTalentData,
+  retrieveDailyConstellationData,
+  retrieveDailyFoodData,
+};

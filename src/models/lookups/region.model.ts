@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { Region as RegionString } from "../../types/region.type";
+import { Region as RegionName } from "../../generated/graphql";
 
 @Entity()
 export default class Region {
@@ -7,5 +7,5 @@ export default class Region {
   id!: number;
 
   @Column()
-  name!: RegionString;
+  name!: RegionName;
 }

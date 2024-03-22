@@ -10,41 +10,51 @@ afterAll(async () => {
   await configTeardown("Region");
 });
 
-test("return Regions as JSON", (done) => {
+const queryData = {
+  query: `query RegionData {
+    regionData {
+      id
+      name
+    }
+  }`,
+};
+
+test.only("return Regions as JSON", (done) => {
   request(app)
-    .get("/api/region")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
       const [mondstadt, liyue, inazuma, sumeru, fontaine, natlan, snezhnaya] =
-        res.body;
+        res.body.data.regionData;
       expect(res.body).toBeDefined();
       expect(mondstadt).toMatchObject({
-        id: 1,
+        id: "1",
         name: "Mondstadt",
       });
       expect(liyue).toMatchObject({
-        id: 2,
+        id: "2",
         name: "Liyue",
       });
       expect(inazuma).toMatchObject({
-        id: 3,
+        id: "3",
         name: "Inazuma",
       });
       expect(sumeru).toMatchObject({
-        id: 4,
+        id: "4",
         name: "Sumeru",
       });
       expect(fontaine).toMatchObject({
-        id: 5,
+        id: "5",
         name: "Fontaine",
       });
       expect(natlan).toMatchObject({
-        id: 6,
+        id: "6",
         name: "Natlan",
       });
       expect(snezhnaya).toMatchObject({
-        id: 7,
+        id: "7",
         name: "Snezhnaya",
       });
     })

@@ -6,7 +6,8 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import Region from "./region.model";
-import GenshinElement from "../../types/element.type";
+// import GenshinElement from "../../types/element.type";
+import { GenshinElement } from "../../generated/graphql";
 
 @Entity()
 export default class Element {

@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
-import LocalSpecialtyData from "../types/data/localSpecialtyData.type";
+import { LocalSpecialtyData } from "../generated/graphql";
 
 beforeAll(async () => {
   await configSetup("Local Specialty");
@@ -11,9 +11,20 @@ afterAll(async () => {
   await configTeardown("Local Specialty");
 });
 
+const queryData = {
+  query: `query LocalSpecialtyData {
+    localSpecialtyData {
+      localSpecialty
+      region
+      imageUrl
+    }
+  }`,
+};
+
 test("return Local Specialties as JSON", (done) => {
   request(app)
-    .get("/api/local_specialty")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .end(done);
@@ -21,17 +32,19 @@ test("return Local Specialties as JSON", (done) => {
 
 test("expect none of the Local Specialty keys/columns are null", (done) => {
   request(app)
-    .get("/api/local_specialty")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: LocalSpecialtyData[] = res.body;
+      const arrayOfDataObjects: LocalSpecialtyData[] =
+        res.body.data.localSpecialtyData;
       expect(arrayOfDataObjects).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            local_specialty: expect.anything(),
+            localSpecialty: expect.anything(),
             region: expect.anything(),
-            image_url: expect.anything(),
+            imageUrl: expect.anything(),
           }),
         ])
       );
@@ -41,17 +54,19 @@ test("expect none of the Local Specialty keys/columns are null", (done) => {
 
 test("returned Local Specialty data has the correct types for values", (done) => {
   request(app)
-    .get("/api/local_specialty")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: LocalSpecialtyData[] = res.body;
+      const arrayOfDataObjects: LocalSpecialtyData[] =
+        res.body.data.localSpecialtyData;
       arrayOfDataObjects.forEach((data) => {
-        expect(typeof data.local_specialty).toBe("string");
+        expect(typeof data.localSpecialty).toBe("string");
         expect(["Mondstadt", "Liyue", "Inazuma", "Sumeru"]).toContain(
           data.region
         );
-        expect(typeof data.image_url).toBe("string");
+        expect(typeof data.imageUrl).toBe("string");
       });
     })
     .end(done);
@@ -64,11 +79,13 @@ test("return the correct number of Local Specialties from each region", (done) =
   const numOfInazumaSpecialties = 9;
   const numOfSumeruSpecialties = 9;
   request(app)
-    .get("/api/local_specialty")
+    .post("/graphql")
+    .send(queryData)
     .expect("Content-Type", /json/)
     .expect(200)
     .expect((res) => {
-      const arrayOfDataObjects: LocalSpecialtyData[] = res.body;
+      const arrayOfDataObjects: LocalSpecialtyData[] =
+        res.body.data.localSpecialtyData;
       let mondstadtSpecialties = 0;
       let liyueSpecialties = 0;
       let inazumaSpecialties = 0;
