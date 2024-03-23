@@ -36,13 +36,13 @@
     "pg": "^8.11.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.17",
-    "ws": "^8.13.0"
-  },
-  "devDependencies": {
+    "ws": "^8.13.0",
     "@graphql-codegen/cli": "5.0.2",
     "@graphql-codegen/introspection": "4.0.3",
     "@graphql-codegen/typescript": "4.0.6",
-    "@graphql-codegen/typescript-resolvers": "4.0.6",
+    "@graphql-codegen/typescript-resolvers": "4.0.6"
+  },
+  "devDependencies": {
     "@types/compression": "^1.7.4",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.14",
