@@ -8,9 +8,10 @@
     "start": "node ./dist",
     "test": "TEST='true' jest --watchAll --detectOpenHandles",
     "coverage": "TEST='true' jest --detectOpenHandles --coverage",
-    "build": "npm i -g @graphql-codegen/cli && npm install && npm install --only=dev && npm run codegen && tsc",
+    "build": "npm run build-codegen-installs && npm install && npm install --only=dev && npm run codegen && tsc",
+    "build-codegen-installs": "npm i -g @graphql-codegen/cli @graphql-codegen/introspection @graphql-codegen/typescript @graphql-codegen/typescript-resolvers",
     "build-codegen": "npx graphql-codegen",
-    "codegen": "npx graphql-codegen -c ./src/codegen.ts"
+    "codegen": "graphql-codegen --config ./src/codegen.ts"
   },
   "keywords": [],
   "author": "",
