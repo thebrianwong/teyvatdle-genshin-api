@@ -8,9 +8,8 @@
     "start": "node ./dist",
     "test": "TEST='true' jest --watchAll --detectOpenHandles",
     "coverage": "TEST='true' jest --detectOpenHandles --coverage",
-    "build": "npm run build-codegen-installs && npm run ts-types-installs && npm install && npm install --only=dev && npm run codegen && tsc",
+    "build": "npm run build-codegen-installs && npm install && npm install --only=dev && npm run codegen && tsc",
     "build-codegen-installs": "npm i -g @graphql-codegen/cli && npm i @graphql-codegen/introspection @graphql-codegen/typescript @graphql-codegen/typescript-resolvers  typescript",
-    "ts-types-installs": "npm install --save-dev @types/compression @types/cookie-parser @types/cors @types/morgan",
     "build-codegen": "npx graphql-codegen",
     "codegen": "graphql-codegen --config ./src/codegen.ts"
   },
@@ -41,16 +40,16 @@
     "@graphql-codegen/cli": "5.0.2",
     "@graphql-codegen/introspection": "4.0.3",
     "@graphql-codegen/typescript": "4.0.6",
-    "@graphql-codegen/typescript-resolvers": "4.0.6"
-  },
-  "devDependencies": {
+    "@graphql-codegen/typescript-resolvers": "4.0.6",
     "@types/compression": "^1.7.4",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.14",
+    "@types/morgan": "^1.9.4"
+  },
+  "devDependencies": {
     "@types/express": "^4.17.17",
     "@types/http-errors": "^2.0.1",
     "@types/jest": "^29.5.3",
-    "@types/morgan": "^1.9.4",
     "@types/node": "^20.4.5",
     "@types/supertest": "^2.0.12",
     "@types/ws": "^8.5.5",
