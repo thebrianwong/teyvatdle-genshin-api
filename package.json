@@ -8,8 +8,8 @@
     "start": "node ./dist",
     "test": "TEST='true' jest --watchAll --detectOpenHandles",
     "coverage": "TEST='true' jest --detectOpenHandles --coverage",
-    "build": "npm i -D @graphql-codegen/cli npm install && npm install --only=dev && graphql-codegen -c ./src/codegen.ts && tsc",
-    "codegen": "graphql-codegen --config ./src/codegen.ts"
+    "build": "npm i -D @graphql-codegen/cli npm install && npm install --only=dev && npm run codegen && tsc",
+    "codegen": "npx graphql-codegen --config ./src/codegen.ts"
   },
   "keywords": [],
   "author": "",
