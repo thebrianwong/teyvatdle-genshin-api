@@ -9,7 +9,7 @@
     "test": "TEST='true' jest --watchAll --detectOpenHandles",
     "coverage": "TEST='true' jest --detectOpenHandles --coverage",
     "build": "npm run build-codegen-installs && npm install && npm install --only=dev && npm run codegen && tsc",
-    "build-codegen-installs": "npm i -g @graphql-codegen/cli @graphql-codegen/introspection @graphql-codegen/typescript @graphql-codegen/typescript-resolvers",
+    "build-codegen-installs": "npm i -g @graphql-codegen/cli && npm i -g @graphql-codegen/introspection && npm i -g @graphql-codegen/typescript && npm i -g @graphql-codegen/typescript-resolvers",
     "build-codegen": "npx graphql-codegen",
     "codegen": "graphql-codegen --config ./src/codegen.ts"
   },
