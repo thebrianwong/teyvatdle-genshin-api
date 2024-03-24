@@ -102,6 +102,7 @@ const main = async () => {
   const apolloServer = new ApolloServer<{
     token?: String | undefined;
   }>({
+    introspection: true,
     schema,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer: server }),
