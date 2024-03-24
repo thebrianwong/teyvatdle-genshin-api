@@ -61,11 +61,6 @@ const main = async () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(logger("dev"));
-  app.use(
-    cors({
-      origin: process.env.TEYVATDLE_FRONTEND,
-    })
-  );
   app.use(compression());
   if (process.env.NODE_ENV === "production") {
     app.use(helmet());
@@ -124,6 +119,9 @@ const main = async () => {
 
   app.use(
     "/graphql",
+    cors({
+      origin: process.env.TEYVATDLE_FRONTEND,
+    }),
     expressMiddleware(apolloServer, {
       context: async ({ req }) => ({ token: req.headers.token }),
     })
