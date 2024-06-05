@@ -24,6 +24,7 @@ import WebSocket from "ws";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { PubSub } from "graphql-subscriptions";
+import { RedisClientType, createClient } from "redis";
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ let webSocketServer: WebSocket.Server<
   typeof http.IncomingMessage
 >;
 let pubSub: PubSub;
+let client: RedisClientType;
 
 const main = async () => {
   app = express();
@@ -83,6 +85,19 @@ const main = async () => {
   }
 
   server = http.createServer(app);
+
+  // redis
+  client = createClient({
+    socket: {
+      host: process.env.REDIS_HOST,
+      port: parseInt(process.env.REDIS_PORT!),
+    },
+    password: process.env.REDIS_PASSWORD,
+    username: process.env.REDIS_USERNAME,
+  });
+  client.on("connect", () => console.log("Successfully connected to Redis"));
+  client.on("error", (err: string) => console.log(err));
+  await client.connect();
 
   // graphql
   const typeDefs = readFileSync("./schema/schema.graphql", {
@@ -155,4 +170,4 @@ const main = async () => {
 
 main();
 
-export { app, AppDataSource, server, webSocketServer, pubSub };
+export { app, AppDataSource, server, webSocketServer, pubSub, client };
