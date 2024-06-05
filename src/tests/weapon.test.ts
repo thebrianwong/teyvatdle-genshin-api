@@ -969,7 +969,7 @@ describe("Weapon query argument test suite", () => {
         const response = res.body;
         const weapon = response.data.weaponData[0];
 
-        expect(weapon).toHaveProperty("weaponName", "Akuoumaru");
+        expect(weapon).toHaveProperty("weaponName", '"The Catch"');
         mathRandomSpy.mockRestore();
       })
       .end(done);

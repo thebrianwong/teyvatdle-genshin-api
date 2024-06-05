@@ -605,7 +605,7 @@ describe("Food query argument test suite", () => {
         const response = res.body;
         const food = response.data.foodData[0];
 
-        expect(food).toHaveProperty("foodName", "Aaru Mixed Rice");
+        expect(food).toHaveProperty("foodName", '"My Way"');
         mathRandomSpy.mockRestore();
       })
       .end(done);
