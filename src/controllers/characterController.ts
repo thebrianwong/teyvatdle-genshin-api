@@ -13,7 +13,7 @@ import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
 const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
   try {
     const cachedCharacters = (await client.json.get(charactersKey())) as Array<
-      CharacterData & { birthday: string }
+      CharacterData & { birthday: string | null }
     > | null;
     if (cachedCharacters) {
       const characters = cachedCharacters.map((character) =>
@@ -127,7 +127,7 @@ const retrieveFilteredCharacterData: (
     if (characterCacheKey && characterCacheKeyExists) {
       const cachedValue = (await client.json.get(characterByIdKey(), {
         path: characterCacheKey,
-      })) as Array<CharacterData & { birthday: string }>;
+      })) as Array<CharacterData & { birthday: string | null }>;
       const character = cachedValue.map((value) => deserializeCharacter(value));
       return character;
     } else {
