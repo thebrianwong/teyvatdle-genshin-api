@@ -10,12 +10,12 @@ import {
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
 
 const retrieveWeaponData: () => Promise<WeaponData[]> = async () => {
-  const weaponRepo = AppDataSource.getRepository(Weapon);
   try {
     const cachedWeapons = await client.json.get(weaponsKey());
     if (cachedWeapons) {
       return cachedWeapons as WeaponData[];
     } else {
+      const weaponRepo = AppDataSource.getRepository(Weapon);
       const weapons: WeaponData[] = await weaponRepo
         .createQueryBuilder("weapon")
         .innerJoin("weapon.typeId", "weapon_type")
@@ -41,8 +41,8 @@ const retrieveWeaponData: () => Promise<WeaponData[]> = async () => {
         .orderBy({ '"weaponName"': "ASC" })
         .getRawMany();
       await Promise.all([
-        await client.json.set(weaponsKey(), "$", weapons),
-        await client.expireAt(weaponsKey(), expireKeyTomorrow(), "NX"),
+        client.json.set(weaponsKey(), "$", weapons),
+        client.expireAt(weaponsKey(), expireKeyTomorrow(), "NX"),
       ]);
       return weapons;
     }

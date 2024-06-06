@@ -89,8 +89,8 @@ const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
         .orderBy({ '"characterName"': "ASC" })
         .getRawMany();
       await Promise.all([
-        await client.json.set(charactersKey(), "$", characters),
-        await client.expireAt(charactersKey(), expireKeyTomorrow(), "NX"),
+        client.json.set(charactersKey(), "$", characters),
+        client.expireAt(charactersKey(), expireKeyTomorrow(), "NX"),
       ]);
       return characters;
     }
