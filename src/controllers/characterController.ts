@@ -109,18 +109,22 @@ const retrieveFilteredCharacterData: (
       characterId = await client.hGet(characterNameToIdKey(), searchValue);
     }
 
-    const cachedValue = (await client.json.get(characterByIdKey(), {
-      path: characterId,
-    })) as Array<CharacterData & { birthday: string }> | null;
+    // check if the characterId key exists in the JSON
+    // this is required because running JSON.GET with an nonexistent key throws a Redis error
+    const keyPathExists = await client.json.type(
+      characterByIdKey(),
+      characterId
+    );
 
-    if (cachedValue) {
-      // it should not be possible for an invalid id to be mapped to a cached value
-      // this occurs if a value is cached but a search for an invalid character name takes place,
-      // causing JSON.GET to not return null for some reason
-      if (!characterId) {
-        return [];
-      }
-
+    // the characterId could be null if an invalid character name was searched,
+    // which would necessarily mean an invalid key and a cache miss
+    // if the characterId is valid but that key is not in the JSON, then there is a cache miss
+    // in either case, don't bother looking at the cache and instead search the db
+    // there is no scenario where an invalid characterId leads to an existing JSON key
+    if (characterId && keyPathExists) {
+      const cachedValue = (await client.json.get(characterByIdKey(), {
+        path: characterId,
+      })) as Array<CharacterData & { birthday: string }>;
       const character = cachedValue.map((value) => deserializeCharacter(value));
       return character;
     } else {
