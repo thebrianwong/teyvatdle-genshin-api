@@ -9,6 +9,11 @@ const weaponByIdKey = () => `${APP_KEY_PREFIX}:weapon#byId`; // key for JSON dat
 const weaponNameToIdKey = () => `${APP_KEY_PREFIX}:weapon#nameToId`; // key for Hash data structure, returns weapon ID to be passed into weaponIdKey
 const weaponsByTypeKey = () => `${APP_KEY_PREFIX}:weapons#byType`; // key for JSON data structure, returns all weapons of a provided weaponType path
 
+const foodsKey = () => `${APP_KEY_PREFIX}#foods`; // key for JSON data structure
+const foodByIdKey = () => `${APP_KEY_PREFIX}:food#byId`; // key for JSON data structure, returns food JSON
+const foodNameToIdKey = () => `${APP_KEY_PREFIX}:food#nameToId`; // key for Hash data structure, returns food ID to be passed into foodIdKey
+const foodsByTypeKey = () => `${APP_KEY_PREFIX}:foods#byType`; // key for JSON data structure, returns all foods of a provided foodType path
+
 export {
   charactersKey,
   characterByIdKey,
@@ -17,4 +22,8 @@ export {
   weaponByIdKey,
   weaponNameToIdKey,
   weaponsByTypeKey,
+  foodsKey,
+  foodByIdKey,
+  foodNameToIdKey,
+  foodsByTypeKey,
 };
