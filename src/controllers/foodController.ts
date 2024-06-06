@@ -72,9 +72,46 @@ const retrieveFilteredFoodData: (
     const foods: FoodData[] = await baseQuery
       .orderBy({ '"foodId"': "ASC" })
       .getRawMany();
+    if (foods.length > 0) {
+      if (foods.length === 1) {
+        // id or name
+        const foodId = foods[0].foodId!.toString();
+        const foodName = foods[0].foodName!;
+        await Promise.all([
+          client.json.set(foodByIdKey(), "$", {}, { NX: true }),
+          client.json.set(foodByIdKey(), foodId, foods, {
+            NX: true,
+          }),
+          // client.expireAt(foodByIdKey(), expireKeyTomorrow(), "NX"),
+          client.expire(foodByIdKey(), 10, "NX"),
+          client.hSet(foodNameToIdKey(), foodName, foodId),
+          // client.expireAt(foodNameToIdKey(), expireKeyTomorrow(), "NX"),
+          client.expire(foodNameToIdKey(), 10, "NX"),
+        ]);
+      } else {
+        // food type search
+        const foodType = foods[0].foodType!;
+        console.log(foodType);
+        await Promise.all([
+          client.json.set(foodsByTypeKey(), "$", {}, { NX: true }),
+          // client.json.set(foodsByTypeKey(), `"${foodType.toString()}"`, foods, {
+          client.json.set(
+            foodsByTypeKey(),
+            foodType.replaceAll("'", `\'`),
+            foods,
+            {
+              // client.json.set(foodsByTypeKey(), foodType.toString(), foods, {
+              NX: true,
+            }
+          ),
+          // client.expireAt(foodsByTypeKey(), expireKeyTomorrow(), "NX"),
+          client.expire(foodsByTypeKey(), 10, "NX"),
+        ]);
+      }
+    }
     return foods;
   } catch (err) {
-    throw new Error("There was an error querying constellations.");
+    throw new Error("There was an error querying foods.");
   }
 };
 
