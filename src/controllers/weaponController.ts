@@ -137,7 +137,6 @@ const retrieveFilteredWeaponData: (
               NX: true,
             }),
             client.expireAt(weaponByIdKey(), expireKeyTomorrow(), "NX"),
-
             client.hSet(weaponNameToIdKey(), weaponName, weaponId),
             client.expireAt(weaponNameToIdKey(), expireKeyTomorrow(), "NX"),
           ]);
