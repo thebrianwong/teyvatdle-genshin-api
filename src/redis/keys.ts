@@ -7,6 +7,7 @@ const characterNameToIdKey = () => `${APP_KEY_PREFIX}:character#nameToId`; // ke
 const weaponsKey = () => `${APP_KEY_PREFIX}#weapons`; // key for JSON data structure
 const weaponByIdKey = () => `${APP_KEY_PREFIX}:weapon#byId`; // key for JSON data structure, returns weapon JSON
 const weaponNameToIdKey = () => `${APP_KEY_PREFIX}:weapon#nameToId`; // key for Hash data structure, returns weapon ID to be passed into weaponIdKey
+const weaponsByTypeKey = () => `${APP_KEY_PREFIX}:weapons#byType`; // key for JSON data structure, returns all weapons of the weaponType argument
 
 export {
   charactersKey,
@@ -15,4 +16,5 @@ export {
   weaponsKey,
   weaponByIdKey,
   weaponNameToIdKey,
+  weaponsByTypeKey,
 };
