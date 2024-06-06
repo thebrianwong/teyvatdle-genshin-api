@@ -104,16 +104,19 @@ const retrieveFilteredCharacterData: (
   searchValue: string
 ) => Promise<CharacterData[]> = async (filterType, searchValue) => {
   try {
-    let characterId: string | undefined = searchValue;
+    let characterCacheKey: string | undefined = searchValue;
     if (filterType === "characterName") {
-      characterId = await client.hGet(characterNameToIdKey(), searchValue);
+      characterCacheKey = await client.hGet(
+        characterNameToIdKey(),
+        searchValue
+      );
     }
 
     // check if the characterId key exists in the JSON
     // this is required because running JSON.GET with an nonexistent key throws a Redis error
-    const keyPathExists = await client.json.type(
+    const characterCacheKeyExists = await client.json.type(
       characterByIdKey(),
-      characterId
+      characterCacheKey
     );
 
     // the characterId could be null if an invalid character name was searched,
@@ -121,9 +124,9 @@ const retrieveFilteredCharacterData: (
     // if the characterId is valid but that key is not in the JSON, then there is a cache miss
     // in either case, don't bother looking at the cache and instead search the db
     // there is no scenario where an invalid characterId leads to an existing JSON key
-    if (characterId && keyPathExists) {
+    if (characterCacheKey && characterCacheKeyExists) {
       const cachedValue = (await client.json.get(characterByIdKey(), {
-        path: characterId,
+        path: characterCacheKey,
       })) as Array<CharacterData & { birthday: string }>;
       const character = cachedValue.map((value) => deserializeCharacter(value));
       return character;
