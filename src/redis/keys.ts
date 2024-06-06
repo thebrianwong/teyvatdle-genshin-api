@@ -1,5 +1,8 @@
 const APP_KEY_PREFIX = "TEYVATDLE";
 
+const formatAsKey = (unformatted: string) =>
+  unformatted.replaceAll(/\s|'/g, "");
+
 const charactersKey = () => `${APP_KEY_PREFIX}#characters`; // key for JSON data structure
 const characterByIdKey = () => `${APP_KEY_PREFIX}:character#byId`; // key for JSON data structure, returns character JSON
 const characterNameToIdKey = () => `${APP_KEY_PREFIX}:character#nameToId`; // key for Hash data structure, returns character ID to be passed into characterIdKey
@@ -15,6 +18,7 @@ const foodNameToIdKey = () => `${APP_KEY_PREFIX}:food#nameToId`; // key for Hash
 const foodsByTypeKey = () => `${APP_KEY_PREFIX}:foods#byType`; // key for JSON data structure, returns all foods of a provided foodType path
 
 export {
+  formatAsKey,
   charactersKey,
   characterByIdKey,
   characterNameToIdKey,
