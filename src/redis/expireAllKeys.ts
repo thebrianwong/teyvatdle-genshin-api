@@ -8,6 +8,8 @@ import {
   foodByIdKey,
   foodsByTypeKey,
   foodsKey,
+  localSpecialtiesKey,
+  regionsKey,
   talentByIdKey,
   talentsByCharacterKey,
   talentsKey,
@@ -32,6 +34,8 @@ const expireAllKeys = async () => {
     constellationsKey,
     constellationByIdKey,
     constellationsByCharacterKey,
+    regionsKey,
+    localSpecialtiesKey,
   ];
   const commands = keys.map((key) => client.json.del(key()));
   await Promise.all(commands);

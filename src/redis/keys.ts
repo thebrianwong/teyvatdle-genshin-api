@@ -29,6 +29,9 @@ const constellationNameToIdKey = () =>
 const constellationsByCharacterKey = () =>
   `${APP_KEY_PREFIX}:constellations#byCharacter`; // key for JSON data structure, returns all constellation of a provided character path
 
+const regionsKey = () => `${APP_KEY_PREFIX}#regions`;
+const localSpecialtiesKey = () => `${APP_KEY_PREFIX}#localSpecialties`;
+
 export {
   formatAsKey,
   charactersKey,
@@ -50,4 +53,6 @@ export {
   constellationByIdKey,
   constellationNameToIdKey,
   constellationsByCharacterKey,
+  regionsKey,
+  localSpecialtiesKey,
 };
