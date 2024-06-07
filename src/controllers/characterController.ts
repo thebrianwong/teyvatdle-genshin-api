@@ -2,7 +2,6 @@ import { AppDataSource } from "../index";
 import Character from "../models/character.model";
 import CharacterBookMap from "../models/maps/characterBookMap.model";
 import { CharacterData } from "../generated/graphql";
-import client from "../redis/client";
 import {
   characterByIdKey,
   characterNameToIdKey,
@@ -10,10 +9,13 @@ import {
 } from "../redis/keys";
 import { deserializeCharacter } from "../redis/deserialize/deserializeCharacter";
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
+import { redisClient } from "../redis/redis";
 
 const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
   try {
-    const cachedCharacters = (await client.json.get(charactersKey())) as Array<
+    const cachedCharacters = (await redisClient
+      .call("JSON.GET", charactersKey())
+      .then((data) => JSON.parse(data as string))) as Array<
       CharacterData & { birthday: string | null }
     > | null;
     if (cachedCharacters) {
@@ -89,10 +91,20 @@ const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
         .addGroupBy('"talentBossMaterialImageUrl"')
         .orderBy({ '"characterName"': "ASC" })
         .getRawMany();
-      await Promise.all([
-        client.json.set(charactersKey(), "$", characters),
-        client.expireAt(charactersKey(), expireKeyTomorrow(), "NX"),
-      ]);
+      // await Promise.all([
+      //   redisClient.call(
+      //     "JSON.SET",
+      //     charactersKey(),
+      //     "$",
+      //     JSON.stringify(characters)
+      //   ),
+      //   redisClient.expireat(charactersKey(), expireKeyTomorrow(), "NX"),
+      // ]);
+      redisClient
+        .pipeline()
+        .call("JSON.SET", charactersKey(), "$", JSON.stringify(characters))
+        .expireat(charactersKey(), expireKeyTomorrow(), "NX")
+        .exec();
       return characters;
     }
   } catch (err) {
@@ -105,9 +117,9 @@ const retrieveFilteredCharacterData: (
   searchValue: string
 ) => Promise<CharacterData[]> = async (filterType, searchValue) => {
   try {
-    let characterCacheKey: string | undefined = searchValue;
+    let characterCacheKey: string | null = searchValue;
     if (filterType === "characterName") {
-      characterCacheKey = await client.hGet(
+      characterCacheKey = await redisClient.hget(
         characterNameToIdKey(),
         searchValue
       );
@@ -115,10 +127,13 @@ const retrieveFilteredCharacterData: (
 
     // check if the characterId key exists in the JSON
     // this is required because running JSON.GET with an nonexistent key throws a Redis error
-    const characterCacheKeyExists = await client.json.type(
-      characterByIdKey(),
-      characterCacheKey
-    );
+    const characterCacheKeyExists = characterCacheKey
+      ? await redisClient.call(
+          "JSON.TYPE",
+          characterByIdKey(),
+          characterCacheKey
+        )
+      : null;
 
     // the characterId could be null if an invalid character name was searched,
     // which would necessarily mean an invalid key and a cache miss
@@ -126,9 +141,11 @@ const retrieveFilteredCharacterData: (
     // in either case, don't bother looking at the cache and instead search the db
     // there is no scenario where an invalid characterId leads to an existing JSON key
     if (characterCacheKey && characterCacheKeyExists) {
-      const cachedValue = (await client.json.get(characterByIdKey(), {
-        path: characterCacheKey,
-      })) as Array<CharacterData & { birthday: string | null }>;
+      const cachedValue = (await redisClient
+        .call("JSON.GET", characterByIdKey(), characterCacheKey)
+        .then((data) => JSON.parse(data as string))) as Array<
+        CharacterData & { birthday: string | null }
+      >;
       const character = cachedValue.map((value) => deserializeCharacter(value));
       return character;
     } else {
@@ -210,15 +227,20 @@ const retrieveFilteredCharacterData: (
       if (character.length > 0) {
         const characterId = character[0].characterId!.toString();
         const characterName = character[0].characterName!;
-        await Promise.all([
-          client.json.set(characterByIdKey(), "$", {}, { NX: true }),
-          client.json.set(characterByIdKey(), characterId, character, {
-            NX: true,
-          }),
-          client.expireAt(characterByIdKey(), expireKeyTomorrow(), "NX"),
-          client.hSet(characterNameToIdKey(), characterName, characterId),
-          client.expireAt(characterNameToIdKey(), expireKeyTomorrow(), "NX"),
-        ]);
+        redisClient
+          .pipeline()
+          .call("JSON.SET", characterByIdKey(), "$", JSON.stringify({}), "NX")
+          .call(
+            "JSON.SET",
+            characterByIdKey(),
+            characterId,
+            JSON.stringify(character),
+            "NX"
+          )
+          .expireat(characterByIdKey(), expireKeyTomorrow(), "NX")
+          .hset(characterNameToIdKey(), characterName, characterId)
+          .expireat(characterNameToIdKey(), expireKeyTomorrow(), "NX")
+          .exec();
       }
       return character;
     }
