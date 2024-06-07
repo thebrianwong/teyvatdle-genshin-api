@@ -1,13 +1,15 @@
 import { AppDataSource } from "../index";
 import LocalSpecialty from "../models/localSpecialty.model";
 import { LocalSpecialtyData } from "../generated/graphql";
-import client from "../redis/client";
 import { localSpecialtiesKey } from "../redis/keys";
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
+import { redisClient } from "../redis/redis";
 
 const getLocalSpecialties: () => Promise<LocalSpecialtyData[]> = async () => {
   try {
-    const cachedLocalSpecialties = await client.json.get(localSpecialtiesKey());
+    const cachedLocalSpecialties = await redisClient
+      .call("JSON.GET", localSpecialtiesKey())
+      .then((data) => JSON.parse(data as string));
     if (cachedLocalSpecialties) {
       return cachedLocalSpecialties as LocalSpecialtyData[];
     } else {
@@ -22,8 +24,13 @@ const getLocalSpecialties: () => Promise<LocalSpecialtyData[]> = async () => {
         ])
         .getRawMany();
       await Promise.all([
-        client.json.set(localSpecialtiesKey(), "$", localSpecialties),
-        client.expireAt(localSpecialtiesKey(), expireKeyTomorrow(), "NX"),
+        redisClient.call(
+          "JSON.SET",
+          localSpecialtiesKey(),
+          "$",
+          JSON.stringify(localSpecialties)
+        ),
+        redisClient.expireat(localSpecialtiesKey(), expireKeyTomorrow(), "NX"),
       ]);
       return localSpecialties;
     }
