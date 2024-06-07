@@ -33,8 +33,8 @@ const expireAllKeys = async () => {
 };
 
 (async () => {
-  console.log("Expiring Keys.");
   await expireAllKeys();
+  console.log("Expiring Keys.");
 })();
 
 export default expireAllKeys;
