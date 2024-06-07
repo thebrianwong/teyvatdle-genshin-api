@@ -183,16 +183,19 @@ const retrieveDailyCharacterData: (
 ) => Promise<CharacterData> = async (dailyId) => {
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   try {
-    const characterIdRecord = await dailyRecordRepo
+    const characterIdRecord = (await dailyRecordRepo
       .createQueryBuilder("daily_record")
       .select(['daily_record.character_id AS "characterId"'])
       .where("daily_record.id = :id", {
         id: dailyId,
       })
-      .getRawOne();
+      .getRawOne()) as { characterId: number };
     const characterId = characterIdRecord.characterId;
     try {
-      const character = await retrieveFilteredCharacterData("id", characterId);
+      const character = await retrieveFilteredCharacterData(
+        "id",
+        characterId.toString()
+      );
       return character[0];
     } catch (err) {
       throw new Error("There was an error querying today's daily character.");
@@ -207,16 +210,19 @@ const retrieveDailyWeaponData: (
 ) => Promise<WeaponData> = async (dailyId) => {
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   try {
-    const weaponIdRecord = await dailyRecordRepo
+    const weaponIdRecord = (await dailyRecordRepo
       .createQueryBuilder("daily_record")
       .select(['daily_record.weapon_id AS "weaponId"'])
       .where("daily_record.id = :id", {
         id: dailyId,
       })
-      .getRawOne();
+      .getRawOne()) as { weaponId: number };
     const weaponId = weaponIdRecord.weaponId;
     try {
-      const weapon = await retrieveFilteredWeaponData("id", weaponId);
+      const weapon = await retrieveFilteredWeaponData(
+        "id",
+        weaponId.toString()
+      );
       return weapon[0];
     } catch (err) {
       throw new Error("There was an error querying today's daily weapon.");
@@ -231,16 +237,19 @@ const retrieveDailyTalentData: (
 ) => Promise<TalentData> = async (dailyId) => {
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   try {
-    const talentIdRecord = await dailyRecordRepo
+    const talentIdRecord = (await dailyRecordRepo
       .createQueryBuilder("daily_record")
       .select(['daily_record.talent_id AS "talentId"'])
       .where("daily_record.id = :id", {
         id: dailyId,
       })
-      .getRawOne();
+      .getRawOne()) as { talentId: number };
     const talentId = talentIdRecord.talentId;
     try {
-      const talent = await retrieveFilteredTalentData("id", talentId);
+      const talent = await retrieveFilteredTalentData(
+        "id",
+        talentId.toString()
+      );
       return talent[0];
     } catch (err) {
       throw new Error("There was an error querying today's daily talent.");
@@ -255,18 +264,18 @@ const retrieveDailyConstellationData: (
 ) => Promise<ConstellationData> = async (dailyId) => {
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   try {
-    const constellationIdRecord = await dailyRecordRepo
+    const constellationIdRecord = (await dailyRecordRepo
       .createQueryBuilder("daily_record")
       .select(['daily_record.constellation_id AS "constellationId"'])
       .where("daily_record.id = :id", {
         id: dailyId,
       })
-      .getRawOne();
+      .getRawOne()) as { constellationId: number };
     const constellationId = constellationIdRecord.constellationId;
     try {
       const constellation = await retrieveFilteredConstellationData(
         "id",
-        constellationId
+        constellationId.toString()
       );
       return constellation[0];
     } catch (err) {
@@ -286,16 +295,16 @@ const retrieveDailyFoodData: (dailyId: string) => Promise<FoodData> = async (
 ) => {
   const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   try {
-    const foodIdRecord = await dailyRecordRepo
+    const foodIdRecord = (await dailyRecordRepo
       .createQueryBuilder("daily_record")
       .select(['daily_record.food_id AS "foodId"'])
       .where("daily_record.id = :id", {
         id: dailyId,
       })
-      .getRawOne();
+      .getRawOne()) as { foodId: number };
     const foodId = foodIdRecord.foodId;
     try {
-      const food = await retrieveFilteredFoodData("id", foodId);
+      const food = await retrieveFilteredFoodData("id", foodId.toString());
       return food[0];
     } catch (err) {
       throw new Error("There was an error querying today's daily food.");
