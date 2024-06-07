@@ -5,6 +5,9 @@ import {
   foodByIdKey,
   foodsByTypeKey,
   foodsKey,
+  talentByIdKey,
+  talentsByCharacterKey,
+  talentsKey,
   weaponByIdKey,
   weaponsByTypeKey,
   weaponsKey,
@@ -20,6 +23,9 @@ const expireAllKeys = async () => {
     foodsKey,
     foodByIdKey,
     foodsByTypeKey,
+    talentsKey,
+    talentByIdKey,
+    talentsByCharacterKey,
   ];
   const commands = keys.map((key) => client.json.del(key()));
   await Promise.all(commands);
