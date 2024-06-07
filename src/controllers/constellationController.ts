@@ -1,27 +1,39 @@
 import { AppDataSource } from "../index";
 import Constellation from "../models/constellation.model";
 import { ConstellationData } from "../generated/graphql";
+import { constellationsKey } from "../redis/keys";
+import client from "../redis/client";
+import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
 
 const retrieveConstellationData: () => Promise<
   ConstellationData[]
 > = async () => {
-  const constellationRepo = AppDataSource.getRepository(Constellation);
   try {
-    const constellations: ConstellationData[] = await constellationRepo
-      .createQueryBuilder("constellation")
-      .innerJoin("constellation.characterId", "character")
-      .select([
-        'constellation.id AS "constellationId"',
-        'constellation.name AS "constellationName"',
-        'constellation.level AS "constellationLevel"',
-        'constellation.imageUrl AS "constellationImageUrl"',
-        'constellation.character_id AS "characterId"',
-        'character.name AS "characterName"',
-        'character.imageUrl AS "characterImageUrl"',
-      ])
-      .orderBy({ '"constellationId"': "ASC" })
-      .getRawMany();
-    return constellations;
+    const cachedConstellations = await client.json.get(constellationsKey());
+    if (cachedConstellations) {
+      return cachedConstellations as ConstellationData[];
+    } else {
+      const constellationRepo = AppDataSource.getRepository(Constellation);
+      const constellations: ConstellationData[] = await constellationRepo
+        .createQueryBuilder("constellation")
+        .innerJoin("constellation.characterId", "character")
+        .select([
+          'constellation.id AS "constellationId"',
+          'constellation.name AS "constellationName"',
+          'constellation.level AS "constellationLevel"',
+          'constellation.imageUrl AS "constellationImageUrl"',
+          'constellation.character_id AS "characterId"',
+          'character.name AS "characterName"',
+          'character.imageUrl AS "characterImageUrl"',
+        ])
+        .orderBy({ '"constellationId"': "ASC" })
+        .getRawMany();
+      await Promise.all([
+        client.json.set(constellationsKey(), "$", constellations),
+        client.expireAt(constellationsKey(), expireKeyTomorrow(), "NX"),
+      ]);
+      return constellations;
+    }
   } catch (err) {
     throw new Error("There was an error querying constellations.");
   }
