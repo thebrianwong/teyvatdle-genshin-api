@@ -1,7 +1,12 @@
 import { AppDataSource } from "../index";
 import Constellation from "../models/constellation.model";
 import { ConstellationData } from "../generated/graphql";
-import { constellationsKey } from "../redis/keys";
+import {
+  constellationByIdKey,
+  constellationNameToIdKey,
+  constellationsByCharacterKey,
+  constellationsKey,
+} from "../redis/keys";
 import client from "../redis/client";
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
 
@@ -41,10 +46,47 @@ const retrieveConstellationData: () => Promise<
 
 const retrieveFilteredConstellationData: (
   filterType: "id" | "constellationName" | "characterName",
-  searchValue: String
+  searchValue: string
 ) => Promise<ConstellationData[]> = async (filterType, searchValue) => {
-  const constellationRepo = AppDataSource.getRepository(Constellation);
+  let constellationCacheKey: string | undefined = searchValue;
+  if (filterType === "constellationName") {
+    constellationCacheKey = await client.hGet(
+      constellationNameToIdKey(),
+      searchValue
+    );
+  }
+
+  let constellationCacheKeyExists;
+  if (filterType === "characterName") {
+    constellationCacheKeyExists = await client.json.type(
+      constellationsByCharacterKey(),
+      constellationCacheKey
+    );
+  } else {
+    constellationCacheKeyExists = await client.json.type(
+      constellationByIdKey(),
+      constellationCacheKey
+    );
+  }
+
+  if (constellationCacheKey && constellationCacheKeyExists) {
+    if (filterType === "characterName") {
+      const constellations = (await client.json.get(
+        constellationsByCharacterKey(),
+        {
+          path: constellationCacheKey,
+        }
+      )) as ConstellationData[];
+      return constellations;
+    } else {
+      const constellations = (await client.json.get(constellationByIdKey(), {
+        path: constellationCacheKey,
+      })) as ConstellationData[];
+      return constellations;
+    }
+  }
   try {
+    const constellationRepo = AppDataSource.getRepository(Constellation);
     const baseQuery = constellationRepo
       .createQueryBuilder("constellation")
       .innerJoin("constellation.characterId", "character")
@@ -71,6 +113,52 @@ const retrieveFilteredConstellationData: (
     const constellations: ConstellationData[] = await baseQuery
       .orderBy({ '"constellationId"': "ASC" })
       .getRawMany();
+    if (constellations.length > 0) {
+      if (constellations.length === 1) {
+        // id or constellation name search
+        const constellationId = constellations[0].constellationId!.toString();
+        const constellationName = constellations[0].constellationName!;
+        await Promise.all([
+          client.json.set(constellationByIdKey(), "$", {}, { NX: true }),
+          client.json.set(
+            constellationByIdKey(),
+            constellationId,
+            constellations
+          ),
+          { NX: true },
+          // client.expireAt(constellationByIdKey(), expireKeyTomorrow(), "NX"),
+          client.expire(constellationByIdKey(), 10, "NX"),
+          client.hSet(
+            constellationNameToIdKey(),
+            constellationName,
+            constellationId
+          ),
+          // client.expireAt(constellationNameToIdKey(), expireKeyTomorrow(), "NX"),
+          client.expire(constellationNameToIdKey(), 10, "NX"),
+        ]);
+      } else {
+        // character name search
+        const characterName = constellations[0].characterName!;
+        await Promise.all([
+          client.json.set(
+            constellationsByCharacterKey(),
+            "$",
+            {},
+            { NX: true }
+          ),
+          client.json.set(
+            constellationsByCharacterKey(),
+            characterName,
+            constellations,
+            {
+              NX: true,
+            }
+          ),
+          // client.expireAt(constellationsByCharacterKey(), expireKeyTomorrow(), "NX"),
+          client.expire(constellationsByCharacterKey(), 10, "NX"),
+        ]);
+      }
+    }
     return constellations;
   } catch (err) {
     throw new Error("There was an error querying constellations.");
