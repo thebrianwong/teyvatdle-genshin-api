@@ -19,7 +19,7 @@ const foodsByTypeKey = () => `${APP_KEY_PREFIX}:foods#byType`; // key for JSON d
 
 const talentsKey = () => `${APP_KEY_PREFIX}#talents`; // key for JSON data structure
 const talentByIdKey = () => `${APP_KEY_PREFIX}:talent#byId`; // key for JSON data structure, returns talent JSON
-const talentNameToIdKey = () => `${APP_KEY_PREFIX}:talent#nameToId`; // key for Hash data structure, returns talent ID to be passed into foodIdKey
+const talentNameToIdKey = () => `${APP_KEY_PREFIX}:talent#nameToId`; // key for Hash data structure, returns talent ID to be passed into talentIdKey
 const talentsByCharacterKey = () => `${APP_KEY_PREFIX}:talents#byCharacter`; // key for JSON data structure, returns all talent of a provided character path
 
 export {
