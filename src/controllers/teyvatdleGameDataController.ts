@@ -331,9 +331,9 @@ const retrieveDailyFoodData: (dailyId: string) => Promise<FoodData> = async (
 };
 
 const updateDailyRecord: (
-  id: String,
+  id: string,
   gameDataType: GameDataType
-) => Promise<{ message: string; success: Boolean }> = async (
+) => Promise<{ message: string; success: boolean }> = async (
   id,
   gameDataType
 ) => {

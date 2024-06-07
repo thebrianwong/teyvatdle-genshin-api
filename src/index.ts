@@ -95,7 +95,7 @@ const main = async () => {
   const serverCleanup = useServer({ schema }, webSocketServer);
 
   const apolloServer = new ApolloServer<{
-    token?: String | undefined;
+    token?: string | undefined;
   }>({
     introspection: true,
     schema,
