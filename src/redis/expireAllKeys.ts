@@ -2,6 +2,9 @@ import client from "../redis/client";
 import {
   characterByIdKey,
   charactersKey,
+  constellationByIdKey,
+  constellationsByCharacterKey,
+  constellationsKey,
   foodByIdKey,
   foodsByTypeKey,
   foodsKey,
@@ -26,6 +29,9 @@ const expireAllKeys = async () => {
     talentsKey,
     talentByIdKey,
     talentsByCharacterKey,
+    constellationsKey,
+    constellationByIdKey,
+    constellationsByCharacterKey,
   ];
   const commands = keys.map((key) => client.json.del(key()));
   await Promise.all(commands);

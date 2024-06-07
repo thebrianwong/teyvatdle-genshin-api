@@ -22,6 +22,13 @@ const talentByIdKey = () => `${APP_KEY_PREFIX}:talent#byId`; // key for JSON dat
 const talentNameToIdKey = () => `${APP_KEY_PREFIX}:talent#nameToId`; // key for Hash data structure, returns talent ID to be passed into talentIdKey
 const talentsByCharacterKey = () => `${APP_KEY_PREFIX}:talents#byCharacter`; // key for JSON data structure, returns all talent of a provided character path
 
+const constellationsKey = () => `${APP_KEY_PREFIX}#constellations`; // key for JSON data structure
+const constellationByIdKey = () => `${APP_KEY_PREFIX}:constellation#byId`; // key for JSON data structure, returns constellation JSON
+const constellationNameToIdKey = () =>
+  `${APP_KEY_PREFIX}:constellation#nameToId`; // key for Hash data structure, returns constellation ID to be passed into foodIdKey
+const constellationsByCharacterKey = () =>
+  `${APP_KEY_PREFIX}:constellations#byCharacter`; // key for JSON data structure, returns all constellation of a provided character path
+
 export {
   formatAsKey,
   charactersKey,
@@ -39,4 +46,8 @@ export {
   talentByIdKey,
   talentNameToIdKey,
   talentsByCharacterKey,
+  constellationsKey,
+  constellationByIdKey,
+  constellationNameToIdKey,
+  constellationsByCharacterKey,
 };
