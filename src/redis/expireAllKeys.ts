@@ -5,6 +5,7 @@ import {
   constellationByIdKey,
   constellationsByCharacterKey,
   constellationsKey,
+  dailyRecordKey,
   foodByIdKey,
   foodsByTypeKey,
   foodsKey,
@@ -20,6 +21,7 @@ import {
 
 const expireAllKeys = async () => {
   const keys = [
+    dailyRecordKey,
     charactersKey,
     characterByIdKey,
     weaponsKey,
