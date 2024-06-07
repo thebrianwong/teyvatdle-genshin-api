@@ -1,7 +1,8 @@
-import { AppDataSource, client } from "../index";
+import { AppDataSource } from "../index";
 import Character from "../models/character.model";
 import CharacterBookMap from "../models/maps/characterBookMap.model";
 import { CharacterData } from "../generated/graphql";
+import client from "../redis/client";
 import {
   characterByIdKey,
   characterNameToIdKey,

@@ -1,6 +1,7 @@
-import { AppDataSource, client } from "../index";
+import { AppDataSource } from "../index";
 import Weapon from "../models/weapon.model";
 import { WeaponData, WeaponType } from "../generated/graphql";
+import client from "../redis/client";
 import {
   weaponByIdKey,
   weaponNameToIdKey,

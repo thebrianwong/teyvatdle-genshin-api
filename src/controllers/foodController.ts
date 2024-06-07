@@ -1,6 +1,7 @@
-import { AppDataSource, client } from "../index";
+import { AppDataSource } from "../index";
 import Food from "../models/food.model";
 import { FoodData, FoodType } from "../generated/graphql";
+import client from "../redis/client";
 import {
   foodByIdKey,
   foodNameToIdKey,
