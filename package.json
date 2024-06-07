@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "nodemon ./dist",
     "start": "node ./dist",
-    "test": "TEST='true' jest --watchAll --detectOpenHandles",
+    "test": "npm run expire && TEST='true' jest --watchAll --detectOpenHandles && npm run expire",
     "coverage": "TEST='true' jest --detectOpenHandles --coverage",
     "build": "npm install && npm install --only=dev && npm run codegen && tsc",
-    "codegen": "graphql-codegen --config ./src/codegen.ts"
+    "codegen": "graphql-codegen --config ./src/codegen.ts",
+    "expire": "node ./dist/redis/expireAllKeys.js"
   },
   "keywords": [],
   "author": "",
