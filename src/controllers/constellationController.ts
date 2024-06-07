@@ -126,15 +126,17 @@ const retrieveFilteredConstellationData: (
             constellations
           ),
           { NX: true },
-          // client.expireAt(constellationByIdKey(), expireKeyTomorrow(), "NX"),
-          client.expire(constellationByIdKey(), 10, "NX"),
+          client.expireAt(constellationByIdKey(), expireKeyTomorrow(), "NX"),
           client.hSet(
             constellationNameToIdKey(),
             constellationName,
             constellationId
           ),
-          // client.expireAt(constellationNameToIdKey(), expireKeyTomorrow(), "NX"),
-          client.expire(constellationNameToIdKey(), 10, "NX"),
+          client.expireAt(
+            constellationNameToIdKey(),
+            expireKeyTomorrow(),
+            "NX"
+          ),
         ]);
       } else {
         // character name search
@@ -154,8 +156,11 @@ const retrieveFilteredConstellationData: (
               NX: true,
             }
           ),
-          // client.expireAt(constellationsByCharacterKey(), expireKeyTomorrow(), "NX"),
-          client.expire(constellationsByCharacterKey(), 10, "NX"),
+          client.expireAt(
+            constellationsByCharacterKey(),
+            expireKeyTomorrow(),
+            "NX"
+          ),
         ]);
       }
     }
