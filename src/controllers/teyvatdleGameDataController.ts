@@ -64,7 +64,7 @@ const getIds: (type: string) => Promise<{ id: number }[]> = async (
       .getRawMany();
     return ids;
   } catch (err) {
-    throw new Error(`There was an error querying ${type} IDs.`);
+    throw new Error(`There was an error querying ${type} IDs. ` + err);
   }
 };
 
@@ -95,7 +95,9 @@ const chooseTheDaily: (type: string) => Promise<number> = async (
     }
     return chosenDailyId!;
   } catch (err) {
-    throw new Error("There was an error querying recent daily record IDs.");
+    throw new Error(
+      "There was an error querying recent daily record IDs. " + err
+    );
   }
 };
 
@@ -174,7 +176,7 @@ const getDailyRecord: () => Promise<DailyRecordData> = async () => {
       .getRawOne();
     return dailyRecord as DailyRecordData;
   } catch (err) {
-    throw new Error("There was an error querying today's daily record.");
+    throw new Error("There was an error querying today's daily record. " + err);
   }
 };
 
@@ -198,10 +200,14 @@ const retrieveDailyCharacterData: (
       );
       return character[0];
     } catch (err) {
-      throw new Error("There was an error querying today's daily character.");
+      throw new Error(
+        "There was an error querying today's daily character. " + err
+      );
     }
   } catch (err) {
-    throw new Error("There was an error querying today's daily character id.");
+    throw new Error(
+      "There was an error querying today's daily character id. " + err
+    );
   }
 };
 
@@ -225,10 +231,14 @@ const retrieveDailyWeaponData: (
       );
       return weapon[0];
     } catch (err) {
-      throw new Error("There was an error querying today's daily weapon.");
+      throw new Error(
+        "There was an error querying today's daily weapon. " + err
+      );
     }
   } catch (err) {
-    throw new Error("There was an error querying today's daily weapon id.");
+    throw new Error(
+      "There was an error querying today's daily weapon id. " + err
+    );
   }
 };
 
@@ -252,10 +262,14 @@ const retrieveDailyTalentData: (
       );
       return talent[0];
     } catch (err) {
-      throw new Error("There was an error querying today's daily talent.");
+      throw new Error(
+        "There was an error querying today's daily talent. " + err
+      );
     }
   } catch (err) {
-    throw new Error("There was an error querying today's daily talent id.");
+    throw new Error(
+      "There was an error querying today's daily talent id. " + err
+    );
   }
 };
 
@@ -280,12 +294,12 @@ const retrieveDailyConstellationData: (
       return constellation[0];
     } catch (err) {
       throw new Error(
-        "There was an error querying today's daily constellation."
+        "There was an error querying today's daily constellation. " + err
       );
     }
   } catch (err) {
     throw new Error(
-      "There was an error querying today's daily constellation id."
+      "There was an error querying today's daily constellation id. " + err
     );
   }
 };
@@ -307,10 +321,12 @@ const retrieveDailyFoodData: (dailyId: string) => Promise<FoodData> = async (
       const food = await retrieveFilteredFoodData("id", foodId.toString());
       return food[0];
     } catch (err) {
-      throw new Error("There was an error querying today's daily food.");
+      throw new Error("There was an error querying today's daily food. " + err);
     }
   } catch (err) {
-    throw new Error("There was an error querying today's daily food id.");
+    throw new Error(
+      "There was an error querying today's daily food id. " + err
+    );
   }
 };
 
@@ -368,7 +384,9 @@ const updateDailyRecord: (
             success: true,
           };
         } catch (err) {
-          throw new Error(`There was an error updating daily record ${id}.`);
+          throw new Error(
+            `There was an error updating daily record ${id}. ` + err
+          );
         }
       } else {
         return {
@@ -378,7 +396,7 @@ const updateDailyRecord: (
       }
     }
   } catch (err) {
-    throw new Error(`There was an error querying daily record ${id}.`);
+    throw new Error(`There was an error querying daily record ${id}. ` + err);
   }
 };
 

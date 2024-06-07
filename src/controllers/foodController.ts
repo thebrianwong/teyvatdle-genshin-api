@@ -41,7 +41,7 @@ const retrieveFoodData: () => Promise<FoodData[]> = async () => {
       return foods;
     }
   } catch (err) {
-    throw new Error("There was an error querying foods.");
+    throw new Error("There was an error querying foods. " + err);
   }
 };
 
@@ -137,7 +137,7 @@ const retrieveFilteredFoodData: (
       return foods;
     }
   } catch (err) {
-    throw new Error("There was an error querying foods.");
+    throw new Error("There was an error querying foods. " + err);
   }
 };
 

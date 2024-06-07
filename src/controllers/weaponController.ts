@@ -48,7 +48,7 @@ const retrieveWeaponData: () => Promise<WeaponData[]> = async () => {
       return weapons;
     }
   } catch (err) {
-    throw new Error("There was an error querying weapons.");
+    throw new Error("There was an error querying weapons. " + err);
   }
 };
 
@@ -156,7 +156,7 @@ const retrieveFilteredWeaponData: (
       return weapons;
     }
   } catch (err) {
-    throw new Error("There was an error querying weapons.");
+    throw new Error("There was an error querying weapons. " + err);
   }
 };
 

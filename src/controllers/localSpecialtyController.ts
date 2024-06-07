@@ -28,7 +28,7 @@ const getLocalSpecialties: () => Promise<LocalSpecialtyData[]> = async () => {
       return localSpecialties;
     }
   } catch (err) {
-    throw new Error("There was an error querying local specialties.");
+    throw new Error("There was an error querying local specialties. " + err);
   }
 };
 

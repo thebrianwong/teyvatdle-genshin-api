@@ -40,7 +40,7 @@ const retrieveConstellationData: () => Promise<
       return constellations;
     }
   } catch (err) {
-    throw new Error("There was an error querying constellations.");
+    throw new Error("There was an error querying constellations. " + err);
   }
 };
 
@@ -166,7 +166,7 @@ const retrieveFilteredConstellationData: (
     }
     return constellations;
   } catch (err) {
-    throw new Error("There was an error querying constellations.");
+    throw new Error("There was an error querying constellations. " + err);
   }
 };
 

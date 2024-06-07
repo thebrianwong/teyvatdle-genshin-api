@@ -38,7 +38,7 @@ const retrieveTalentData: () => Promise<TalentData[]> = async () => {
       return talents;
     }
   } catch (err) {
-    throw new Error("There was an error querying talents.");
+    throw new Error("There was an error querying talents. " + err);
   }
 };
 
@@ -134,7 +134,7 @@ const retrieveFilteredTalentData: (
       return talents;
     }
   } catch (err) {
-    throw new Error("There was an error querying talents.");
+    throw new Error("There was an error querying talents. " + err);
   }
 };
 

@@ -23,7 +23,7 @@ const getRegions: () => Promise<RegionData[]> = async () => {
       return regions;
     }
   } catch (err) {
-    throw new Error("There was an error querying regions.");
+    throw new Error("There was an error querying regions. " + err);
   }
 };
 

@@ -96,7 +96,7 @@ const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
       return characters;
     }
   } catch (err) {
-    throw new Error("There was an error querying characters.");
+    throw new Error("There was an error querying characters. " + err);
   }
 };
 
@@ -223,7 +223,7 @@ const retrieveFilteredCharacterData: (
       return character;
     }
   } catch (err) {
-    throw new Error("There was an error querying characters.");
+    throw new Error("There was an error querying characters. " + err);
   }
 };
 
