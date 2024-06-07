@@ -26,6 +26,9 @@ import {
   WeaponData,
 } from "../generated/graphql";
 import { pubSub } from "..";
+import client from "../redis/client";
+import { dailyRecordKey } from "../redis/keys";
+import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
 
 const getCorrespondingRepo: (type: string) => TeyvatdleEntityRepo = (
   type: string
@@ -150,31 +153,40 @@ const createDailyRecord: () => Promise<void> = async () => {
 };
 
 const getDailyRecord: () => Promise<DailyRecordData> = async () => {
-  const currentYear = normalizeYear();
-  const currentMonth = normalizeMonth();
-  const currentDay = normalizeDay();
-  const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
   try {
-    const dailyRecord = await dailyRecordRepo
-      .createQueryBuilder("daily_record")
-      .select([
-        'daily_record.id AS "dailyRecordId"',
-        'daily_record.character_id AS "characterId"',
-        'daily_record.character_solved AS "characterSolved"',
-        'daily_record.weapon_id AS "weaponId"',
-        'daily_record.weapon_solved AS "weaponSolved"',
-        'daily_record.talent_id AS "talentId"',
-        'daily_record.talent_solved AS "talentSolved"',
-        'daily_record.constellation_id AS "constellationId"',
-        'daily_record.constellation_solved AS "constellationSolved"',
-        'daily_record.food_id AS "foodId"',
-        'daily_record.food_solved AS "foodSolved"',
-      ])
-      .where("CAST(date AS DATE) = CAST(:date AS DATE)", {
-        date: `${currentYear}-${currentMonth}-${currentDay}`,
-      })
-      .getRawOne();
-    return dailyRecord as DailyRecordData;
+    const cachedDailyRecord = await client.json.get(dailyRecordKey());
+    if (cachedDailyRecord) {
+      return cachedDailyRecord as DailyRecordData;
+    } else {
+      const currentYear = normalizeYear();
+      const currentMonth = normalizeMonth();
+      const currentDay = normalizeDay();
+      const dailyRecordRepo = AppDataSource.getRepository(DailyRecord);
+      const dailyRecord = await dailyRecordRepo
+        .createQueryBuilder("daily_record")
+        .select([
+          'daily_record.id AS "dailyRecordId"',
+          'daily_record.character_id AS "characterId"',
+          'daily_record.character_solved AS "characterSolved"',
+          'daily_record.weapon_id AS "weaponId"',
+          'daily_record.weapon_solved AS "weaponSolved"',
+          'daily_record.talent_id AS "talentId"',
+          'daily_record.talent_solved AS "talentSolved"',
+          'daily_record.constellation_id AS "constellationId"',
+          'daily_record.constellation_solved AS "constellationSolved"',
+          'daily_record.food_id AS "foodId"',
+          'daily_record.food_solved AS "foodSolved"',
+        ])
+        .where("CAST(date AS DATE) = CAST(:date AS DATE)", {
+          date: `${currentYear}-${currentMonth}-${currentDay}`,
+        })
+        .getRawOne();
+      await Promise.all([
+        client.json.set(dailyRecordKey(), "$", dailyRecord, { NX: true }),
+        client.expireAt(dailyRecordKey(), expireKeyTomorrow(), "NX"),
+      ]);
+      return dailyRecord as DailyRecordData;
+    }
   } catch (err) {
     throw new Error("There was an error querying today's daily record. " + err);
   }
