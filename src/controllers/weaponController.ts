@@ -1,7 +1,6 @@
 import { AppDataSource } from "../index";
 import Weapon from "../models/weapon.model";
 import { WeaponData, WeaponType } from "../generated/graphql";
-import client from "../redis/client";
 import {
   weaponByIdKey,
   weaponNameToIdKey,
@@ -9,10 +8,13 @@ import {
   weaponsKey,
 } from "../redis/keys";
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
+import { redisClient } from "../redis/redis";
 
 const retrieveWeaponData: () => Promise<WeaponData[]> = async () => {
   try {
-    const cachedWeapons = await client.json.get(weaponsKey());
+    const cachedWeapons = await redisClient
+      .call("JSON.GET", weaponsKey())
+      .then((data) => JSON.parse(data as string));
     if (cachedWeapons) {
       return cachedWeapons as WeaponData[];
     } else {
@@ -41,10 +43,11 @@ const retrieveWeaponData: () => Promise<WeaponData[]> = async () => {
         ])
         .orderBy({ '"weaponName"': "ASC" })
         .getRawMany();
-      await Promise.all([
-        client.json.set(weaponsKey(), "$", weapons),
-        client.expireAt(weaponsKey(), expireKeyTomorrow(), "NX"),
-      ]);
+      redisClient
+        .pipeline()
+        .call("JSON.SET", weaponsKey(), "$", JSON.stringify(weapons))
+        .expireat(weaponsKey(), expireKeyTomorrow(), "NX")
+        .exec();
       return weapons;
     }
   } catch (err) {
@@ -57,36 +60,40 @@ const retrieveFilteredWeaponData: (
   searchValue: string | WeaponType
 ) => Promise<WeaponData[]> = async (filterType, searchValue) => {
   try {
-    let weaponCacheKey: string | undefined = searchValue;
+    let weaponCacheKey: string | null = searchValue;
     if (filterType === "weaponName") {
-      weaponCacheKey = await client.hGet(weaponNameToIdKey(), searchValue);
+      weaponCacheKey = await redisClient.hget(weaponNameToIdKey(), searchValue);
     }
 
     // weaponType has its own JSON consisting of all the weapon data of each weapon type
     // single weapons cached by their ids are stored in separate JSON
-    let weaponCacheKeyExists;
-    if (filterType === "weaponType") {
-      weaponCacheKeyExists = await client.json.type(
-        weaponsByTypeKey(),
-        weaponCacheKey
-      );
-    } else {
-      weaponCacheKeyExists = await client.json.type(
-        weaponByIdKey(),
-        weaponCacheKey
-      );
+    let weaponCacheKeyExists = null;
+    if (weaponCacheKey) {
+      if (filterType === "weaponType") {
+        weaponCacheKeyExists = await redisClient.call(
+          "JSON.TYPE",
+          weaponsByTypeKey(),
+          weaponCacheKey
+        );
+      } else {
+        weaponCacheKeyExists = await redisClient.call(
+          "JSON.TYPE",
+          weaponByIdKey(),
+          weaponCacheKey
+        );
+      }
     }
 
     if (weaponCacheKey && weaponCacheKeyExists) {
       if (filterType === "weaponType") {
-        const weapons = (await client.json.get(weaponsByTypeKey(), {
-          path: weaponCacheKey,
-        })) as WeaponData[];
+        const weapons = (await redisClient
+          .call("JSON.GET", weaponsByTypeKey(), weaponCacheKey)
+          .then((data) => JSON.parse(data as string))) as WeaponData[];
         return weapons;
       } else {
-        const weapons = (await client.json.get(weaponByIdKey(), {
-          path: weaponCacheKey,
-        })) as WeaponData[];
+        const weapons = (await redisClient
+          .call("JSON.GET", weaponByIdKey(), weaponCacheKey)
+          .then((data) => JSON.parse(data as string))) as WeaponData[];
         return weapons;
       }
     } else {
@@ -132,25 +139,35 @@ const retrieveFilteredWeaponData: (
           // id or name search
           const weaponId = weapons[0].weaponId!.toString();
           const weaponName = weapons[0].weaponName!;
-          await Promise.all([
-            client.json.set(weaponByIdKey(), "$", {}, { NX: true }),
-            client.json.set(weaponByIdKey(), weaponId, weapons, {
-              NX: true,
-            }),
-            client.expireAt(weaponByIdKey(), expireKeyTomorrow(), "NX"),
-            client.hSet(weaponNameToIdKey(), weaponName, weaponId),
-            client.expireAt(weaponNameToIdKey(), expireKeyTomorrow(), "NX"),
-          ]);
+          redisClient
+            .pipeline()
+            .call("JSON.SET", weaponByIdKey(), "$", JSON.stringify({}), "NX")
+            .call(
+              "JSON.SET",
+              weaponByIdKey(),
+              weaponId,
+              JSON.stringify(weapons),
+              "NX"
+            )
+            .expireat(weaponByIdKey(), expireKeyTomorrow(), "NX")
+            .hset(weaponNameToIdKey(), weaponName, weaponId)
+            .expireat(weaponNameToIdKey(), expireKeyTomorrow(), "NX")
+            .exec();
         } else {
           // weapon type search
           const weaponType = weapons[0].weaponType!;
-          await Promise.all([
-            client.json.set(weaponsByTypeKey(), "$", {}, { NX: true }),
-            client.json.set(weaponsByTypeKey(), weaponType, weapons, {
-              NX: true,
-            }),
-            client.expireAt(weaponsByTypeKey(), expireKeyTomorrow(), "NX"),
-          ]);
+          redisClient
+            .pipeline()
+            .call("JSON.SET", weaponsByTypeKey(), "$", JSON.stringify({}), "NX")
+            .call(
+              "JSON.SET",
+              weaponsByTypeKey(),
+              weaponType,
+              JSON.stringify(weapons),
+              "NX"
+            )
+            .expireat(weaponsByTypeKey(), expireKeyTomorrow(), "NX")
+            .exec();
         }
       }
       return weapons;
