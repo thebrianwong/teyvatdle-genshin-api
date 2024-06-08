@@ -91,15 +91,6 @@ const retrieveCharacterData: () => Promise<CharacterData[]> = async () => {
         .addGroupBy('"talentBossMaterialImageUrl"')
         .orderBy({ '"characterName"': "ASC" })
         .getRawMany();
-      // await Promise.all([
-      //   redisClient.call(
-      //     "JSON.SET",
-      //     charactersKey(),
-      //     "$",
-      //     JSON.stringify(characters)
-      //   ),
-      //   redisClient.expireat(charactersKey(), expireKeyTomorrow(), "NX"),
-      // ]);
       redisClient
         .pipeline()
         .call("JSON.SET", charactersKey(), "$", JSON.stringify(characters))
