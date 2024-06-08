@@ -1,7 +1,6 @@
 import { AppDataSource } from "../index";
 import Food from "../models/food.model";
 import { FoodData, FoodType } from "../generated/graphql";
-import client from "../redis/client";
 import {
   foodByIdKey,
   foodNameToIdKey,
@@ -10,10 +9,13 @@ import {
   formatAsKey,
 } from "../redis/keys";
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
+import { redisClient } from "../redis/redis";
 
 const retrieveFoodData: () => Promise<FoodData[]> = async () => {
   try {
-    const cachedFoods = await client.json.get(foodsKey());
+    const cachedFoods = await redisClient
+      .call("JSON.GET", foodsKey())
+      .then((data) => JSON.parse(data as string));
     if (cachedFoods) {
       return cachedFoods as FoodData[];
     } else {
@@ -34,10 +36,11 @@ const retrieveFoodData: () => Promise<FoodData[]> = async () => {
         ])
         .orderBy({ '"foodName"': "ASC" })
         .getRawMany();
-      await Promise.all([
-        client.json.set(foodsKey(), "$", foods),
-        client.expireAt(foodsKey(), expireKeyTomorrow(), "NX"),
-      ]);
+      redisClient
+        .pipeline()
+        .call("JSON.SET", foodsKey(), "$", JSON.stringify(foods))
+        .expireat(foodsKey(), expireKeyTomorrow(), "NX")
+        .exec();
       return foods;
     }
   } catch (err) {
@@ -50,32 +53,40 @@ const retrieveFilteredFoodData: (
   searchValue: string | FoodType
 ) => Promise<FoodData[]> = async (filterType, searchValue) => {
   try {
-    let foodCacheKey: string | undefined = searchValue;
+    let foodCacheKey: string | null = searchValue;
     if (filterType === "foodName") {
-      foodCacheKey = await client.hGet(foodNameToIdKey(), searchValue);
+      foodCacheKey = await redisClient.hget(foodNameToIdKey(), searchValue);
     }
 
     let foodCacheKeyExists;
-    if (filterType === "foodType") {
-      foodCacheKeyExists = await client.json.type(
-        foodsByTypeKey(),
-        // foodType keys have to be formatted due to containing apostrophes and white space
-        formatAsKey(foodCacheKey!)
-      );
-    } else {
-      foodCacheKeyExists = await client.json.type(foodByIdKey(), foodCacheKey);
+    if (foodCacheKey) {
+      if (filterType === "foodType") {
+        foodCacheKeyExists = await redisClient.call(
+          "JSON.TYPE",
+          foodsByTypeKey(),
+          // foodType keys have to be formatted due to containing apostrophes and white space
+          formatAsKey(foodCacheKey)
+        );
+      } else {
+        foodCacheKeyExists = await redisClient.call(
+          "JSON.TYPE",
+          foodByIdKey(),
+          foodCacheKey
+        );
+      }
     }
 
     if (foodCacheKey && foodCacheKeyExists) {
+      console.log("from cache");
       if (filterType === "foodType") {
-        const foods = (await client.json.get(foodsByTypeKey(), {
-          path: formatAsKey(foodCacheKey),
-        })) as FoodData[];
+        const foods = (await redisClient
+          .call("JSON.GET", foodsByTypeKey(), formatAsKey(foodCacheKey))
+          .then((data) => JSON.parse(data as string))) as FoodData[];
         return foods;
       } else {
-        const foods = (await client.json.get(foodByIdKey(), {
-          path: foodCacheKey,
-        })) as FoodData[];
+        const foods = (await redisClient
+          .call("JSON.GET", foodByIdKey(), formatAsKey(foodCacheKey))
+          .then((data) => JSON.parse(data as string))) as FoodData[];
         return foods;
       }
     } else {
@@ -113,25 +124,35 @@ const retrieveFilteredFoodData: (
           // id or name
           const foodId = foods[0].foodId!.toString();
           const foodName = foods[0].foodName!;
-          await Promise.all([
-            client.json.set(foodByIdKey(), "$", {}, { NX: true }),
-            client.json.set(foodByIdKey(), foodId, foods, {
-              NX: true,
-            }),
-            client.expireAt(foodByIdKey(), expireKeyTomorrow(), "NX"),
-            client.hSet(foodNameToIdKey(), foodName, foodId),
-            client.expireAt(foodNameToIdKey(), expireKeyTomorrow(), "NX"),
-          ]);
+          redisClient
+            .pipeline()
+            .call("JSON.SET", foodByIdKey(), "$", JSON.stringify({}), "NX")
+            .call(
+              "JSON.SET",
+              foodByIdKey(),
+              foodId,
+              JSON.stringify(foods),
+              "NX"
+            )
+            .expireat(foodByIdKey(), expireKeyTomorrow(), "NX")
+            .hset(foodNameToIdKey(), foodName, foodId)
+            .expireat(foodNameToIdKey(), expireKeyTomorrow(), "NX")
+            .exec();
         } else {
           // food type search
           const foodType = foods[0].foodType!;
-          await Promise.all([
-            client.json.set(foodsByTypeKey(), "$", {}, { NX: true }),
-            client.json.set(foodsByTypeKey(), formatAsKey(foodType), foods, {
-              NX: true,
-            }),
-            client.expireAt(foodsByTypeKey(), expireKeyTomorrow(), "NX"),
-          ]);
+          redisClient
+            .pipeline()
+            .call("JSON.SET", foodsByTypeKey(), "$", JSON.stringify({}), "NX")
+            .call(
+              "JSON.SET",
+              foodsByTypeKey(),
+              formatAsKey(foodType),
+              JSON.stringify(foods),
+              "NX"
+            )
+            .expireat(foodsByTypeKey(), expireKeyTomorrow(), "NX")
+            .exec();
         }
       }
       return foods;
