@@ -1,7 +1,6 @@
 import { AppDataSource } from "../index";
 import Talent from "../models/talent.model";
 import { TalentData } from "../generated/graphql";
-import client from "../redis/client";
 import {
   talentByIdKey,
   talentNameToIdKey,
@@ -9,10 +8,13 @@ import {
   talentsKey,
 } from "../redis/keys";
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
+import { redisClient } from "../redis/redis";
 
 const retrieveTalentData: () => Promise<TalentData[]> = async () => {
   try {
-    const cachedTalents = await client.json.get(talentsKey());
+    const cachedTalents = await redisClient
+      .call("JSON.GET", talentsKey())
+      .then((data) => JSON.parse(data as string));
     if (cachedTalents) {
       return cachedTalents as TalentData[];
     } else {
@@ -31,10 +33,11 @@ const retrieveTalentData: () => Promise<TalentData[]> = async () => {
         ])
         .orderBy({ '"talentId"': "ASC" })
         .getRawMany();
-      await Promise.all([
-        client.json.set(talentsKey(), "$", talents),
-        client.expireAt(talentsKey(), expireKeyTomorrow(), "NX"),
-      ]);
+      redisClient
+        .pipeline()
+        .call("JSON.SET", talentsKey(), "$", JSON.stringify(talents))
+        .expireat(talentsKey(), expireKeyTomorrow(), "NX")
+        .exec();
       return talents;
     }
   } catch (err) {
@@ -47,34 +50,38 @@ const retrieveFilteredTalentData: (
   searchValue: string
 ) => Promise<TalentData[]> = async (filterType, searchValue) => {
   try {
-    let talentCacheKey: string | undefined = searchValue;
+    let talentCacheKey: string | null = searchValue;
     if (filterType === "talentName") {
-      talentCacheKey = await client.hGet(talentNameToIdKey(), searchValue);
+      talentCacheKey = await redisClient.hget(talentNameToIdKey(), searchValue);
     }
 
     let talentCacheKeyExists;
-    if (filterType === "characterName") {
-      talentCacheKeyExists = await client.json.type(
-        talentsByCharacterKey(),
-        talentCacheKey
-      );
-    } else {
-      talentCacheKeyExists = await client.json.type(
-        talentByIdKey(),
-        talentCacheKey
-      );
+    if (talentCacheKey) {
+      if (filterType === "characterName") {
+        talentCacheKeyExists = await redisClient.call(
+          "JSON.TYPE",
+          talentsByCharacterKey(),
+          talentCacheKey
+        );
+      } else {
+        talentCacheKeyExists = await redisClient.call(
+          "JSON.TYPE",
+          talentByIdKey(),
+          talentCacheKey
+        );
+      }
     }
 
     if (talentCacheKey && talentCacheKeyExists) {
       if (filterType === "characterName") {
-        const talents = (await client.json.get(talentsByCharacterKey(), {
-          path: talentCacheKey,
-        })) as TalentData[];
+        const talents = (await redisClient
+          .call("JSON.GET", talentsByCharacterKey(), talentCacheKey)
+          .then((data) => JSON.parse(data as string))) as TalentData[];
         return talents;
       } else {
-        const talents = (await client.json.get(talentByIdKey(), {
-          path: talentCacheKey,
-        })) as TalentData[];
+        const talents = (await redisClient
+          .call("JSON.GET", talentByIdKey(), talentCacheKey)
+          .then((data) => JSON.parse(data as string))) as TalentData[];
         return talents;
       }
     } else {
@@ -111,24 +118,41 @@ const retrieveFilteredTalentData: (
           // id or talent name search
           const talentId = talents[0].talentId!.toString();
           const talentName = talents[0].talentName!;
-          await Promise.all([
-            client.json.set(talentByIdKey(), "$", {}, { NX: true }),
-            client.json.set(talentByIdKey(), talentId, talents),
-            { NX: true },
-            client.expireAt(talentByIdKey(), expireKeyTomorrow(), "NX"),
-            client.hSet(talentNameToIdKey(), talentName, talentId),
-            client.expireAt(talentNameToIdKey(), expireKeyTomorrow(), "NX"),
-          ]);
+          redisClient
+            .pipeline()
+            .call("JSON.SET", talentByIdKey(), "$", JSON.stringify({}), "NX")
+            .call(
+              "JSON.SET",
+              talentByIdKey(),
+              talentId,
+              JSON.stringify(talents),
+              "NX"
+            )
+            .expireat(talentByIdKey(), expireKeyTomorrow(), "NX")
+            .hset(talentNameToIdKey(), talentName, talentId)
+            .expireat(talentNameToIdKey(), expireKeyTomorrow(), "NX")
+            .exec();
         } else {
           // character name search
           const characterName = talents[0].characterName!;
-          await Promise.all([
-            client.json.set(talentsByCharacterKey(), "$", {}, { NX: true }),
-            client.json.set(talentsByCharacterKey(), characterName, talents, {
-              NX: true,
-            }),
-            client.expireAt(talentsByCharacterKey(), expireKeyTomorrow(), "NX"),
-          ]);
+          redisClient
+            .pipeline()
+            .call(
+              "JSON.SET",
+              talentsByCharacterKey(),
+              "$",
+              JSON.stringify({}),
+              "NX"
+            )
+            .call(
+              "JSON.SET",
+              talentsByCharacterKey(),
+              characterName,
+              JSON.stringify(talents),
+              "NX"
+            )
+            .expireat(talentsByCharacterKey(), expireKeyTomorrow(), "NX")
+            .exec();
         }
       }
       return talents;
