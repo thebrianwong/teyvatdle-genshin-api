@@ -2,6 +2,13 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import { Stat, WeaponData, WeaponType } from "../generated/graphql";
+import { redisClient } from "../redis/redis";
+import {
+  weaponByIdKey,
+  weaponNameToIdKey,
+  weaponsByTypeKey,
+  weaponsKey,
+} from "../redis/keys";
 
 beforeAll(async () => {
   await configSetup("Weapon");
@@ -9,6 +16,16 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await configTeardown("Weapon");
+});
+
+beforeEach(async () => {
+  await redisClient
+    .pipeline()
+    .expireat(weaponsKey(), -1)
+    .expireat(weaponByIdKey(), -1)
+    .expireat(weaponNameToIdKey(), -1)
+    .expireat(weaponsByTypeKey(), -1)
+    .exec();
 });
 
 const queryData = {

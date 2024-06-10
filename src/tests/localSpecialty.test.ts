@@ -2,6 +2,8 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import { LocalSpecialtyData } from "../generated/graphql";
+import { redisClient } from "../redis/redis";
+import { localSpecialtiesKey } from "../redis/keys";
 
 beforeAll(async () => {
   await configSetup("Local Specialty");
@@ -9,6 +11,10 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await configTeardown("Local Specialty");
+});
+
+beforeEach(async () => {
+  await redisClient.pipeline().expireat(localSpecialtiesKey(), -1).exec();
 });
 
 const queryData = {

@@ -2,6 +2,14 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import { ConstellationData } from "../generated/graphql";
+import { redisClient } from "../redis/redis";
+import {
+  constellationByIdKey,
+  constellationNameToIdKey,
+  constellationsByCharacterKey,
+  constellationsKey,
+  dailyRecordKey,
+} from "../redis/keys";
 
 beforeAll(async () => {
   await configSetup("Constellation");
@@ -9,6 +17,16 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await configTeardown("Constellation");
+});
+
+beforeEach(async () => {
+  await redisClient
+    .pipeline()
+    .expireat(constellationsKey(), -1)
+    .expireat(constellationByIdKey(), -1)
+    .expireat(constellationNameToIdKey(), -1)
+    .expireat(constellationsByCharacterKey(), -1)
+    .exec();
 });
 
 const queryData = {

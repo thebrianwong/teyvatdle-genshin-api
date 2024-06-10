@@ -10,6 +10,12 @@ import {
   Stat,
   WeaponType,
 } from "../generated/graphql";
+import { redisClient } from "../redis/redis";
+import {
+  characterByIdKey,
+  characterNameToIdKey,
+  charactersKey,
+} from "../redis/keys";
 
 beforeAll(async () => {
   await configSetup("Character");
@@ -17,6 +23,15 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await configTeardown("Character");
+});
+
+beforeEach(async () => {
+  await redisClient
+    .pipeline()
+    .expireat(charactersKey(), -1)
+    .expireat(characterByIdKey(), -1)
+    .expireat(characterNameToIdKey(), -1)
+    .exec();
 });
 
 const queryData = {

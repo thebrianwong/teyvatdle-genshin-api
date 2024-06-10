@@ -1,6 +1,8 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
+import { redisClient } from "../redis/redis";
+import { regionsKey } from "../redis/keys";
 
 beforeAll(async () => {
   await configSetup("Region");
@@ -8,6 +10,10 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await configTeardown("Region");
+});
+
+beforeEach(async () => {
+  await redisClient.pipeline().expireat(regionsKey(), -1).exec();
 });
 
 const queryData = {

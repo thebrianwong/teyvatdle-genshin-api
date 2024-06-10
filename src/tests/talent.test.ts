@@ -2,6 +2,13 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import { TalentData, TalentType } from "../generated/graphql";
+import { redisClient } from "../redis/redis";
+import {
+  talentByIdKey,
+  talentNameToIdKey,
+  talentsByCharacterKey,
+  talentsKey,
+} from "../redis/keys";
 
 beforeAll(async () => {
   await configSetup("Talent");
@@ -9,6 +16,16 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await configTeardown("Talent");
+});
+
+beforeEach(async () => {
+  await redisClient
+    .pipeline()
+    .expireat(talentsKey(), -1)
+    .expireat(talentByIdKey(), -1)
+    .expireat(talentNameToIdKey(), -1)
+    .expireat(talentsByCharacterKey(), -1)
+    .exec();
 });
 
 const queryData = {
