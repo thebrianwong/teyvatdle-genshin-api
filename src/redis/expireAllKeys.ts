@@ -1,4 +1,4 @@
-import client from "../redis/client";
+import { exit } from "process";
 import {
   characterByIdKey,
   charactersKey,
@@ -18,6 +18,7 @@ import {
   weaponsByTypeKey,
   weaponsKey,
 } from "./keys";
+import { redisClient } from "./redis";
 
 const expireAllKeys = async () => {
   const keys = [
@@ -39,14 +40,19 @@ const expireAllKeys = async () => {
     regionsKey,
     localSpecialtiesKey,
   ];
-  const commands = keys.map((key) => client.json.del(key()));
-  await Promise.all(commands);
-  await client.quit();
+
+  const deleteCommands = keys.reduce(
+    (redisClient, key) => redisClient.call("JSON.DEL", key()),
+    redisClient.pipeline()
+  );
+  await deleteCommands.exec();
+  await redisClient.quit();
 };
 
 (async () => {
   await expireAllKeys();
   console.log("Expiring Keys.");
+  exit();
 })();
 
 export default expireAllKeys;
