@@ -26,7 +26,6 @@ import {
   WeaponData,
 } from "../generated/graphql";
 import { pubSub } from "..";
-import client from "../redis/client";
 import { dailyRecordKey } from "../redis/keys";
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
 import { redisClient } from "../redis/redis";
@@ -155,7 +154,9 @@ const createDailyRecord: () => Promise<void> = async () => {
 
 const getDailyRecord: () => Promise<DailyRecordData> = async () => {
   try {
-    const cachedDailyRecord = await client.json.get(dailyRecordKey());
+    const cachedDailyRecord = await redisClient
+      .call("JSON.GET", dailyRecordKey())
+      .then((data) => JSON.parse(data as string));
     if (cachedDailyRecord) {
       return cachedDailyRecord as DailyRecordData;
     } else {
@@ -182,10 +183,17 @@ const getDailyRecord: () => Promise<DailyRecordData> = async () => {
           date: `${currentYear}-${currentMonth}-${currentDay}`,
         })
         .getRawOne();
-      await Promise.all([
-        client.json.set(dailyRecordKey(), "$", dailyRecord, { NX: true }),
-        client.expireAt(dailyRecordKey(), expireKeyTomorrow(), "NX"),
-      ]);
+      redisClient
+        .pipeline()
+        .call(
+          "JSON.SET",
+          dailyRecordKey(),
+          "$",
+          JSON.stringify(dailyRecord),
+          "NX"
+        )
+        .expireat(dailyRecordKey(), expireKeyTomorrow(), "NX")
+        .exec();
       return dailyRecord as DailyRecordData;
     }
   } catch (err) {
