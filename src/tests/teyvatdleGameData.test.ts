@@ -13,6 +13,8 @@ import {
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
+import { redisClient } from "../redis/redis";
+import { dailyRecordKey } from "../redis/keys";
 
 beforeAll(async () => {
   await configSetup("Teyvatdle Game Data");
@@ -23,16 +25,26 @@ afterAll(async () => {
 });
 
 let dateNowSpy: jest.SpyInstance;
+let dateGetDateSpy: jest.SpyInstance;
 
-beforeEach(() => {
+beforeEach(async () => {
+  dateGetDateSpy = jest
+    .spyOn(global.Date.prototype, "getDate")
+    .mockImplementation(() => {
+      return 8;
+    });
+
   const testDate = new Date("2023-08-08T00:00:00-08:00");
   dateNowSpy = jest.spyOn(global, "Date").mockImplementation(() => {
     return testDate;
   });
+
+  await redisClient.expireat(dailyRecordKey(), -1);
 });
 
 afterEach(() => {
   dateNowSpy.mockRestore();
+  dateGetDateSpy.mockRestore();
 });
 
 const validDailyRecordID = 38;
