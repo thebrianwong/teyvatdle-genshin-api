@@ -29,6 +29,7 @@ import { pubSub } from "..";
 import client from "../redis/client";
 import { dailyRecordKey } from "../redis/keys";
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
+import { redisClient } from "../redis/redis";
 
 const getCorrespondingRepo: (type: string) => TeyvatdleEntityRepo = (
   type: string
@@ -390,6 +391,19 @@ const updateDailyRecord: (
               newSolvedValue,
             },
           });
+
+          const dailyRecordIsCached = await redisClient.call(
+            "JSON.TYPE",
+            dailyRecordKey()
+          );
+          if (dailyRecordIsCached) {
+            await redisClient.call(
+              "JSON.NUMINCRBY",
+              dailyRecordKey(),
+              `${gameDataType}Solved`,
+              1
+            );
+          }
 
           return {
             message: `Daily record updated. ${gameDataType}: ${newSolvedValue}`,
