@@ -46,12 +46,12 @@ const expireAllKeys = async () => {
     redisClient.pipeline()
   );
   await deleteCommands.exec();
-  await redisClient.quit();
 };
 
 (async () => {
   await expireAllKeys();
   console.log("Expiring Keys.");
+  await redisClient.quit();
   exit();
 })();
 
