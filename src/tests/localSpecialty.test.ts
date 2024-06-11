@@ -2,19 +2,19 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import { LocalSpecialtyData } from "../generated/graphql";
-import { redisClient } from "../redis/redis";
-import { localSpecialtiesKey } from "../redis/keys";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Local Specialty");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Local Specialty");
 });
 
 beforeEach(async () => {
-  await redisClient.pipeline().expireat(localSpecialtiesKey(), -1).exec();
+  await expireAllKeys();
 });
 
 const queryData = {

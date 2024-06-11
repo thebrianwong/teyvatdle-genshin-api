@@ -1,19 +1,19 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
-import { redisClient } from "../redis/redis";
-import { regionsKey } from "../redis/keys";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Region");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Region");
 });
 
 beforeEach(async () => {
-  await redisClient.pipeline().expireat(regionsKey(), -1).exec();
+  await expireAllKeys();
 });
 
 const queryData = {

@@ -2,31 +2,19 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import { ConstellationData } from "../generated/graphql";
-import { redisClient } from "../redis/redis";
-import {
-  constellationByIdKey,
-  constellationNameToIdKey,
-  constellationsByCharacterKey,
-  constellationsKey,
-  dailyRecordKey,
-} from "../redis/keys";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Constellation");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Constellation");
 });
 
 beforeEach(async () => {
-  await redisClient
-    .pipeline()
-    .expireat(constellationsKey(), -1)
-    .expireat(constellationByIdKey(), -1)
-    .expireat(constellationNameToIdKey(), -1)
-    .expireat(constellationsByCharacterKey(), -1)
-    .exec();
+  await expireAllKeys();
 });
 
 const queryData = {

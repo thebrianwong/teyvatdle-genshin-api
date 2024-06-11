@@ -2,30 +2,19 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import { FoodData, FoodType } from "../generated/graphql";
-import { redisClient } from "../redis/redis";
-import {
-  foodByIdKey,
-  foodNameToIdKey,
-  foodsByTypeKey,
-  foodsKey,
-} from "../redis/keys";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Food");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Food");
 });
 
 beforeEach(async () => {
-  await redisClient
-    .pipeline()
-    .expireat(foodsKey(), -1)
-    .expireat(foodByIdKey(), -1)
-    .expireat(foodNameToIdKey(), -1)
-    .expireat(foodsByTypeKey(), -1)
-    .exec();
+  await expireAllKeys();
 });
 
 const queryData = {

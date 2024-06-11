@@ -2,30 +2,19 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import { Stat, WeaponData, WeaponType } from "../generated/graphql";
-import { redisClient } from "../redis/redis";
-import {
-  weaponByIdKey,
-  weaponNameToIdKey,
-  weaponsByTypeKey,
-  weaponsKey,
-} from "../redis/keys";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Weapon");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Weapon");
 });
 
 beforeEach(async () => {
-  await redisClient
-    .pipeline()
-    .expireat(weaponsKey(), -1)
-    .expireat(weaponByIdKey(), -1)
-    .expireat(weaponNameToIdKey(), -1)
-    .expireat(weaponsByTypeKey(), -1)
-    .exec();
+  await expireAllKeys();
 });
 
 const queryData = {

@@ -10,28 +10,19 @@ import {
   Stat,
   WeaponType,
 } from "../generated/graphql";
-import { redisClient } from "../redis/redis";
-import {
-  characterByIdKey,
-  characterNameToIdKey,
-  charactersKey,
-} from "../redis/keys";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Character");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Character");
 });
 
 beforeEach(async () => {
-  await redisClient
-    .pipeline()
-    .expireat(charactersKey(), -1)
-    .expireat(characterByIdKey(), -1)
-    .expireat(characterNameToIdKey(), -1)
-    .exec();
+  await expireAllKeys();
 });
 
 const queryData = {

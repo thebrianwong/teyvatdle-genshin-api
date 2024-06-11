@@ -13,14 +13,14 @@ import {
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
-import { redisClient } from "../redis/redis";
-import { dailyRecordKey } from "../redis/keys";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Teyvatdle Game Data");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Teyvatdle Game Data");
 });
 
@@ -39,7 +39,7 @@ beforeEach(async () => {
     return testDate;
   });
 
-  await redisClient.expireat(dailyRecordKey(), -1);
+  await expireAllKeys();
 });
 
 afterEach(() => {
