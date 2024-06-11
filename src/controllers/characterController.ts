@@ -7,7 +7,7 @@ import {
   characterNameToIdKey,
   charactersKey,
 } from "../redis/keys";
-import { deserializeCharacter } from "../redis/deserialize/deserializeCharacter";
+import { deserializeCharacter } from "../redis/deserializeCharacter";
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
 import { redisClient } from "../redis/redis";
 

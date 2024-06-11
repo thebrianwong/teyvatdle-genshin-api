@@ -1,4 +1,4 @@
-import { CharacterData } from "../../generated/graphql";
+import { CharacterData } from "../generated/graphql";
 
 const deserializeCharacter = (
   rawCharacter: CharacterData & { birthday: string | null }
