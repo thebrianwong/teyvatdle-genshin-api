@@ -10,7 +10,7 @@
     "coverage": "TEST='true' jest --detectOpenHandles --coverage",
     "build": "npm install && npm install --only=dev && npm run codegen && tsc",
     "codegen": "graphql-codegen --config ./src/codegen.ts",
-    "expire": "node ./dist/redis/expireAllKeys.js"
+    "expire": "node ./dist/redis/expireScript.js"
   },
   "keywords": [],
   "author": "",

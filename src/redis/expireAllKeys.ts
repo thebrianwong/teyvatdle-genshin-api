@@ -57,11 +57,4 @@ const expireAllKeys = async () => {
   await deleteCommands.exec();
 };
 
-(async () => {
-  await expireAllKeys();
-  console.log("Expiring Keys.");
-  await redisClient.quit();
-  exit();
-})();
-
 export default expireAllKeys;
