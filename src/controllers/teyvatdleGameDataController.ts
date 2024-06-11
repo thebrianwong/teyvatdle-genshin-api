@@ -25,10 +25,9 @@ import {
   TalentData,
   WeaponData,
 } from "../generated/graphql";
-import { pubSub } from "..";
 import { dailyRecordKey } from "../redis/keys";
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
-import { redisClient } from "../redis/redis";
+import { redisClient, redisPubSub } from "../redis/redis";
 
 const getCorrespondingRepo: (type: string) => TeyvatdleEntityRepo = (
   type: string
@@ -393,7 +392,7 @@ const updateDailyRecord: (
           const newSolvedValue =
             returnedUpdateResult.raw[0][`${gameDataType}_solved`];
 
-          pubSub.publish("DAILY_RECORD_UPDATED", {
+          redisPubSub.publish("DAILY_RECORD_UPDATED", {
             dailyRecordUpdated: {
               type: gameDataType,
               newSolvedValue,
