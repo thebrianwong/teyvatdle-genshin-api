@@ -23,7 +23,6 @@ import { resolvers } from "./graphql/resolversMap";
 import WebSocket from "ws";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { useServer } from "graphql-ws/lib/use/ws";
-import { PubSub } from "graphql-subscriptions";
 
 dotenv.config();
 
@@ -37,7 +36,6 @@ let webSocketServer: WebSocket.Server<
   typeof WebSocket,
   typeof http.IncomingMessage
 >;
-let pubSub: PubSub;
 
 const main = async () => {
   app = express();
@@ -115,8 +113,6 @@ const main = async () => {
 
   await apolloServer.start();
 
-  pubSub = new PubSub();
-
   app.use(
     "/graphql",
     cors({
@@ -155,4 +151,4 @@ const main = async () => {
 
 main();
 
-export { app, AppDataSource, server, webSocketServer, pubSub };
+export { app, AppDataSource, server, webSocketServer };
