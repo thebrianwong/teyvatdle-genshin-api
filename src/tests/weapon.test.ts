@@ -2,13 +2,19 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import { Stat, WeaponData, WeaponType } from "../generated/graphql";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Weapon");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Weapon");
+});
+
+beforeEach(async () => {
+  await expireAllKeys();
 });
 
 const queryData = {
@@ -969,7 +975,7 @@ describe("Weapon query argument test suite", () => {
         const response = res.body;
         const weapon = response.data.weaponData[0];
 
-        expect(weapon).toHaveProperty("weaponName", "Akuoumaru");
+        expect(weapon).toHaveProperty("weaponName", '"The Catch"');
         mathRandomSpy.mockRestore();
       })
       .end(done);

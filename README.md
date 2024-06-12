@@ -18,6 +18,8 @@ Come back every day for new rounds of puzzle solving!
 
 This repo houses the API source code that powers Teyvatdle.
 
+The API was originally a REST API, which was rewritten into a GraphQL API as an exercise to learn GraphQL and Apollo.
+
 ---
 
 Check out [Teyvatdle](https://teyvatdle.onrender.com/)!
