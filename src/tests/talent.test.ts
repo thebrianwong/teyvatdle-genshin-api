@@ -2,13 +2,19 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import { TalentData, TalentType } from "../generated/graphql";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Talent");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Talent");
+});
+
+beforeEach(async () => {
+  await expireAllKeys();
 });
 
 const queryData = {

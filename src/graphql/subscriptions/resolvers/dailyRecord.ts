@@ -1,9 +1,9 @@
-import { pubSub } from "../../..";
 import {
   ResolverTypeWrapper,
   SubscriptionResolver,
   UpdatedSolvedValue,
 } from "../../../generated/graphql";
+import { redisPubSub } from "../../../redis/redis";
 
 const dailyRecordUpdatedResolver: SubscriptionResolver<
   ResolverTypeWrapper<UpdatedSolvedValue>,
@@ -15,7 +15,7 @@ const dailyRecordUpdatedResolver: SubscriptionResolver<
   subscribe: () => {
     return {
       [Symbol.asyncIterator]: () =>
-        pubSub.asyncIterator("DAILY_RECORD_UPDATED"),
+        redisPubSub.asyncIterator("DAILY_RECORD_UPDATED"),
     };
   },
 };

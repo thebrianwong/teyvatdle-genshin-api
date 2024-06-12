@@ -1,13 +1,19 @@
 import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Region");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Region");
+});
+
+beforeEach(async () => {
+  await expireAllKeys();
 });
 
 const queryData = {

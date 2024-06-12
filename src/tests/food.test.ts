@@ -2,13 +2,19 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import { FoodData, FoodType } from "../generated/graphql";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Food");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Food");
+});
+
+beforeEach(async () => {
+  await expireAllKeys();
 });
 
 const queryData = {
@@ -605,7 +611,7 @@ describe("Food query argument test suite", () => {
         const response = res.body;
         const food = response.data.foodData[0];
 
-        expect(food).toHaveProperty("foodName", "Aaru Mixed Rice");
+        expect(food).toHaveProperty("foodName", '"My Way"');
         mathRandomSpy.mockRestore();
       })
       .end(done);

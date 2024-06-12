@@ -10,13 +10,19 @@ import {
   Stat,
   WeaponType,
 } from "../generated/graphql";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Character");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Character");
+});
+
+beforeEach(async () => {
+  await expireAllKeys();
 });
 
 const queryData = {

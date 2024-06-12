@@ -2,13 +2,19 @@ import request from "supertest";
 import { app } from "../index";
 import { configSetup, configTeardown } from "./databaseSetupTeardown";
 import { ConstellationData } from "../generated/graphql";
+import expireAllKeys from "../redis/expireAllKeys";
 
 beforeAll(async () => {
   await configSetup("Constellation");
 });
 
 afterAll(async () => {
+  await expireAllKeys();
   await configTeardown("Constellation");
+});
+
+beforeEach(async () => {
+  await expireAllKeys();
 });
 
 const queryData = {
