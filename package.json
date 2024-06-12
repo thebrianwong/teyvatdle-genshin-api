@@ -9,7 +9,7 @@
     "test": "npm run expire && TEST='true' jest --watchAll --detectOpenHandles && npm run expire",
     "coverage": "TEST='true' jest --detectOpenHandles --coverage",
     "build": "npm run build-codegen-installs && npm install && npm install --only=dev && npm install typescript && npm run codegen && tsc",
-    "build-codegen-installs": "npm i -g @graphql-codegen/cli && npm i @graphql-codegen/introspection @graphql-codegen/typescript @graphql-codegen/typescript-resolvers  typescript",
+    "build-codegen-installs": "npm i -g @graphql-codegen/cli @graphql-codegen/introspection @graphql-codegen/typescript @graphql-codegen/typescript-resolvers  typescript",
     "codegen": "graphql-codegen --config ./src/codegen.ts",
     "expire": "node ./dist/redis/expireScript.js"
   },
