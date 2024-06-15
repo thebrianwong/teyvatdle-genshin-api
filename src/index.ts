@@ -23,6 +23,7 @@ import { resolvers } from "./graphql/resolversMap";
 import WebSocket from "ws";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { useServer } from "graphql-ws/lib/use/ws";
+import createTalentDataLoader from "./graphql/queries/dataLoaders/talentDataLoader";
 
 dotenv.config();
 
@@ -119,7 +120,10 @@ const main = async () => {
       origin: process.env.TEYVATDLE_FRONTEND,
     }),
     expressMiddleware(apolloServer, {
-      context: async ({ req }) => ({ token: req.headers.token }),
+      context: async ({ req }) => {
+        const talentDataLoader = createTalentDataLoader();
+        return { token: req.headers.token, talentDataLoader };
+      },
     })
   );
 
