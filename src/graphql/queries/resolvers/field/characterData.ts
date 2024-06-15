@@ -1,5 +1,4 @@
 import { retrieveFilteredConstellationData } from "../../../../controllers/constellationController";
-import { retrieveFilteredTalentData } from "../../../../controllers/talentController";
 import {
   CharacterData,
   CharacterDataResolvers,
@@ -35,11 +34,9 @@ const characterDataResolvers: CharacterDataResolvers<any, CharacterData> = {
     parent.talentBossMaterialImageUrl || null,
   talentBook: (parent) => parent.talentBook || null,
   talentBookImageUrl: (parent) => parent.talentBookImageUrl || null,
-  talents: async (parent) => {
-    return await retrieveFilteredTalentData(
-      "characterName",
-      parent.characterName!
-    );
+  talents: async (parent, args, { talentDataLoader }) => {
+    const talents = await talentDataLoader.load(parent.characterName);
+    return talents;
   },
   constellations: async (parent) => {
     return await retrieveFilteredConstellationData(
