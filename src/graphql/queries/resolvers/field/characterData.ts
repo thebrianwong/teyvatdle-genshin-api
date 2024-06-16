@@ -38,11 +38,11 @@ const characterDataResolvers: CharacterDataResolvers<any, CharacterData> = {
     const talents = await talentDataLoader.load(parent.characterName);
     return talents;
   },
-  constellations: async (parent) => {
-    return await retrieveFilteredConstellationData(
-      "characterName",
-      parent.characterName!
+  constellations: async (parent, args, { constellationDataLoader }) => {
+    const constellations = await constellationDataLoader.load(
+      parent.characterName
     );
+    return constellations;
   },
 };
 

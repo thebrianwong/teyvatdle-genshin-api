@@ -24,6 +24,7 @@ import WebSocket from "ws";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { useServer } from "graphql-ws/lib/use/ws";
 import createTalentDataLoader from "./graphql/queries/dataLoaders/talentDataLoader";
+import createConstellationDataLoader from "./graphql/queries/dataLoaders/constellationDataLoader";
 
 dotenv.config();
 
@@ -122,7 +123,12 @@ const main = async () => {
     expressMiddleware(apolloServer, {
       context: async ({ req }) => {
         const talentDataLoader = createTalentDataLoader();
-        return { token: req.headers.token, talentDataLoader };
+        const constellationDataLoader = createConstellationDataLoader();
+        return {
+          token: req.headers.token,
+          talentDataLoader,
+          constellationDataLoader,
+        };
       },
     })
   );
