@@ -83,7 +83,6 @@ const retrieveFilteredConstellationData: (
     }
 
     if (constellationCacheKey && constellationCacheKeyExists) {
-      console.log("from cache");
       if (filterType === "characterName") {
         const constellations = (await redisClient
           .call(
