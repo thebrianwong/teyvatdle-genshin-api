@@ -6,9 +6,11 @@ import {
   talentNameToIdKey,
   talentsByCharacterKey,
   talentsKey,
+  talentsNestedInCharactersKey,
 } from "../redis/keys";
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
 import { redisClient } from "../redis/redis";
+import crypto from "crypto";
 
 const retrieveTalentData: () => Promise<TalentData[]> = async () => {
   try {
@@ -49,23 +51,57 @@ const retrieveTalentDataByCharacterName: (
   ids: string[]
 ) => Promise<TalentData[]> = async (names) => {
   try {
-    const talentRepo = AppDataSource.getRepository(Talent);
-    const talents: TalentData[] = await talentRepo
-      .createQueryBuilder("talent")
-      .innerJoin("talent.characterId", "character")
-      .innerJoin("talent.typeId", "talent_type")
-      .select([
-        'talent.id AS "talentId"',
-        'talent.name AS "talentName"',
-        'talent_type.name AS "talentType"',
-        'talent.imageUrl AS "talentImageUrl"',
-        'character.name AS "characterName"',
-        'character.imageUrl AS "characterImageUrl"',
-      ])
-      .where("character.name IN(:...names)", { names })
-      .orderBy({ '"talentId"': "ASC" })
-      .getRawMany();
-    return talents;
+    const characterNamesHash = crypto
+      .createHash("sha256")
+      .update(JSON.stringify(names), "utf8")
+      .digest("hex");
+    const talentCacheKeyExists = await redisClient.call(
+      "JSON.TYPE",
+      talentsNestedInCharactersKey(),
+      characterNamesHash
+    );
+    if (talentCacheKeyExists) {
+      const cachedTalents = await redisClient
+        .call("JSON.GET", talentsNestedInCharactersKey(), characterNamesHash)
+        .then((data) => JSON.parse(data as string));
+      return cachedTalents as TalentData[];
+    } else {
+      const talentRepo = AppDataSource.getRepository(Talent);
+      const talents: TalentData[] = await talentRepo
+        .createQueryBuilder("talent")
+        .innerJoin("talent.characterId", "character")
+        .innerJoin("talent.typeId", "talent_type")
+        .select([
+          'talent.id AS "talentId"',
+          'talent.name AS "talentName"',
+          'talent_type.name AS "talentType"',
+          'talent.imageUrl AS "talentImageUrl"',
+          'character.name AS "characterName"',
+          'character.imageUrl AS "characterImageUrl"',
+        ])
+        .where("character.name IN(:...names)", { names })
+        .orderBy({ '"talentId"': "ASC" })
+        .getRawMany();
+      redisClient
+        .pipeline()
+        .call(
+          "JSON.SET",
+          talentsNestedInCharactersKey(),
+          "$",
+          JSON.stringify({}),
+          "NX"
+        )
+        .call(
+          "JSON.SET",
+          talentsNestedInCharactersKey(),
+          characterNamesHash,
+          JSON.stringify(talents),
+          "NX"
+        )
+        .expireat(talentsNestedInCharactersKey(), expireKeyTomorrow(), "NX")
+        .exec();
+      return talents;
+    }
   } catch (err) {
     throw new Error(
       "There was an error querying talents based on character names. " + err
