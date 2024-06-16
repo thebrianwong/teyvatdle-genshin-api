@@ -48,7 +48,7 @@ const retrieveTalentData: () => Promise<TalentData[]> = async () => {
 };
 
 const retrieveTalentDataByCharacterName: (
-  ids: string[]
+  names: string[]
 ) => Promise<TalentData[]> = async (names) => {
   try {
     const characterNamesHash = crypto
