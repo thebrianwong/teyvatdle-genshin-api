@@ -77,7 +77,6 @@ const retrieveFilteredFoodData: (
     }
 
     if (foodCacheKey && foodCacheKeyExists) {
-      console.log("from cache");
       if (filterType === "foodType") {
         const foods = (await redisClient
           .call("JSON.GET", foodsByTypeKey(), formatAsKey(foodCacheKey))
