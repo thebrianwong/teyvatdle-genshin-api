@@ -47,7 +47,7 @@ const retrieveTalentData: () => Promise<TalentData[]> = async () => {
   }
 };
 
-const retrieveTalentDataByCharacterName: (
+const retrieveTalentDataByCharacterNames: (
   names: string[]
 ) => Promise<TalentData[]> = async (names) => {
   try {
@@ -235,7 +235,7 @@ const retrieveRandomTalentData: () => Promise<TalentData[]> = async () => {
 
 export {
   retrieveTalentData,
-  retrieveTalentDataByCharacterName,
+  retrieveTalentDataByCharacterNames,
   retrieveFilteredTalentData,
   retrieveRandomTalentData,
 };

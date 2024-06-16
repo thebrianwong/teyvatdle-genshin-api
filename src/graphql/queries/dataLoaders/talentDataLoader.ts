@@ -1,5 +1,5 @@
 import DataLoader from "dataloader";
-import { retrieveTalentDataByCharacterName } from "../../../controllers/talentController";
+import { retrieveTalentDataByCharacterNames } from "../../../controllers/talentController";
 import { TalentData } from "../../../generated/graphql";
 
 const createTalentDataLoader = () => {
@@ -12,7 +12,7 @@ const createTalentDataLoader = () => {
       },
       {}
     );
-    const rawTalents = await retrieveTalentDataByCharacterName(
+    const rawTalents = await retrieveTalentDataByCharacterNames(
       names as string[]
     );
     rawTalents.forEach((talent) => {
