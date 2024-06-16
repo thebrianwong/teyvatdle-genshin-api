@@ -6,9 +6,11 @@ import {
   constellationNameToIdKey,
   constellationsByCharacterKey,
   constellationsKey,
+  constellationsNestedInCharactersKey,
 } from "../redis/keys";
 import { expireKeyTomorrow } from "../redis/expireKeyTomorrow";
 import { redisClient } from "../redis/redis";
+import crypto from "crypto";
 
 const retrieveConstellationData: () => Promise<
   ConstellationData[]
@@ -49,6 +51,77 @@ const retrieveConstellationData: () => Promise<
     }
   } catch (err) {
     throw new Error("There was an error querying constellations. " + err);
+  }
+};
+
+const retrieveConstellationDataByCharacterNames: (
+  names: string[]
+) => Promise<ConstellationData[]> = async (names) => {
+  try {
+    const characterNamesHash = crypto
+      .createHash("sha256")
+      .update(JSON.stringify(names), "utf8")
+      .digest("hex");
+    const constellationCacheKeyExists = await redisClient.call(
+      "JSON.TYPE",
+      constellationsNestedInCharactersKey(),
+      characterNamesHash
+    );
+    if (constellationCacheKeyExists) {
+      const cachedConstellations = await redisClient
+        .call(
+          "JSON.GET",
+          constellationsNestedInCharactersKey(),
+          characterNamesHash
+        )
+        .then((data) => JSON.parse(data as string));
+      return cachedConstellations as ConstellationData[];
+    } else {
+      const constellationRepo = AppDataSource.getRepository(Constellation);
+      const constellations: ConstellationData[] = await constellationRepo
+        .createQueryBuilder("constellation")
+        .innerJoin("constellation.characterId", "character")
+        .select([
+          'constellation.id AS "constellationId"',
+          'constellation.name AS "constellationName"',
+          'constellation.level AS "constellationLevel"',
+          'constellation.imageUrl AS "constellationImageUrl"',
+          'constellation.character_id AS "characterId"',
+          'character.name AS "characterName"',
+          'character.imageUrl AS "characterImageUrl"',
+        ])
+        .where("character.name IN(:...names)", { names })
+        .orderBy({ '"constellationId"': "ASC" })
+        .getRawMany();
+      redisClient
+        .pipeline()
+        .call(
+          "JSON.SET",
+          constellationsNestedInCharactersKey(),
+          "$",
+          JSON.stringify({}),
+          "NX"
+        )
+        .call(
+          "JSON.SET",
+          constellationsNestedInCharactersKey(),
+          characterNamesHash,
+          JSON.stringify(constellations),
+          "NX"
+        )
+        .expireat(
+          constellationsNestedInCharactersKey(),
+          expireKeyTomorrow(),
+          "NX"
+        )
+        .exec();
+      return constellations;
+    }
+  } catch (err) {
+    throw new Error(
+      "There was an error querying constellations based on character names. " +
+        err
+    );
   }
 };
 
@@ -195,6 +268,7 @@ const retrieveRandomConstellationData: () => Promise<
 
 export {
   retrieveConstellationData,
+  retrieveConstellationDataByCharacterNames,
   retrieveFilteredConstellationData,
   retrieveRandomConstellationData,
 };
