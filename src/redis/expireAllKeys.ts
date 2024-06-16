@@ -6,6 +6,7 @@ import {
   constellationNameToIdKey,
   constellationsByCharacterKey,
   constellationsKey,
+  constellationsNestedInCharactersKey,
   dailyRecordKey,
   foodByIdKey,
   foodNameToIdKey,
@@ -48,6 +49,7 @@ const expireAllKeys = async () => {
     constellationByIdKey,
     constellationNameToIdKey,
     constellationsByCharacterKey,
+    constellationsNestedInCharactersKey,
     regionsKey,
     localSpecialtiesKey,
   ];

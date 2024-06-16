@@ -32,6 +32,8 @@ const constellationNameToIdKey = () =>
   `${APP_KEY_PREFIX}:constellation#nameToId`; // key for Hash data structure, returns constellation ID to be passed into foodIdKey
 const constellationsByCharacterKey = () =>
   `${APP_KEY_PREFIX}:constellations#byCharacter`; // key for JSON data structure, returns all constellation of a provided character path
+const constellationsNestedInCharactersKey = () =>
+  `${APP_KEY_PREFIX}:constellations#nestedInCharacters`; // key for JSON data structure, returns all constellations of multiple characters, used in DataLoader query
 
 const regionsKey = () => `${APP_KEY_PREFIX}#regions`;
 const localSpecialtiesKey = () => `${APP_KEY_PREFIX}#localSpecialties`;
@@ -59,6 +61,7 @@ export {
   constellationByIdKey,
   constellationNameToIdKey,
   constellationsByCharacterKey,
+  constellationsNestedInCharactersKey,
   regionsKey,
   localSpecialtiesKey,
 };
