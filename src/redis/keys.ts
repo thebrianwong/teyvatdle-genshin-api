@@ -1,5 +1,3 @@
-import crypto from "crypto";
-
 const APP_KEY_PREFIX = "TEYVATDLE";
 
 const formatAsKey = (unformatted: string) =>
