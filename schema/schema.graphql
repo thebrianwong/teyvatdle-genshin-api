@@ -70,6 +70,7 @@ enum FoodType {
   ATK_Boosting_Dishes
   Potions
   Essential_Oils
+  Other_Dishes
 }
 
 enum TalentType {
@@ -80,6 +81,7 @@ enum TalentType {
   First_Ascension_Passive
   Fourth_Ascension_Passive
   Utility_Passive
+  Night_Realms_Gift_Passive
   Passive
 }
 

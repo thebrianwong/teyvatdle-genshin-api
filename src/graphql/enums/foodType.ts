@@ -5,6 +5,7 @@ const foodTypeEnumsResolvers = {
   ATK_Boosting_Dishes: "ATK-Boosting Dishes",
   Potions: "Potions",
   Essential_Oils: "Essential Oils",
+  Other_Dishes: "Other Dishes",
 };
 
 export default foodTypeEnumsResolvers;
