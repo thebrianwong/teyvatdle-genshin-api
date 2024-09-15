@@ -70,6 +70,7 @@ enum FoodType {
   ATK_Boosting_Dishes
   Potions
   Essential_Oils
+  Other_Dishes
 }
 
 enum TalentType {
