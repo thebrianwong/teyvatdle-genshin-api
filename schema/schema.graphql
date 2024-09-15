@@ -80,6 +80,7 @@ enum TalentType {
   First_Ascension_Passive
   Fourth_Ascension_Passive
   Utility_Passive
+  Night_Realms_Gift_Passive
   Passive
 }
 
