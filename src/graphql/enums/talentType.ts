@@ -6,6 +6,7 @@ const talentTypeEnumsResolvers = {
   First_Ascension_Passive: "1st Ascension Passive",
   Fourth_Ascension_Passive: "4th Ascension Passive",
   Utility_Passive: "Utility Passive",
+  Night_Realms_Gift_Passive: "Night Realm's Gift Passive",
   Passive: "Passive",
 };
 
